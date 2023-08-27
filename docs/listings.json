@@ -2,8 +2,16 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/post-with-code/index.html",
-      "/posts/welcome/index.html"
+      "/posts/regression-toward-mean/index.html",
+      "/posts/survivor-bias/index.html",
+      "/posts/max-likelihood/index.html",
+      "/posts/R0-sympy/index.html",
+      "/posts/pop-monte-carlo/index.html",
+      "/posts/simple-model-complicated-dynamics/index.html",
+      "/posts/ode-in-stan/index.html",
+      "/posts/sub-exponential-growth/index.html",
+      "/posts/modeling-philosophy/index.html",
+      "/posts/reproduction-number/index.html"
     ]
   }
 ]

@@ -1,0 +1,14 @@
+{
+  "hash": "ade39460a6e8d9e95bf130383ba36fed",
+  "result": {
+    "markdown": "---\ntitle: \"ODE models in Stan\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2023-08-07\"\ncategories: [news, code, analysis]\nimage: \"unnamed-chunk-5-1.png\"\n---\n\n\n\n### First order difference equations\n\n$X_{t+1} = F(X_t)$\n\nIn biological population, the nonlinear function $F(x)$ often has the following propoerties.\n$F(0)=0$; $F(x)$ increases monotonically as $X$ increases through the range of $0<X<A$ (with\n$F(x)$ attaining its maximum value at $X=A$); $F(X)$ decreases monotonically as $X$ increases \nbeyond $X=A$\n$N_{t+1} = N_t(a-bN_t)$\n\n\n::: {.cell}\n\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
