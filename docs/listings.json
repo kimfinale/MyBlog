@@ -2,6 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/pubmed-chatgpt_summary/index.html",
+      "/posts/drawing-map/index.html",
+      "/posts/how-to-write-a-paper/index.html",
+      "/posts/climate-disaster/index.html",
       "/posts/regression-toward-mean/index.html",
       "/posts/survivor-bias/index.html",
       "/posts/max-likelihood/index.html",
