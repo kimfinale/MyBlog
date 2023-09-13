@@ -4,6 +4,8 @@ project:
 
 website:
   title: "Jong-Hoon Kim's Blog"
+  site-url: https://kimfinale.github.io/myblog/
+  description: "Jong-Hoon Kim's Blog"
   navbar:
     right:
       - about.qmd
