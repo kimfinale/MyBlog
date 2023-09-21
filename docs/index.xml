@@ -10,7 +10,321 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Jong-Hoon Kim&#39;s Blog</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Thu, 31 Aug 2023 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 14 Sep 2023 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>odin package</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/odin/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><code>odin</code>에 담겨져 있는 polygon의 면적을 구해보자 <code>raster</code> 패키지의 <code>area</code> 혹은 <code>terra</code> 패키지의 <code>expanse</code> 함수를 이용할 수 이 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(odin)</span>
+<span id="cb1-2">path_sir_model <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/odin/sir.R"</span></span>
+<span id="cb1-3"></span>
+<span id="cb1-4">sir_generator <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> odin<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">odin</span>(path_sir_model)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>── R CMD INSTALL ───────────────────────────────────────────────────────────────
+* installing *source* package 'sirf8f32654' ...
+** using staged installation
+** libs
+using C compiler: 'gcc.exe (GCC) 12.2.0'
+gcc  -I"C:/PROGRA~1/R/R-43~1.1/include" -DNDEBUG     -I"C:/rtools43/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall -gdwarf-2 -mfpmath=sse -msse2 -mstackrealign  -UNDEBUG -Wall -pedantic -g -O0 -c odin.c -o odin.o
+odin.c: In function 'sir_metadata':
+odin.c:115:17: warning: unused variable 'internal' [-Wunused-variable]
+  115 |   sir_internal *internal = sir_get_internal(internal_p, 1);
+      |                 ^~~~~~~~
+gcc  -I"C:/PROGRA~1/R/R-43~1.1/include" -DNDEBUG     -I"C:/rtools43/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall -gdwarf-2 -mfpmath=sse -msse2 -mstackrealign  -UNDEBUG -Wall -pedantic -g -O0 -c registration.c -o registration.o
+gcc -shared -static-libgcc -o sirf8f32654.dll tmp.def odin.o registration.o -LC:/rtools43/x86_64-w64-mingw32.static.posix/lib/x64 -LC:/rtools43/x86_64-w64-mingw32.static.posix/lib -LC:/PROGRA~1/R/R-43~1.1/bin/x64 -lR
+installing to C:/Users/jonghoon.kim/AppData/Local/Temp/RtmpqM3a2x/devtools_install_4d20ee81bd7/00LOCK-file4d2056a925a/00new/sirf8f32654/libs/x64
+* DONE (sirf8f32654)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> sir_generator<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">new</span>()</span>
+<span id="cb3-2">x</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;odin_model&gt;
+  Public:
+    contents: function () 
+    initial: function (step) 
+    initialize: function (..., user = list(...), use_dde = FALSE, unused_user_action = NULL) 
+    ir: function () 
+    rhs: function (step, y) 
+    run: function (step, y = NULL, ..., use_names = TRUE) 
+    set_user: function (..., user = list(...), unused_user_action = NULL) 
+    transform_variables: function (y) 
+    update: function (step, y) 
+  Private:
+    cfuns: list
+    dll: sirf8f32654
+    interpolate_t: NULL
+    n_out: 0
+    odin: environment
+    output_order: NULL
+    ptr: externalptr
+    registration: function () 
+    set_initial: function (step, y, use_dde) 
+    update_metadata: function () 
+    use_dde: FALSE
+    user: beta gamma I_ini S_ini
+    variable_order: list
+    ynames: step S I R</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">sir_col <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#8c8cd9"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#cc0044"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#999966"</span>)</span>
+<span id="cb5-2">x_res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">run</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span>)</span>
+<span id="cb5-3"></span>
+<span id="cb5-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">par</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">mar =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">las =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb5-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matplot</span>(x_res[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], x_res[, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Number of individuals"</span>,</span>
+<span id="cb5-6">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> sir_col, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lty =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb5-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"topright"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lwd =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> sir_col, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"S"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"I"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"R"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/odin/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">path_sir_stoch_model <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/odin/sir_stoch.R"</span></span>
+<span id="cb6-2">sir_generator <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> odin<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">odin</span>(path_sir_stoch_model)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>── R CMD INSTALL ───────────────────────────────────────────────────────────────
+* installing *source* package 'sir.stochc1184c7f' ...
+** using staged installation
+** libs
+using C compiler: 'gcc.exe (GCC) 12.2.0'
+gcc  -I"C:/PROGRA~1/R/R-43~1.1/include" -DNDEBUG     -I"C:/rtools43/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall -gdwarf-2 -mfpmath=sse -msse2 -mstackrealign  -UNDEBUG -Wall -pedantic -g -O0 -c odin.c -o odin.o
+odin.c: In function 'sir_stoch_metadata':
+odin.c:119:23: warning: unused variable 'internal' [-Wunused-variable]
+  119 |   sir_stoch_internal *internal = sir_stoch_get_internal(internal_p, 1);
+      |                       ^~~~~~~~
+gcc  -I"C:/PROGRA~1/R/R-43~1.1/include" -DNDEBUG     -I"C:/rtools43/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall -gdwarf-2 -mfpmath=sse -msse2 -mstackrealign  -UNDEBUG -Wall -pedantic -g -O0 -c registration.c -o registration.o
+gcc -shared -static-libgcc -o sir.stochc1184c7f.dll tmp.def odin.o registration.o -LC:/rtools43/x86_64-w64-mingw32.static.posix/lib/x64 -LC:/rtools43/x86_64-w64-mingw32.static.posix/lib -LC:/PROGRA~1/R/R-43~1.1/bin/x64 -lR
+installing to C:/Users/jonghoon.kim/AppData/Local/Temp/RtmpqM3a2x/devtools_install_4d202bf8156c/00LOCK-file4d2031584662/00new/sir.stochc1184c7f/libs/x64
+* DONE (sir.stochc1184c7f)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb8-2">x_res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">run</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb8-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">par</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">mar =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">las =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb8-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matplot</span>(x_res[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], x_res[, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Number of individuals"</span>,</span>
+<span id="cb8-5">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> sir_col, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lty =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb8-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"topright"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lwd =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> sir_col, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"S"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"I"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"R"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/odin/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+
+ ]]></description>
+  <category>ODE</category>
+  <category>R</category>
+  <category>odin</category>
+  <guid>https://kimfinale.github.io/myblog/posts/odin/index.html</guid>
+  <pubDate>Thu, 14 Sep 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/odin/image.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>PubMed search, ChatGPT summary, and sending an email in R</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -798,6 +1112,177 @@ font-style: inherit;">)</span></span></code></pre></div>
   <guid>https://kimfinale.github.io/myblog/posts/pubmed-chatgpt_summary/index.html</guid>
   <pubDate>Thu, 31 Aug 2023 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/pubmed-chatgpt_summary/image.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>Shapefile의 polygon 면적 구하기</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/area-polygon/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><code>shapefile</code>에 담겨져 있는 polygon의 면적을 구해보자 <code>raster</code> 패키지의 <code>area</code> 혹은 <code>sf</code> 패키지의 <code>st_area</code> 함수를 이용할 수 이 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(sf)</span>
+<span id="cb1-2">kor <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dsn=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/area-polygon"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">layer=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gadm41_KOR_1"</span>)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>)</span>
+<span id="cb1-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 1e6 to get population density per 1 km^2</span></span>
+<span id="cb1-5">kor<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>area_sqkm1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_area</span>(kor))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e6</span></span>
+<span id="cb1-6"></span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># raster package way</span></span>
+<span id="cb1-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># library(raster)</span></span>
+<span id="cb1-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># kor &lt;- shapefile("C:/Users/jonghoon.kim/Documents/myblog/posts/area-polygon/gadm41_KOR_1.shp")</span></span>
+<span id="cb1-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># raster pkg works for the Spatial* object</span></span>
+<span id="cb1-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># kor$area_sqkm2 &lt;- raster::area(as(kor, 'Spatial'))/1e6</span></span>
+<span id="cb1-12"></span>
+<span id="cb1-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># plot population density</span></span>
+<span id="cb1-14"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb1-15">labels <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">expression</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">atop</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Population density"</span>, per<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>km<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb1-16">plt <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(kor)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_sf</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill=</span>area_sqkm1))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-18">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_viridis_c</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name=</span>labels) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-19">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-20">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"right"</span>)</span>
+<span id="cb1-21">plt</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/area-polygon/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># use color brewer </span></span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(RColorBrewer)</span>
+<span id="cb2-3">pal <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brewer.pal</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"YlOrBr"</span>)</span>
+<span id="cb2-4">plt <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb2-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_gradientn</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name=</span>labels, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colors=</span>pal)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/area-polygon/index_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+
+ ]]></description>
+  <category>map</category>
+  <category>R</category>
+  <category>ggplot2</category>
+  <category>sf</category>
+  <category>RColorBrewer</category>
+  <guid>https://kimfinale.github.io/myblog/posts/area-polygon/index.html</guid>
+  <pubDate>Tue, 29 Aug 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/area-polygon/image.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>ggplot2로 지도 그리기</title>
