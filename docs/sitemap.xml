@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2023-09-21T12:28:55.992Z</lastmod>
+    <lastmod>2023-09-21T12:32:36.721Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -18,6 +18,10 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/how-to-write-a-paper/index.html</loc>
-    <lastmod>2023-09-21T12:13:54.944Z</lastmod>
+    <lastmod>2023-09-21T12:32:35.313Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/drawing-map/index.html</loc>
+    <lastmod>2023-09-21T12:33:15.758Z</lastmod>
   </url>
 </urlset>

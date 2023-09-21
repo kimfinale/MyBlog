@@ -2,7 +2,7 @@
 title: "ggplot2로 지도 그리기"
 author: "Jong-Hoon Kim"
 date: "2023-08-30"
-categories: [map, R, ggplot2, sf, RColorBrewer]
+categories: [R, map, ggplot2, sf, RColorBrewer]
 image: "image.jpg"
 editor_options: 
   chunk_output_type: console
@@ -12,11 +12,12 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo=TRUE)
 ```
 
-`ggplot2`를 이용하여 지도 그리기를 해보자. 지도는 shapefile에 담겨져 있다고 가정하자. shapefile을 읽는 방법은 여러가지가 있을 수 있는데 `sf` 패키지의 `read_sf` 함수를 이용한 후 `ggplot2`의 `geom_sf`를 이용하여 그리는 것이 가장 쉬운 것 같다.
+`ggplot2`를 이용하여 지도 그리기를 해보자. 지도는 shapefile에 담겨져 있다고 가정하자. shapefile을 읽는 방법은 여러가지가 있을 수 있는데 `sf` 패키지의 `st_read` 혹은 `read_sf` 함수를 이용한 후 `ggplot2`의 `geom_sf`를 이용하여 그리는 것이 가장 쉬운 것 같다.
 
 ```{r}
 library(sf)
-kor <- read_sf(dsn="C:/Users/jonghoon.kim/Documents/myblog/posts/drawing-map", layer="gadm41_KOR_1")
+kor <- st_read("C:/Users/jonghoon.kim/Documents/myblog/posts/drawing-map/gadm41_KOR_1.shp")
+# kor <- read_sf(dsn="C:/Users/jonghoon.kim/Documents/myblog/posts/drawing-map", layer="gadm41_KOR_1")
 set.seed(42)
 # normalized number of characters of the name of the admin unit (level 1)
 char_len <- sapply(kor$NAME_1, nchar)
@@ -26,7 +27,6 @@ library(ggplot2)
 plt <- ggplot(kor)+
   geom_sf(aes(fill=prop_char))+
   scale_fill_viridis_c(name="Normalized\ncharacter length", limits=c(0,1)) +
-  # scale_fill_gradientn(name="Probability", colors=pal, limits=c(0,1)) +
   theme_minimal()+
   theme(legend.position="right")
 

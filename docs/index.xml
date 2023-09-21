@@ -1330,7 +1330,7 @@ font-style: inherit;">colors=</span>pal)</span></code></pre></div>
 
 
 
-<p><code>ggplot2</code>를 이용하여 지도 그리기를 해보자. 지도는 shapefile에 담겨져 있다고 가정하자. 쉐입파일을 읽는 방법은 여러가지가 있을 수 있는데 <code>sf</code> 패키지의 <code>read_sf</code> 함수를 이용한 후 <code>ggplot2</code>의 <code>geom_sf</code>를 이용하여 그리는 것이 가장 쉬운 것 같다.</p>
+<p><code>ggplot2</code>를 이용하여 지도 그리기를 해보자. 지도는 shapefile에 담겨져 있다고 가정하자. shapefile을 읽는 방법은 여러가지가 있을 수 있는데 <code>sf</code> 패키지의 <code>st_read</code> 혹은 <code>read_sf</code> 함수를 이용한 후 <code>ggplot2</code>의 <code>geom_sf</code>를 이용하여 그리는 것이 가장 쉬운 것 같다.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1339,31 +1339,38 @@ font-style: inherit;">library</span>(sf)</span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">read_sf</span>(<span class="at" style="color: #657422;
+font-style: inherit;">st_read</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">dsn=</span><span class="st" style="color: #20794D;
+font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/drawing-map/gadm41_KOR_1.shp"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `gadm41_KOR_1' from data source 
+  `C:\Users\jonghoon.kim\Documents\myblog\posts\drawing-map\gadm41_KOR_1.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 17 features and 11 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 124.6097 ymin: 33.11236 xmax: 131.8715 ymax: 38.61177
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/drawing-map"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">layer=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gadm41_KOR_1"</span>)</span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
+font-style: inherit;"># kor &lt;- read_sf(dsn="C:/Users/jonghoon.kim/Documents/myblog/posts/drawing-map", layer="gadm41_KOR_1")</span></span>
+<span id="cb3-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">42</span>)</span>
-<span id="cb1-4"><span class="co" style="color: #5E5E5E;
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># normalized number of characters of the name of the admin unit (level 1)</span></span>
-<span id="cb1-5">char_len <span class="ot" style="color: #003B4F;
+<span id="cb3-4">char_len <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sapply</span>(kor<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>NAME_1, nchar)</span>
-<span id="cb1-6">kor<span class="sc" style="color: #5E5E5E;
+<span id="cb3-5">kor<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>prop_char <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1372,18 +1379,18 @@ background-color: null;
 font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">max</span>(char_len)</span>
-<span id="cb1-7"></span>
-<span id="cb1-8"><span class="fu" style="color: #4758AB;
+<span id="cb3-6"></span>
+<span id="cb3-7"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb1-9">plt <span class="ot" style="color: #003B4F;
+<span id="cb3-8">plt <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>(kor)<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb1-10">  <span class="fu" style="color: #4758AB;
+<span id="cb3-9">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_sf</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1392,7 +1399,7 @@ background-color: null;
 font-style: inherit;">fill=</span>prop_char))<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb1-11">  <span class="fu" style="color: #4758AB;
+<span id="cb3-10">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">scale_fill_viridis_c</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -1413,33 +1420,30 @@ background-color: null;
 font-style: inherit;">1</span>)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb1-12">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># scale_fill_gradientn(name="Probability", colors=pal, limits=c(0,1)) +</span></span>
-<span id="cb1-13">  <span class="fu" style="color: #4758AB;
+<span id="cb3-11">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme_minimal</span>()<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb1-14">  <span class="fu" style="color: #4758AB;
+<span id="cb3-12">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend.position=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"right"</span>)</span>
-<span id="cb1-15"></span>
-<span id="cb1-16">plt</span></code></pre></div>
+<span id="cb3-13"></span>
+<span id="cb3-14">plt</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://kimfinale.github.io/myblog/posts/drawing-map/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># use color brewer </span></span>
-<span id="cb2-2"><span class="fu" style="color: #4758AB;
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(RColorBrewer)</span>
-<span id="cb2-3">pal <span class="ot" style="color: #003B4F;
+<span id="cb4-3">pal <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1448,12 +1452,12 @@ background-color: null;
 font-style: inherit;">9</span>,<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"YlOrBr"</span>)</span>
-<span id="cb2-4">plt <span class="ot" style="color: #003B4F;
+<span id="cb4-4">plt <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> plt <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> </span>
-<span id="cb2-5">  <span class="fu" style="color: #4758AB;
+<span id="cb4-5">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">scale_fill_gradientn</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -1474,20 +1478,20 @@ background-color: null;
 font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>))</span>
-<span id="cb2-6">  </span>
-<span id="cb2-7">plt</span></code></pre></div>
+<span id="cb4-6">  </span>
+<span id="cb4-7">plt</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://kimfinale.github.io/myblog/posts/drawing-map/index_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Clear some background stuff</span></span>
-<span id="cb3-2">plt <span class="ot" style="color: #003B4F;
+<span id="cb5-2">plt <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> plt <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb3-3">  <span class="fu" style="color: #4758AB;
+<span id="cb5-3">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -1496,26 +1500,26 @@ background-color: null;
 font-style: inherit;">element_blank</span>(), <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># bg of the panel</span></span>
-<span id="cb3-4">        <span class="at" style="color: #657422;
+<span id="cb5-4">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">plot.background =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(), <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># bg of the plot</span></span>
-<span id="cb3-5">        <span class="at" style="color: #657422;
+<span id="cb5-5">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend.background =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(), <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># get rid of legend bg</span></span>
-<span id="cb3-6">        <span class="at" style="color: #657422;
+<span id="cb5-6">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend.box.background =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-7">        <span class="at" style="color: #657422;
+<span id="cb5-7">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">panel.spacing =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1532,7 +1536,7 @@ background-color: null;
 font-style: inherit;">0</span>), <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"null"</span>),</span>
-<span id="cb3-8">        <span class="at" style="color: #657422;
+<span id="cb5-8">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">plot.margin =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1549,57 +1553,57 @@ background-color: null;
 font-style: inherit;">0</span>), <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"null"</span>),</span>
-<span id="cb3-9">        <span class="at" style="color: #657422;
+<span id="cb5-9">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">axis.line =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-10">        <span class="at" style="color: #657422;
+<span id="cb5-10">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">axis.text.x =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-11">        <span class="at" style="color: #657422;
+<span id="cb5-11">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-12">        <span class="at" style="color: #657422;
+<span id="cb5-12">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">axis.ticks =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-13">        <span class="at" style="color: #657422;
+<span id="cb5-13">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">axis.title.x =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-14">        <span class="at" style="color: #657422;
+<span id="cb5-14">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-15">        <span class="at" style="color: #657422;
+<span id="cb5-15">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">panel.border =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-16">        <span class="at" style="color: #657422;
+<span id="cb5-16">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">panel.grid.major =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-17">        <span class="at" style="color: #657422;
+<span id="cb5-17">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">panel.grid.minor =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">element_blank</span>(),</span>
-<span id="cb3-18">        <span class="at" style="color: #657422;
+<span id="cb5-18">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"bottom"</span>,</span>
-<span id="cb3-19">        <span class="at" style="color: #657422;
+<span id="cb5-19">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1612,7 +1616,7 @@ background-color: null;
 font-style: inherit;">size=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">12</span>))</span>
-<span id="cb3-20">plt</span></code></pre></div>
+<span id="cb5-20">plt</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://kimfinale.github.io/myblog/posts/drawing-map/index_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid" width="672"></p>
 </div>
@@ -1621,8 +1625,8 @@ font-style: inherit;">12</span>))</span>
 
 
  ]]></description>
-  <category>map</category>
   <category>R</category>
+  <category>map</category>
   <category>ggplot2</category>
   <category>sf</category>
   <category>RColorBrewer</category>
