@@ -1,8 +1,8 @@
 ---
-title: "Shapefile의 polygon 면적 구하기"
+title: "Polygon 면적 구하기: sf 와 raster 패키지"
 author: "Jong-Hoon Kim"
 date: "2023-08-30"
-categories: [map, R, ggplot2, sf, RColorBrewer]
+categories: [R, shapefile, ggplot2, sf, raster, RcolorBrewer]
 image: "image.jpg"
 editor_options: 
   chunk_output_type: console
@@ -12,11 +12,13 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo=TRUE)
 ```
 
-`shapefile`에 담겨져 있는 polygon의 면적을 구해보자 `raster` 패키지의 `area` 혹은 `sf` 패키지의 `st_area` 함수를 이용할 수 이 있다.
+`shapefile`에 담겨져 있는 polygon의 면적을 구해보자 `raster` 패키지의 `area` 혹은 `sf` 패키지의 `st_area` 함수를 이용할 수 있다.
 
 ```{r}
 library(sf)
-kor <- read_sf(dsn="C:/Users/jonghoon.kim/Documents/myblog/posts/area-polygon", layer="gadm41_KOR_1")
+kor <- st_read("C:/Users/jonghoon.kim/Documents/myblog/posts/area-polygon/gadm41_KOR_1.shp")
+# another way
+# kor <- read_sf(dsn="C:/Users/jonghoon.kim/Documents/myblog/posts/area-polygon", layer="gadm41_KOR_1")
 set.seed(42)
 # 1e6 to get population density per 1 km^2
 kor$area_sqkm1 <- as.numeric(st_area(kor))/1e6
@@ -37,10 +39,8 @@ plt <- ggplot(kor)+
   theme(legend.position="right")
 plt
 
-# use color brewer 
+# use RColorBrewer 
 library(RColorBrewer)
 pal <- brewer.pal(9,"YlOrBr")
-plt + 
-  scale_fill_gradientn(name=labels, colors=pal)
-  
+plt + scale_fill_gradientn(name=labels, colors=pal)
 ```
