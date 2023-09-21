@@ -20,77 +20,70 @@
 
 
 
-<p><code>odin</code>에 담겨져 있는 polygon의 면적을 구해보자 <code>raster</code> 패키지의 <code>area</code> 혹은 <code>terra</code> 패키지의 <code>expanse</code> 함수를 이용할 수 이 있다.</p>
+<p>이번 <a href="https://www.vaccineimpact.org/">Vaccine Impact Modeling Consoritum (VIMC)</a> 연례회의에서 <code>odin</code>이라는 패키지에 대해 알게 되었다. <code>deSolve</code>의 업그레이드 버전이라고 보면 될까? R 코드를 C언어로 컴파일하기 때문에 최종 모형의 구동속도가 빠르다. 따라서 모형을 여러번 돌려야 하는 경우 (예를 들어 MCMC) 에 유리하다. <code>pomp</code> 보다도 훨씬 더 빠르다고 했는데 정확한 비교 수치는 잘 기억이 안남. 종종 C++로 모형을 만들었는데 <code>odin</code> 패키지를 사용하면 훨씬 쉬워질 것 같다. 좀 더 살펴보아야 할 텐데 일단 잊지 않기 위해 간단히 SIR 모형만 만들어 보았다.</p>
+<section id="deterministic-sir-model" class="level3">
+<h3 class="anchored" data-anchor-id="deterministic-sir-model">Deterministic SIR model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(odin)</span>
-<span id="cb1-2">path_sir_model <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">path_sir_model <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/odin/sir.R"</span></span>
-<span id="cb1-3"></span>
-<span id="cb1-4">sir_generator <span class="ot" style="color: #003B4F;
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">writeLines</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">readLines</span>(path_sir_model))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>## Core equations for transitions between compartments:
+update(S) &lt;- S - beta * S * I / N
+update(I) &lt;- I + beta * S * I / N - gamma * I
+update(R) &lt;- R + gamma * I
+
+## Total population size (odin will recompute this at each timestep:
+## automatically)
+N &lt;- S + I + R
+
+## Initial states:
+initial(S) &lt;- S_ini # will be user-defined
+initial(I) &lt;- I_ini # will be user-defined
+initial(R) &lt;- 0
+
+## User defined parameters - default in parentheses:
+S_ini &lt;- user(1000)
+I_ini &lt;- user(1)
+beta &lt;- user(0.2)
+gamma &lt;- user(0.1)</code></pre>
+</div>
+</div>
+<p>Run the model and plot the results</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(odin)</span>
+<span id="cb3-2">sir_generator <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> odin<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">odin</span>(path_sir_model)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>── R CMD INSTALL ───────────────────────────────────────────────────────────────
-* installing *source* package 'sirf8f32654' ...
-** using staged installation
-** libs
-using C compiler: 'gcc.exe (GCC) 12.2.0'
-gcc  -I"C:/PROGRA~1/R/R-43~1.1/include" -DNDEBUG     -I"C:/rtools43/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall -gdwarf-2 -mfpmath=sse -msse2 -mstackrealign  -UNDEBUG -Wall -pedantic -g -O0 -c odin.c -o odin.o
-odin.c: In function 'sir_metadata':
-odin.c:115:17: warning: unused variable 'internal' [-Wunused-variable]
-  115 |   sir_internal *internal = sir_get_internal(internal_p, 1);
-      |                 ^~~~~~~~
-gcc  -I"C:/PROGRA~1/R/R-43~1.1/include" -DNDEBUG     -I"C:/rtools43/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall -gdwarf-2 -mfpmath=sse -msse2 -mstackrealign  -UNDEBUG -Wall -pedantic -g -O0 -c registration.c -o registration.o
-gcc -shared -static-libgcc -o sirf8f32654.dll tmp.def odin.o registration.o -LC:/rtools43/x86_64-w64-mingw32.static.posix/lib/x64 -LC:/rtools43/x86_64-w64-mingw32.static.posix/lib -LC:/PROGRA~1/R/R-43~1.1/bin/x64 -lR
-installing to C:/Users/jonghoon.kim/AppData/Local/Temp/RtmpqM3a2x/devtools_install_4d20ee81bd7/00LOCK-file4d2056a925a/00new/sirf8f32654/libs/x64
-* DONE (sirf8f32654)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">x <span class="ot" style="color: #003B4F;
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">x <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> sir_generator<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">new</span>()</span>
-<span id="cb3-2">x</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>&lt;odin_model&gt;
-  Public:
-    contents: function () 
-    initial: function (step) 
-    initialize: function (..., user = list(...), use_dde = FALSE, unused_user_action = NULL) 
-    ir: function () 
-    rhs: function (step, y) 
-    run: function (step, y = NULL, ..., use_names = TRUE) 
-    set_user: function (..., user = list(...), unused_user_action = NULL) 
-    transform_variables: function (y) 
-    update: function (step, y) 
-  Private:
-    cfuns: list
-    dll: sirf8f32654
-    interpolate_t: NULL
-    n_out: 0
-    odin: environment
-    output_order: NULL
-    ptr: externalptr
-    registration: function () 
-    set_initial: function (step, y, use_dde) 
-    update_metadata: function () 
-    use_dde: FALSE
-    user: beta gamma I_ini S_ini
-    variable_order: list
-    ynames: step S I R</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">sir_col <span class="ot" style="color: #003B4F;
+<span id="cb4-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># see what the object is like</span></span>
+<span id="cb4-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># x</span></span>
+<span id="cb4-4">sir_col <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -101,7 +94,7 @@ background-color: null;
 font-style: inherit;">"#cc0044"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"#999966"</span>)</span>
-<span id="cb5-2">x_res <span class="ot" style="color: #003B4F;
+<span id="cb4-5">x_res <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> x<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -114,8 +107,8 @@ background-color: null;
 font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">200</span>)</span>
-<span id="cb5-3"></span>
-<span id="cb5-4"><span class="fu" style="color: #4758AB;
+<span id="cb4-6"></span>
+<span id="cb4-7"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">par</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -134,7 +127,7 @@ background-color: null;
 font-style: inherit;">las =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span>
-<span id="cb5-5"><span class="fu" style="color: #4758AB;
+<span id="cb4-8"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">matplot</span>(x_res[, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -151,7 +144,7 @@ background-color: null;
 font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Number of individuals"</span>,</span>
-<span id="cb5-6">        <span class="at" style="color: #657422;
+<span id="cb4-9">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -162,7 +155,7 @@ background-color: null;
 font-style: inherit;">lty =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span>
-<span id="cb5-7"><span class="fu" style="color: #4758AB;
+<span id="cb4-10"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -188,44 +181,77 @@ font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"n"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/odin/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://kimfinale.github.io/myblog/posts/odin/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
+<section id="stochastic-sir-model" class="level3">
+<h3 class="anchored" data-anchor-id="stochastic-sir-model">Stochastic SIR model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">path_sir_stoch_model <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">path_sir_stoch_model <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/odin/sir_stoch.R"</span></span>
-<span id="cb6-2">sir_generator <span class="ot" style="color: #003B4F;
+<span id="cb5-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">writeLines</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">readLines</span>(path_sir_stoch_model))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>## Core equations for transitions between compartments:
+update(S) &lt;- S - n_SI
+update(I) &lt;- I + n_SI - n_IR
+update(R) &lt;- R + n_IR
+
+## Individual probabilities of transition:
+p_SI &lt;- 1 - exp(-beta * I / N) # S to I
+p_IR &lt;- 1 - exp(-gamma) # I to R
+
+## Draws from binomial distributions for numbers changing between
+## compartments:
+n_SI &lt;- rbinom(S, p_SI)
+n_IR &lt;- rbinom(I, p_IR)
+
+## Total population size
+N &lt;- S + I + R
+
+## Initial states:
+initial(S) &lt;- S_ini
+initial(I) &lt;- I_ini
+initial(R) &lt;- 0
+
+## User defined parameters - default in parentheses:
+S_ini &lt;- user(1000)
+I_ini &lt;- user(1)
+beta &lt;- user(0.2)
+gamma &lt;- user(0.1)</code></pre>
+</div>
+</div>
+<p>Run the model and plot the results</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">sir_generator <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> odin<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">odin</span>(path_sir_stoch_model)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>── R CMD INSTALL ───────────────────────────────────────────────────────────────
-* installing *source* package 'sir.stochc1184c7f' ...
-** using staged installation
-** libs
-using C compiler: 'gcc.exe (GCC) 12.2.0'
-gcc  -I"C:/PROGRA~1/R/R-43~1.1/include" -DNDEBUG     -I"C:/rtools43/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall -gdwarf-2 -mfpmath=sse -msse2 -mstackrealign  -UNDEBUG -Wall -pedantic -g -O0 -c odin.c -o odin.o
-odin.c: In function 'sir_stoch_metadata':
-odin.c:119:23: warning: unused variable 'internal' [-Wunused-variable]
-  119 |   sir_stoch_internal *internal = sir_stoch_get_internal(internal_p, 1);
-      |                       ^~~~~~~~
-gcc  -I"C:/PROGRA~1/R/R-43~1.1/include" -DNDEBUG     -I"C:/rtools43/x86_64-w64-mingw32.static.posix/include"     -O2 -Wall -gdwarf-2 -mfpmath=sse -msse2 -mstackrealign  -UNDEBUG -Wall -pedantic -g -O0 -c registration.c -o registration.o
-gcc -shared -static-libgcc -o sir.stochc1184c7f.dll tmp.def odin.o registration.o -LC:/rtools43/x86_64-w64-mingw32.static.posix/lib/x64 -LC:/rtools43/x86_64-w64-mingw32.static.posix/lib -LC:/PROGRA~1/R/R-43~1.1/bin/x64 -lR
-installing to C:/Users/jonghoon.kim/AppData/Local/Temp/RtmpqM3a2x/devtools_install_4d202bf8156c/00LOCK-file4d2031584662/00new/sir.stochc1184c7f/libs/x64
-* DONE (sir.stochc1184c7f)</code></pre>
 </div>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb8-2">x_res <span class="ot" style="color: #003B4F;
+font-style: inherit;">42</span>)</span>
+<span id="cb8-2">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> sir_generator<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">new</span>()</span>
+<span id="cb8-3">x_res <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> x<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -237,8 +263,8 @@ font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">100</span>)</span>
-<span id="cb8-3"><span class="fu" style="color: #4758AB;
+font-style: inherit;">200</span>)</span>
+<span id="cb8-4"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">par</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -257,7 +283,7 @@ background-color: null;
 font-style: inherit;">las =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span>
-<span id="cb8-4"><span class="fu" style="color: #4758AB;
+<span id="cb8-5"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">matplot</span>(x_res[, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -274,7 +300,7 @@ background-color: null;
 font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Number of individuals"</span>,</span>
-<span id="cb8-5">        <span class="at" style="color: #657422;
+<span id="cb8-6">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -285,7 +311,7 @@ background-color: null;
 font-style: inherit;">lty =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span>
-<span id="cb8-6"><span class="fu" style="color: #4758AB;
+<span id="cb8-7"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -311,11 +337,12 @@ font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"n"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/odin/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://kimfinale.github.io/myblog/posts/odin/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
 
+</section>
 
  ]]></description>
   <category>ODE</category>
