@@ -2,7 +2,12 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/nb-censored-regression/index.html",
+      "/posts/nb-regression-optim/index.html",
+      "/posts/SIR-sympy/index.html",
+      "/posts/crop-raster-polygon/index.html",
       "/posts/odin/index.html",
+      "/posts/pubmed-chatgpt-summary-python/index.html",
       "/posts/pubmed-chatgpt_summary/index.html",
       "/posts/area-polygon/index.html",
       "/posts/drawing-map/index.html",

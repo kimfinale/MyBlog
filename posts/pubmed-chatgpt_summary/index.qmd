@@ -108,7 +108,7 @@ get_completion <- function(prompt, model="gpt-3.5-turbo", temperature=0){
 
 
 abstract_summary <- rep(NA,length(abstracts))
-# You may want to try various prompts to suit your needs
+# You may want to try different prompts to suit your needs
 for (i in 1:length(abstracts)) {
   prompt = paste0("Your task is to generate a short summary of a scientific article based on its title and abstract. Summarize the text delimited by triple backticks into one sentence. ``` Title: ", titles[i], ". Abstract: ", abstracts[i], "```")
   abstract_summary[i] <- get_completion(prompt=prompt)
@@ -120,8 +120,13 @@ for (i in 1:length(abstracts)) {
 ```{r, eval=FALSE}
 library(blastula)
 
+# create_summary <- function(titles, abstract_summary, ids, dois){
+#   summary <- sapply(1:length(abstract_summary), function(i) paste0("<p>", " <b> ", titles[i], " </b> ", abstract_summary[i], " PMID=", ids[i] , " DOI=", dois[i], "</p>"))
+#   return(summary)
+# }
+
 create_summary <- function(titles, abstract_summary, ids, dois){
-  summary <- sapply(1:length(abstract_summary), function(i) paste0("<p>", " <b> ", titles[i], " </b> ", abstract_summary[i], " PMID=", ids[i] , " DOI=", dois[i], "</p>"))
+  summary <- sapply(1:length(abstract_summary), function(i) paste0("<p>", " <b>", " <a href=https://pubmed.ncbi.nlm.nih.gov/", ids[i], "/> ", titles[i], "</a>", " </b> ", abstract_summary[i], " PMID=", ids[i], " DOI=", dois[i], "</p>"))
   return(summary)
 }
 
@@ -152,63 +157,118 @@ email %>%
 For example, save the following script as `pubmed_search_chatgpt_summary.R`
 
 ```{r, eval=FALSE}
-function(query="typhoid", reldate=10, num_sentence=1,                                          model="gpt-3.5-turbo", temperature=0){
-library(rentrez)
-library(httr)
-library(xml2)
-library(blastula)
-# chatgpt_api_token <- readRDS("chatGPT_api_key.rds")
-chatgpt_api_token <- readRDS("G:/My Drive/Personal/chatGPT_api_key.rds")
+pubmed_search_chatgpt_summary <- function(query="typhoid",
+                                          reldate=10,
+                                          prompt_text = "",
+                                          num_sentence=1,                       
+                                          model="gpt-3.5-turbo", 
+                                          temperature=0){
+  library(rentrez)
+  library(httr)
+  library(xml2)
+  library(blastula)
+  chatgpt_api_token <- readRDS("G:/My Drive/Personal/chatGPT_api_key.rds")
 
-get_completion <- function(prompt, model="gpt-3.5-turbo",
-                           temperature=0, api_token=chatgpt_api_token){
-response <- POST(
-  url = "https://api.openai.com/v1/chat/completions", 
-  add_headers(Authorization = paste("Bearer", api_token)),
-  content_type_json(),
-  encode = "json",
-  body = list(
-    model = model,
-    temperature = temperature,
-    messages = list(list(
-      role = "user", 
-      content = prompt))
+  get_completion <- function(prompt, model="gpt-3.5-turbo",
+                             temperature=0, api_token=chatgpt_api_token){
+  response <- POST(
+    url = "https://api.openai.com/v1/chat/completions", 
+    add_headers(Authorization = paste("Bearer", api_token)),
+    content_type_json(),
+    encode = "json",
+    body = list(
+      model = model,
+      temperature = temperature,
+      messages = list(list(
+        role = "user", 
+        content = prompt))
+    )
   )
-)
-return(content(response)$choices[[1]]$message$content)
+  return(content(response)$choices[[1]]$message$content)
+}
+  
+  res <- entrez_search(db="pubmed", term=query, 
+                       datetype="pdat", reldate=reldate)
+  
+  if (length(res$ids) > 0){ # one or more hits
+    ids <- res$ids
+    details <- entrez_fetch(db="pubmed", id=ids, rettype="xml")
+    doc <- read_xml(details)
+    titles <- xml_text(xml_find_all(doc, "//ArticleTitle"))
+    abstracts <- xml_text(xml_find_all(doc, "//Abstract"))
+    dois <- xml_text(xml_find_all(doc, "//PubmedData/ArticleIdList/ArticleId[@IdType='doi']"))
+    
+    abstract_summary <- rep(NA, length(abstracts))
+
+    if (length(abstracts) > 1) {
+      for (i in 1:length(abstracts)) {
+        prompt <- paste0("Your task is to generate a short summary of a scientific article based on its title and abstract. Summarize the text delimited by triple backticks into ", num_sentence , " sentence. Please do not repeat the title. ", prompt_text , " ``` Title: ", titles[i], ". Abstract: ", abstracts[i], "```")
+        abstract_summary[i] <- get_completion(prompt=prompt, model=model, temperature=temperature)
+      }
+    }
+    
+  summary <- sapply(1:length(abstract_summary), function(i) paste0("<p>", " <b>", " <a href=https://pubmed.ncbi.nlm.nih.gov/", ids[i], "/> ", titles[i], "</a>", " </b> ", abstract_summary[i], " PMID=", ids[i], ". DOI=", dois[i], ". </p>"))
+
+  intro <- paste0("<p>Please enjoy the articles retrieved from PubMed based on your search query, ",  query, ", published in the past ", reldate, " days. Each article is accompanied by a one-sentence summary provided by the ChatGPT, gpt-3.5-turbo. For feedback, please contact Jong-Hoon Kim at jonghoon.kim@ivi.int.</p>")
+  
+  summary <- c(intro, summary)
+  email <- compose_email(
+    title = "Weekly summary of PubMed search",
+    body =  md(summary))
+  }
+  
+  return (email)
 }
 
-res <- entrez_search(db="pubmed", term=query, datetype="pdat", reldate=reldate)
+pubmed_search_chatgpt_summary_email <- function(query="typhoid",
+                                          reldate=10,
+                                          prompt_text = "",
+                                          num_sentence=1,                       
+                                          model="gpt-3.5-turbo", 
+                                          temperature=0,
+                                          email_recipient="jonghoon.kim@ivi.int") {
+ email <- pubmed_search_chatgpt_summary(query=query,
+                                reldate=reldate,
+                                prompt_text = prompt_text,
+                                num_sentence = num_sentence,            
+                                model = model, 
+                                temperature = temperature)
+  smtp_send(
+    email = email,
+    to = email_recipient,
+    from = "kimfinale@gmail.com",
+    subject = "Daily summary of PubMed search",
+    # credentials = creds_key(id = "gmail")
+    credentials = creds_file("gmail_cred")
+  )
+}
+```
 
-if (length(res$ids) > 0){ # one or more hits
-  ids <- res$ids
-  details <- entrez_fetch(db="pubmed", id=ids, rettype="xml")
-  doc <- read_xml(details)
-  titles <- xml_text(xml_find_all(doc, "//ArticleTitle"))
-  abstracts <- xml_text(xml_find_all(doc, "//Abstract"))
-  dois <- xml_text(xml_find_all(doc, "//PubmedData/ArticleIdList/ArticleId[@IdType='doi']"))
-  
-  abstract_summary <- rep(NA, length(abstracts))
 
-  for (i in 1:length(abstracts)) {
-    prompt <- paste0("Your task is to generate a short summary of a scientific article based on its title and abstract. Summarize the text delimited by triple backticks into ", num_sentence , " sentence. ``` Title: ", titles[i], ". Abstract: ", abstracts[i], "```")
-    abstract_summary[i] <- get_completion(prompt=prompt, model=model, temperature=temperature)
-  }
-summary <- sapply(1:length(abstract_summary), function(i) paste0("<p>", " <b> ", titles[i], " </b> ", abstract_summary[i], " PMID=", ids[i] , " DOI=", dois[i], "</p>"))
+```{r}
+# pubmed_search_chatgpt_summary(query="typhoid", email_recipient="jonghoon.kim@ivi.int")
+pubmed_search_chatgpt_summary_email(
+  query = "cholera AND vaccine AND impact",
+  reldate = 365*30,
+  email_recipient = "jonghoon.kim@ivi.int")
 
-email <- compose_email(
-  title = "Weekly summary of PubMed search",
-  body =  md(summary))
+email <- pubmed_search_chatgpt_summary(
+  query = "implementation AND science",
+  reldate = 7)
+# email <- pubmed_search_chatgpt_summary(
+#   query = "implementation AND infectious AND disease", 
+#   reldate = 7)
 
+email_recipient <- "jenny.joh@ivi.int"
 smtp_send(
-  email = email,
-  to = "jonghoon.kim@ivi.int",
+  email = email_inf_dis,
+  to = email_recipient,
   from = "kimfinale@gmail.com",
   subject = "Daily summary of PubMed search",
   # credentials = creds_key(id = "gmail")
   credentials = creds_file("gmail_cred")
 )
-}
+
 ```
 
 7.  Register the file using the Windows task scheduler
