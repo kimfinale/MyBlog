@@ -3,7 +3,7 @@ title: "Regression using optim"
 author: "Jong-Hoon Kim"
 date: "2023-10-11"
 categories: [R, optim, regression]
-image: "unnamed-chunk-5-1.png"
+image: "plot_car.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -54,6 +54,8 @@ pltcar <- mdat %>%
   scale_fill_manual("", values=c("Model"="steelblue"))+
   labs(x="Speed", y="Distance", title="Speed and Stopping Distances of Cars")+
   theme(legend.position="bottom")
+
+# ggsave("plot_car.png", pltcar)
 
 pltcar
 ```

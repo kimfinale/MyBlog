@@ -244,7 +244,7 @@ F-statistic: 89.57 on 1 and 48 DF,  p-value: 1.49e-12</code></pre>
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="st">""</span>, <span class="at">values=</span><span class="fu">c</span>(<span class="st">"Model"</span><span class="ot">=</span><span class="st">"steelblue"</span>))<span class="sc">+</span></span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Speed"</span>, <span class="at">y=</span><span class="st">"Distance"</span>, <span class="at">title=</span><span class="st">"Speed and Stopping Distances of Cars"</span>)<span class="sc">+</span></span>
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"bottom"</span>)</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"plot_car.png"</span>, pltcar)</span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>pltcar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>

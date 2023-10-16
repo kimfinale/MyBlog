@@ -1,9 +1,9 @@
 ---
 title: "SIR model using SymPy"
 author: "Jong-Hoon Kim"
-date: "2023-10-07"
+date: "2023-10-16"
 categories: [SIR, SymPy]
-image: "image.jpg"
+image: "SimPy_logo.svg.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -12,26 +12,37 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo=TRUE) 
 ```
 
-Mathematical Epidemiology by Brauer *et al*.
 
-$$ \mathcal{R}_0 = \beta c D $${#eq-R0}
+I attempted to replicate some of the simple analytical resutls presented in the book, Mathematical Epidemiology by Brauer *et al*.
 
-$\beta$ 는 한 명의 감염자가 타인을 접촉할 때 상대방을 감염시킬 수 있는 확률, $c$ 는 단위 시간 당 접촉이 일어나는 횟수, $D$ 는 감염 상태가 지속되는 시간을 나타낸다. $\beta$ 만으로 $\beta c$ 를 대신해 사용하는 경우도 흔하다. 그 경우 $\beta$ 는 단위 시간 당 후속 감염자의 수로 표현할 수 있을 것 같다. 미분방정식에 기반한 감염병 모형의 경우는 $\mathcal{R}_0$를 어떻게 계산할까? 아래와 같이 SIR 모형을 정의해 보자.
 
-```{=tex}
+$$
 \begin{align}
 \mathrm{d}S/\mathrm{d}t &= -\beta I S \\
 \mathrm{d}I/\mathrm{d}t &= \beta I S - \gamma I\\
-\end{align}{#eq-sir}
-```
-
+\end{align}
+$$
+The first part is simply to compute $dI/dS$.
 ```{python}
 from sympy import *
-R0, dSdt, dIdt, S, I, b, g = symbols('R0 dSdt dIdt S I b g')
-dSdt = -b*S*I
-dIdt = b*S*I - g*I
+
+R_0, b, g, dIdt, dSdt, S, I = symbols('R_0 b g dIdt dSdt S I')
+
+dSdt = - b*S*I
+dIdt = + b*S*I - g*I
 dSdI = dIdt / dSdt #-(I*S*b - I*g)/(I*S*b)
 
 # b <- R0*g
-simplify(-(I*S*R0*g - I*g)/(I*S*R0*g)) 
+simplify(-(I*S*R_0*g - I*g)/(I*S*R_0*g)) 
 ```
+
+The second part is integrate the equation, $dI/dS$
+```{python}
+S, I = symbols("S I", cls=Function)
+b, g, t, R_0, S0, I0 = symbols("b g t R_0 S0 I0")
+
+eq = Eq(I(t).diff(t), - S(t).diff(t) + (1/R_0)*(1/S(t))*S(t).diff(t))
+
+integrate(eq, t)
+```
+

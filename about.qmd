@@ -1,6 +1,6 @@
 ---
 title: "About"
-image: portrait1_1.jpg
+image: data/portrait1_1.jpg
 about:
   template: jolla
   links:
@@ -17,4 +17,4 @@ about:
 
 Hi! My name is Jong-Hoon Kim, and I live in Seoul, South Korea. I am a theoretical epidemiologist who uses mathematical, statistical, and machine-learning models to study infectious disease epidemiology. My work involves developing theories about infectious disease transmission, making predictions, and assessing the effectiveness of intervention strategies to improve public health. Currently, in 2023, I work at the International Vaccine Institute, which is located in Seoul, South Korea. My current research primarily focuses on typhoid fever, non-typhoidal Salmonella, cholera, and COVID-19.
 
-Please [email me](mailto:kimfinale\@gmail.com) if you are interested in collaborating with me
+Please [email me](mailto:kimfinale@gmail.com) if you are interested in collaborating with me

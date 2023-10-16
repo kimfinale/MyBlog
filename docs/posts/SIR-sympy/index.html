@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jong-Hoon Kim">
-<meta name="dcterms.date" content="2023-10-07">
+<meta name="dcterms.date" content="2023-10-16">
 
 <title>Jong-Hoon Kim’s Blog - SIR model using SymPy</title>
 <style>
@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">October 7, 2023</p>
+        <p class="date">October 16, 2023</p>
       </div>
     </div>
     
@@ -183,24 +183,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Mathematical Epidemiology by Brauer <em>et al</em>.</p>
-<p><span id="eq-R0"><span class="math display">\[ \mathcal{R}_0 = \beta c D  \tag{1}\]</span></span></p>
-<p><span class="math inline">\(\beta\)</span> 는 한 명의 감염자가 타인을 접촉할 때 상대방을 감염시킬 수 있는 확률, <span class="math inline">\(c\)</span> 는 단위 시간 당 접촉이 일어나는 횟수, <span class="math inline">\(D\)</span> 는 감염 상태가 지속되는 시간을 나타낸다. <span class="math inline">\(\beta\)</span> 만으로 <span class="math inline">\(\beta c\)</span> 를 대신해 사용하는 경우도 흔하다. 그 경우 <span class="math inline">\(\beta\)</span> 는 단위 시간 당 후속 감염자의 수로 표현할 수 있을 것 같다. 미분방정식에 기반한 감염병 모형의 경우는 <span class="math inline">\(\mathcal{R}_0\)</span>를 어떻게 계산할까? 아래와 같이 SIR 모형을 정의해 보자.</p>
-<span class="math display">\[\begin{align}
+<p>I attempted to replicate some of the simple analytical resutls presented in the book, Mathematical Epidemiology by Brauer <em>et al</em>.</p>
+<p><span class="math display">\[
+\begin{align}
 \mathrm{d}S/\mathrm{d}t &amp;= -\beta I S \\
 \mathrm{d}I/\mathrm{d}t &amp;= \beta I S - \gamma I\\
-\end{align}{#eq-sir}\]</span>
+\end{align}
+\]</span> The first part is simply to compute <span class="math inline">\(dI/dS\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sympy <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>R0, dSdt, dIdt, S, I, b, g <span class="op">=</span> symbols(<span class="st">'R0 dSdt dIdt S I b g'</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>dSdt <span class="op">=</span> <span class="op">-</span>b<span class="op">*</span>S<span class="op">*</span>I</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>dIdt <span class="op">=</span> b<span class="op">*</span>S<span class="op">*</span>I <span class="op">-</span> g<span class="op">*</span>I</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>dSdI <span class="op">=</span> dIdt <span class="op">/</span> dSdt <span class="co">#-(I*S*b - I*g)/(I*S*b)</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># b &lt;- R0*g</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>simplify(<span class="op">-</span>(I<span class="op">*</span>S<span class="op">*</span>R0<span class="op">*</span>g <span class="op">-</span> I<span class="op">*</span>g)<span class="op">/</span>(I<span class="op">*</span>S<span class="op">*</span>R0<span class="op">*</span>g)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>R_0, b, g, dIdt, dSdt, S, I <span class="op">=</span> symbols(<span class="st">'R_0 b g dIdt dSdt S I'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>dSdt <span class="op">=</span> <span class="op">-</span> b<span class="op">*</span>S<span class="op">*</span>I</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>dIdt <span class="op">=</span> <span class="op">+</span> b<span class="op">*</span>S<span class="op">*</span>I <span class="op">-</span> g<span class="op">*</span>I</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>dSdI <span class="op">=</span> dIdt <span class="op">/</span> dSdt <span class="co">#-(I*S*b - I*g)/(I*S*b)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># b &lt;- R0*g</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>simplify(<span class="op">-</span>(I<span class="op">*</span>S<span class="op">*</span>R_0<span class="op">*</span>g <span class="op">-</span> I<span class="op">*</span>g)<span class="op">/</span>(I<span class="op">*</span>S<span class="op">*</span>R_0<span class="op">*</span>g)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>-1 + 1/(R0*S)</code></pre>
+<pre><code>-1 + 1/(R_0*S)</code></pre>
+</div>
+</div>
+<p>The second part is integrate the equation, <span class="math inline">\(dI/dS\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>S, I <span class="op">=</span> symbols(<span class="st">"S I"</span>, cls<span class="op">=</span>Function)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>b, g, t, R_0, S0, I0 <span class="op">=</span> symbols(<span class="st">"b g t R_0 S0 I0"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>eq <span class="op">=</span> Eq(I(t).diff(t), <span class="op">-</span> S(t).diff(t) <span class="op">+</span> (<span class="dv">1</span><span class="op">/</span>R_0)<span class="op">*</span>(<span class="dv">1</span><span class="op">/</span>S(t))<span class="op">*</span>S(t).diff(t))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>integrate(eq, t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Eq(I(t), -S(t) + log(S(t))/R_0)</code></pre>
 </div>
 </div>
 
