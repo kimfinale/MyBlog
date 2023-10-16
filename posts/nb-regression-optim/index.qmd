@@ -22,8 +22,10 @@ m <- lm(dist ~ speed, data=d)
 summary(m)
 ```
 
-### Plot 
+### Plot
+
 Plot estimates with confidence and prediction intervals
+
 ```{r}
 pred <- predict(m, interval="prediction", level=0.95) # prediction interval
 conf <- predict(m, interval="confidence", level=0.95) # confidence interval
@@ -85,8 +87,8 @@ fit <- optim(par=init,
 ```
 
 Let's compare the results.
+
 ```{r}
 fit$par
 coef(m)
 ```
-

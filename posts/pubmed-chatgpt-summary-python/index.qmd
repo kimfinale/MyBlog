@@ -3,7 +3,7 @@ title: "PubMed search, ChatGPT summary, and sending an email in Python"
 author: "Jong-Hoon Kim"
 date: "2023-09-01"
 categories: [ChatGPT, R, xml, httr]
-image: "image.jpg"
+image: "chatgpt.png"
 editor_options: 
   chunk_output_type: console
 ---

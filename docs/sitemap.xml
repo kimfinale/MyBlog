@@ -2,35 +2,35 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2023-10-16T00:49:47.011Z</lastmod>
+    <lastmod>2023-10-16T03:26:32.110Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
-    <lastmod>2023-09-13T19:41:11.956Z</lastmod>
+    <lastmod>2023-10-16T03:20:43.823Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/area-polygon/index.html</loc>
-    <lastmod>2023-09-21T12:28:54.850Z</lastmod>
+    <lastmod>2023-10-16T03:20:42.763Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/odin/index.html</loc>
-    <lastmod>2023-09-21T01:38:50.493Z</lastmod>
+    <lastmod>2023-10-16T03:20:47.230Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/how-to-write-a-paper/index.html</loc>
-    <lastmod>2023-09-21T12:32:35.313Z</lastmod>
+    <lastmod>2023-10-16T03:20:44.809Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/drawing-map/index.html</loc>
-    <lastmod>2023-09-21T12:33:15.758Z</lastmod>
+    <lastmod>2023-10-16T03:20:44.413Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/SIR-sympy/index.html</loc>
-    <lastmod>2023-10-16T00:49:55.470Z</lastmod>
+    <lastmod>2023-10-16T03:13:42.438Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/crop-raster-polygon/index.html</loc>
-    <lastmod>2023-10-07T03:41:19.614Z</lastmod>
+    <lastmod>2023-10-16T03:13:30.515Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/pubmed-chatgpt-summary-python/index.html</loc>
@@ -42,11 +42,11 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/nb-regression-optim/index.html</loc>
-    <lastmod>2023-10-15T10:19:03.850Z</lastmod>
+    <lastmod>2023-10-16T03:20:46.663Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/nb-censored-regression/index.html</loc>
-    <lastmod>2023-10-15T08:02:34.189Z</lastmod>
+    <lastmod>2023-10-16T03:20:46.104Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/about.html</loc>
@@ -54,10 +54,26 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/censored-regression-optim/index.html</loc>
-    <lastmod>2023-10-15T09:41:30.376Z</lastmod>
+    <lastmod>2023-10-16T03:20:43.375Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/POLYMOD-multiple-regression/index.html</loc>
-    <lastmod>2023-10-16T00:45:33.945Z</lastmod>
+    <lastmod>2023-10-16T03:13:31.147Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/reproduction-number/index.html</loc>
+    <lastmod>2023-10-16T03:26:41.999Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/regression-toward-mean/index.html</loc>
+    <lastmod>2023-10-16T03:20:47.678Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/max-likelihood/index.html</loc>
+    <lastmod>2023-10-16T03:20:45.387Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/survivor-bias/index.html</loc>
+    <lastmod>2023-10-16T03:20:48.136Z</lastmod>
   </url>
 </urlset>

@@ -3,7 +3,7 @@ title: "Regression with censorted data: POLYMOD data"
 author: "Jong-Hoon Kim"
 date: "2023-10-12"
 categories: [R, regression, contact, censor]
-image: "image.png"
+image: "image.jpg"
 editor_options: 
   chunk_output_type: console
 ---

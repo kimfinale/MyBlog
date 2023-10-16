@@ -1706,7 +1706,7 @@ font-style: inherit;">$</span>coefficients)</span></code></pre></div>
   <category>censor</category>
   <guid>https://kimfinale.github.io/myblog/posts/nb-censored-regression/index.html</guid>
   <pubDate>Wed, 11 Oct 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/nb-censored-regression/image.png" medium="image" type="image/png"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/nb-censored-regression/image.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Mulitple regression with POLYMOD data</title>
@@ -2335,7 +2335,7 @@ font-style: inherit;">$</span>coefficients)</span></code></pre></div>
   <category>contact</category>
   <guid>https://kimfinale.github.io/myblog/posts/POLYMOD-multiple-regression/index.html</guid>
   <pubDate>Wed, 11 Oct 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/POLYMOD-multiple-regression/image.png" medium="image" type="image/png"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/POLYMOD-multiple-regression/polymod-age-contact.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Regression using optim</title>
@@ -2974,7 +2974,7 @@ font-style: inherit;">add=</span>T)</span></code></pre></div>
   <category>sf</category>
   <guid>https://kimfinale.github.io/myblog/posts/crop-raster-polygon/index.html</guid>
   <pubDate>Fri, 22 Sep 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/crop-raster-polygon/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/crop-raster-polygon/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>odin package</title>
@@ -3315,7 +3315,7 @@ font-style: inherit;">"n"</span>)</span></code></pre></div>
   <category>odin</category>
   <guid>https://kimfinale.github.io/myblog/posts/odin/index.html</guid>
   <pubDate>Thu, 14 Sep 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/odin/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/odin/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>PubMed search, ChatGPT summary, and sending an email in Python</title>
@@ -3336,7 +3336,7 @@ font-style: inherit;">"n"</span>)</span></code></pre></div>
   <category>httr</category>
   <guid>https://kimfinale.github.io/myblog/posts/pubmed-chatgpt-summary-python/index.html</guid>
   <pubDate>Thu, 31 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/pubmed-chatgpt-summary-python/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/pubmed-chatgpt-summary-python/chatgpt.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>PubMed search, ChatGPT summary, and sending an email in R</title>
@@ -4124,7 +4124,7 @@ font-style: inherit;">)</span></span></code></pre></div>
   <category>httr</category>
   <guid>https://kimfinale.github.io/myblog/posts/pubmed-chatgpt_summary/index.html</guid>
   <pubDate>Thu, 31 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/pubmed-chatgpt_summary/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/pubmed-chatgpt_summary/chatgpt.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Polygon 면적 구하기: sf 와 raster 패키지</title>
@@ -4305,7 +4305,7 @@ font-style: inherit;">colors=</span>pal)</span></code></pre></div>
   <category>RcolorBrewer</category>
   <guid>https://kimfinale.github.io/myblog/posts/area-polygon/index.html</guid>
   <pubDate>Tue, 29 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/area-polygon/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/area-polygon/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>ggplot2로 지도 그리기</title>
@@ -4618,7 +4618,7 @@ font-style: inherit;">12</span>))</span>
   <category>RColorBrewer</category>
   <guid>https://kimfinale.github.io/myblog/posts/drawing-map/index.html</guid>
   <pubDate>Tue, 29 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/drawing-map/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/drawing-map/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Writing a paper: Start with an outline</title>
@@ -4639,7 +4639,7 @@ font-style: inherit;">12</span>))</span>
   <category>paper</category>
   <guid>https://kimfinale.github.io/myblog/posts/how-to-write-a-paper/index.html</guid>
   <pubDate>Tue, 29 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/how-to-write-a-paper/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/how-to-write-a-paper/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Important figures from the book, How to avoid a climate diaster? by Bill Gates</title>
@@ -4695,7 +4695,7 @@ font-style: inherit;">12</span>))</span>
   <category>profile likelihood</category>
   <guid>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</guid>
   <pubDate>Sun, 27 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/climate-disaster/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/climate-disaster/gates-climate-book.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Regression toward the mean</title>
@@ -4739,7 +4739,7 @@ font-style: inherit;">12</span>))</span>
   <category>profile likelihood</category>
   <guid>https://kimfinale.github.io/myblog/posts/regression-toward-mean/index.html</guid>
   <pubDate>Thu, 24 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/regression-toward-mean/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/regression-toward-mean/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Survivor bias</title>
@@ -4779,7 +4779,7 @@ font-style: inherit;">12</span>))</span>
   <category>profile likelihood</category>
   <guid>https://kimfinale.github.io/myblog/posts/survivor-bias/index.html</guid>
   <pubDate>Thu, 24 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/survivor-bias/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/survivor-bias/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Maximum Likelihood and Profile Likelihood for the SEIR model</title>
@@ -4901,7 +4901,7 @@ font-style: inherit;"># likelihood</span></span></code></pre></div>
   <category>profile likelihood</category>
   <guid>https://kimfinale.github.io/myblog/posts/max-likelihood/index.html</guid>
   <pubDate>Sun, 13 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/max-likelihood/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/max-likelihood/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Population Monte Carlo 파퓰레이션 몬테카를로</title>
@@ -5188,7 +5188,7 @@ font-style: inherit;">#True</span></span></code></pre></div>
   <category>analysis</category>
   <guid>https://kimfinale.github.io/myblog/posts/R0-sympy/index.html</guid>
   <pubDate>Thu, 10 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/R0-sympy/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/R0-sympy/SimPy_logo.svg.png" medium="image" type="image/png" height="55" width="144"/>
 </item>
 <item>
   <title>Population Monte Carlo 파퓰레이션 몬테카를로</title>
@@ -6153,7 +6153,7 @@ font-style: inherit;">2</span>)</span></code></pre></div>
   <category>analysis</category>
   <guid>https://kimfinale.github.io/myblog/posts/pop-monte-carlo/index.html</guid>
   <pubDate>Wed, 09 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/pop-monte-carlo/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/pop-monte-carlo/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Simple mathematical models with very complicated dynamics</title>

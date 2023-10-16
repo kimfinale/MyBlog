@@ -22,6 +22,7 @@ dat
 ```
 
 Following codes were borrowed from the [UCLA Advanced Research Computing](https://stats.oarc.ucla.edu/r/dae/tobit-models/)
+
 ```{r}
 # function that gives the density of normal distribution
 # for given mean and sd, scaled to be on a count metric
@@ -41,11 +42,12 @@ p <- p + stat_bin(binwidth=15) +
 ggsave("apt_censored.png", p)
 ```
 
-Looking at the above histogram, we can see the censoring in the values of `apt`, that is, there are far more cases with scores of 750 to 800 than one would expect looking at the rest of the distribution. Below is an alternative histogram that further highlights the excess of cases where `apt=800`. 
+Looking at the above histogram, we can see the censoring in the values of `apt`, that is, there are far more cases with scores of 750 to 800 than one would expect looking at the rest of the distribution. Below is an alternative histogram that further highlights the excess of cases where `apt=800`.
 
-**Note on the difference between truncation and censoring**: With censored variables, all of the observations are in the dataset, but we don’t know the “true” values of some of them. With truncation some of the observations are not included in the analysis because of the value of the variable.
+**Note on the difference between truncation and censoring**: With censored variables, all of the observations are in the dataset, but we don't know the "true" values of some of them. With truncation some of the observations are not included in the analysis because of the value of the variable.
 
-The Tobit model can be used for such a case. It is a class of regression models in which the observed range of the dependent variable is censored in some way, according to the [Wikipedia article] (https://en.wikipedia.org/wiki/Tobit_model). The possible maximum score 800, which  
+The Tobit model can be used for such a case. It is a class of regression models in which the observed range of the dependent variable is censored in some way, according to the \[Wikipedia article\] (https://en.wikipedia.org/wiki/Tobit_model). The possible maximum score 800, which
+
 ```{r}
 tobit = AER::tobit(
   apt ~ read + math + prog,
@@ -55,12 +57,12 @@ tobit = AER::tobit(
 )
 ```
 
-To account for censoring, likelihood function is modified to so that it reflects the unequal sampling probability for each observation depending on whether the latent dependent variable fell above or below the determined threshold. It appears that this approach was first proposed by [James Tobin](https://en.wikipedia.org/wiki/James_Tobin). For a sample that, as in Tobin's original case, was censored from below at zero, the sampling probability for each non-limit observation is simply the height of the appropriate density function. For any limit observation, it is the cumulative distribution, i.e. the integral below zero of the appropriate density function. The likelihood function is thus a mixture of densities and cumulative distribution functions, according to the [Wikipedia article](https://en.wikipedia.org/wiki/Tobit_model). 
+To account for censoring, likelihood function is modified to so that it reflects the unequal sampling probability for each observation depending on whether the latent dependent variable fell above or below the determined threshold. It appears that this approach was first proposed by [James Tobin](https://en.wikipedia.org/wiki/James_Tobin). For a sample that, as in Tobin's original case, was censored from below at zero, the sampling probability for each non-limit observation is simply the height of the appropriate density function. For any limit observation, it is the cumulative distribution, i.e. the integral below zero of the appropriate density function. The likelihood function is thus a mixture of densities and cumulative distribution functions, according to the [Wikipedia article](https://en.wikipedia.org/wiki/Tobit_model).
 
 $$
 \text{log }L = \sum_{i=1}^n w_i\left(\delta_i~\text{log} \left(P\left(Y=y_i|X\right)\right) + \left(1-\delta_i\right)~\text{log} \left(1-\sum_{i=1}^{l_U}P(Y=y_i|X)\right)
 \right) 
-$$ , where $l_U$ represents the upper limit and 
+$$ , where $l_U$ represents the upper limit and
 
 $$
 \begin{equation}
@@ -71,9 +73,8 @@ $$
 \end{equation}
 $$
 
-
-
 ### Log likelihood accounting for censoring
+
 ```{r}
 negloglik <- function(par, y, X, ul=100) {
   # parameters
@@ -91,8 +92,6 @@ negloglik <- function(par, y, X, ul=100) {
   return(-sumloglik)
 }
 ```
-
-
 
 ### optim
 

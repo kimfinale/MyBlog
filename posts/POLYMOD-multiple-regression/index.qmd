@@ -3,7 +3,7 @@ title: "Mulitple regression: POLYMOD data"
 author: "Jong-Hoon Kim"
 date: "2023-10-12"
 categories: [R, regression, contact]
-image: "image.png"
+image: "polymod-age-contact.jpg"
 editor_options: 
   chunk_output_type: console
 ---

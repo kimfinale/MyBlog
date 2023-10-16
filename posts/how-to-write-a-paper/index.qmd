@@ -3,7 +3,7 @@ title: "Writing a paper: Start with an outline"
 author: "Jong-Hoon Kim"
 date: "2023-08-30"
 categories: [writing, paper]
-image: "image.jpg"
+image: "thumbnail.jpg"
 editor_options: 
   chunk_output_type: console
 ---

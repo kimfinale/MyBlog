@@ -3,7 +3,7 @@ title: "ggplot2로 지도 그리기"
 author: "Jong-Hoon Kim"
 date: "2023-08-30"
 categories: [R, map, ggplot2, sf, RColorBrewer]
-image: "image.jpg"
+image: "thumbnail.jpg"
 editor_options: 
   chunk_output_type: console
 ---
