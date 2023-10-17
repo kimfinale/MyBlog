@@ -18,6 +18,7 @@ This post describes my attempt to reproduce Table 1 of the paper, [Social Contac
 
 ```{r}
 library(data.table)
+
 d1 <- fread("2008_Mossong_POLYMOD_participant_common.csv")
 d2 <- fread("2008_Mossong_POLYMOD_contact_common.csv")
 library(dplyr)
@@ -38,49 +39,66 @@ dat <- left_join(d123, d4, by="part_id")
 Categorize the age group into different 10 age groups: 0-4, 5-9, 10-14, 15-19, and 20 to 70 by 10 years and 70 and above
 
 ```{r}
-d <- dat
-d$age_grp <- 99
-for (i in 1:nrow(d)) {
-  if(!is.na(d$part_age[i])){
-    if(d$part_age[i] < 5){
-      d$age_grp[i] <- 0
-    }
-    else if (d$part_age[i] >= 5 && d$part_age[i] < 20){
-      for(j in 1:3){
-        if(d$part_age[i] >= 5*j && d$part_age[i] < (5*j+5)){
-          d$age_grp[i] <- j
+classify_age <- function(d){
+  d$age_grp <- 99
+  for (i in 1:nrow(d)) {
+    if(!is.na(d$part_age[i])){
+      if(d$part_age[i] < 5){
+        d$age_grp[i] <- 0
+      }
+      else if (d$part_age[i] >= 5 && d$part_age[i] < 20){
+        for(j in 1:3){
+          if(d$part_age[i] >= 5*j && d$part_age[i] < (5*j+5)){
+            d$age_grp[i] <- j
+          }
         }
       }
-    }
-    else if (d$part_age[i] >= 20 && d$part_age[i] < 70){
-      for (k in 1:5){
-        if (d$part_age[i] >= (10+10*k) && d$part_age[i] < (20+10*k)){
-          d$age_grp[i] <- k+3
+      else if (d$part_age[i] >= 20 && d$part_age[i] < 70){
+        for (k in 1:5){
+          if (d$part_age[i] >= (10+10*k) && d$part_age[i] < (20+10*k)){
+            d$age_grp[i] <- k+3
+          }
         }
+      } 
+      else {
+        d$age_grp[i] <- 9
       }
     } 
-    else {
-      d$age_grp[i] <- 9
-    }
-  } 
+  }
+  d
 }
-dat <- d
+
+dat <- classify_age(dat)
+```
+
+
+```{r}
+library(ggplot2)
+dat |> ggplot(aes(x=contacts)) + 
+  geom_histogram(binwidth=5)
 ```
 
 Compare the number of participants by age group (the third column)
 
 ```{r}
-dat |> group_by(age_grp) |> summarize(npart=n()) -> npart_ag
-npart_ag$true <- c(660,661,713,685,879,815,908,906,728,270,65)
-npart_ag
+dat |> 
+  group_by(age_grp) |> 
+  summarize(npart=n(),
+            avg_contacts = round(sum(contacts, na.rm=T) / npart, digits=2)) -> dat_ag
+
+dat_ag$npart_true <- c(660,661,713,685,879,815,908,906,728,270,65)
+dat_ag$avg_contacts_true <- c(10.21,14.81, 18.22,17.58,13.57,14.14,13.83,12.30,9.21,6.89,9.63)
+dat_ag
 ```
 
 Categorize the household size
 
 ```{r}
-d <- dat
-d$hh_size_grp <- ifelse(d$hh_size > 4, 5, ifelse(!is.na(d$hh_size), d$hh_size, 99))
-dat <- d
+classify_hh <- function(d){
+  d$hh_size_grp <- ifelse(d$hh_size > 4, 5, ifelse(!is.na(d$hh_size), d$hh_size, 99))
+  d
+}
+dat <- classify_hh(dat)
 ```
 
 Make categorical variables factor for regression
@@ -98,6 +116,8 @@ dat$dayofweek <- as.factor(dat$dayofweek)
 ```{r}
 dat_ <- dat
 dat <- dat[complete.cases(dat),]
+# set the maximum number of contacts 29
+dat$contacts = ifelse(dat$contacts > 29, 29, dat$contacts)
 ```
 
 ### NegBin regression
