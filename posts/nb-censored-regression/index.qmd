@@ -299,7 +299,7 @@ negll_censor <- function(par, y, X, ul=400) {
   mu = exp(X %*% beta)
   # log likelihood
   ll = sum(indicator * dnbinom(y, mu=mu, size=size, log=T) +
-             (1-indicator) * log(1-pnbinom(ul, mu=mu, size=size, lower=0)), na.rm=T)
+             (1-indicator) * log(1-pnbinom(ul, mu=mu, size=size)), na.rm=T)
   return(-ll)
 }
 
@@ -331,7 +331,7 @@ negll_censor_weight <- function(par, y, X, wt, ul=400) {
   mu = exp(X %*% beta)
   # log likelihood
   ll = sum(wt*(indicator * dnbinom(y, mu=mu, size=size, log=T)
-  + (1-indicator) * log(1-pnbinom(ul, mu=mu, size=size, lower=0))), na.rm=T)
+  + (1-indicator) * log(1-pnbinom(ul, mu=mu, size=size))), na.rm=T)
 
   return(-ll)
 }
