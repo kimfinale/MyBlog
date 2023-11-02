@@ -287,7 +287,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>age_grp <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>age_grp)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>hh_size_grp <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>hh_size_grp)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>part_gender)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>dayofweek <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>dayofweek)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>dayofweek <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>dayofweek)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(dat, <span class="st">"POLYMOD_2017.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="data-for-fitting-only-complete-cases" class="level3">

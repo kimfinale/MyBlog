@@ -2,9 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/nb-censored-regression/index.html",
+      "/posts/apartment-data-api/index.html",
       "/posts/SIR-sympy/index.html",
       "/posts/censored-regression-optim/index.html",
-      "/posts/nb-censored-regression/index.html",
       "/posts/POLYMOD-multiple-regression/index.html",
       "/posts/nb-regression-optim/index.html",
       "/posts/crop-raster-polygon/index.html",
