@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jong-Hoon Kim">
-<meta name="dcterms.date" content="2023-10-12">
+<meta name="dcterms.date" content="2023-11-02">
 
-<title>Jong-Hoon Kim’s Blog - Regression with censorted data: POLYMOD data</title>
+<title>Jong-Hoon Kim’s Blog - Negative binomial regression with censored data: POLYMOD data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -144,7 +144,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Regression with censorted data: POLYMOD data</h1>
+      <h1 class="title">Negative binomial regression with censored data: POLYMOD data</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R</div>
                 <div class="quarto-category">regression</div>
@@ -167,7 +167,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">October 12, 2023</p>
+        <p class="date">November 2, 2023</p>
       </div>
     </div>
     
@@ -193,381 +193,383 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"2008_Mossong_POLYMOD_participant_common.csv"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># d1 &lt;- fread("data/2008_Mossong_POLYMOD_participant_common.csv")</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"2008_Mossong_POLYMOD_contact_common.csv"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># workplace contact only</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># d2n &lt;- d2[d2$cnt_work == TRUE, ]</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># count the number of contacts for each participant using part_id variable</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">|&gt;</span> <span class="fu">group_by</span>(part_id) <span class="sc">|&gt;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">contacts =</span> <span class="fu">n</span>()) <span class="ot">-&gt;</span> d2_contacts</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>d12 <span class="ot">&lt;-</span> <span class="fu">left_join</span>(d1, d2_contacts, <span class="at">by=</span><span class="st">"part_id"</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># add household information</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>d3 <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"2008_Mossong_POLYMOD_hh_common.csv"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># d2 &lt;- fread("data/2008_Mossong_POLYMOD_contact_common.csv")</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># count the number of contacts for each participant using part_id variable</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">|&gt;</span> <span class="fu">group_by</span>(part_id) <span class="sc">|&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">contacts =</span> <span class="fu">n</span>()) <span class="ot">-&gt;</span> d2_contacts</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>d12 <span class="ot">&lt;-</span> <span class="fu">left_join</span>(d1, d2_contacts, <span class="at">by=</span><span class="st">"part_id"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># add household information</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>d3 <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"2008_Mossong_POLYMOD_hh_common.csv"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># d3 &lt;- fread("data/2008_Mossong_POLYMOD_hh_common.csv")</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>d123 <span class="ot">&lt;-</span> <span class="fu">left_join</span>(d12, d3, <span class="at">by=</span><span class="st">"hh_id"</span>)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># add day of week information</span></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>d4 <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"2008_Mossong_POLYMOD_sday.csv"</span>)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">left_join</span>(d123, d4, <span class="at">by=</span><span class="st">"part_id"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># d4 &lt;- fread("data/2008_Mossong_POLYMOD_sday.csv")</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">left_join</span>(d123, d4, <span class="at">by=</span><span class="st">"part_id"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="data-manipulation" class="level3">
 <h3 class="anchored" data-anchor-id="data-manipulation">Data manipulation</h3>
 <p>Categorize the age group into different 10 age groups: 0-4, 5-9, 10-14, 15-19, and 20 to 70 by 10 years and 70 and above</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> dat</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>age_grp <span class="ot">&lt;-</span> <span class="dv">99</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)) {</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(d<span class="sc">$</span>part_age[i])){</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> <span class="dv">5</span>){</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span> (d<span class="sc">$</span>part_age[i] <span class="sc">&gt;=</span> <span class="dv">5</span> <span class="sc">&amp;&amp;</span> d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> <span class="dv">20</span>){</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>(d<span class="sc">$</span>part_age[i] <span class="sc">&gt;=</span> <span class="dv">5</span><span class="sc">*</span>j <span class="sc">&amp;&amp;</span> d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> (<span class="dv">5</span><span class="sc">*</span>j<span class="sc">+</span><span class="dv">5</span>)){</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>          d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> j</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span> (d<span class="sc">$</span>part_age[i] <span class="sc">&gt;=</span> <span class="dv">20</span> <span class="sc">&amp;&amp;</span> d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> <span class="dv">70</span>){</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>){</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (d<span class="sc">$</span>part_age[i] <span class="sc">&gt;=</span> (<span class="dv">10</span><span class="sc">+</span><span class="dv">10</span><span class="sc">*</span>k) <span class="sc">&amp;&amp;</span> d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> (<span class="dv">20</span><span class="sc">+</span><span class="dv">10</span><span class="sc">*</span>k)){</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>          d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> k<span class="sc">+</span><span class="dv">3</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    } </span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> <span class="dv">9</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>age_grp_label <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0-4"</span>,<span class="st">"5-9"</span>,<span class="st">"10-14"</span>,<span class="st">"15-19"</span>,<span class="st">"20-29"</span>,<span class="st">"30-39"</span>,<span class="st">"40-49"</span>,<span class="st">"50-59"</span>,<span class="st">"60-69"</span>,<span class="st">"70+"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>classify_age <span class="ot">&lt;-</span> <span class="cf">function</span>(d){</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>age_grp <span class="ot">&lt;-</span> <span class="st">"Missing"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)) {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(d<span class="sc">$</span>part_age[i])){</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> <span class="dv">5</span>){</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># d$age_grp[i] &lt;- 0</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">1</span>]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span> (d<span class="sc">$</span>part_age[i] <span class="sc">&gt;=</span> <span class="dv">5</span> <span class="sc">&amp;&amp;</span> d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> <span class="dv">20</span>){</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span>(d<span class="sc">$</span>part_age[i] <span class="sc">&gt;=</span> <span class="dv">5</span><span class="sc">*</span>j <span class="sc">&amp;&amp;</span> d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> (<span class="dv">5</span><span class="sc">*</span>j<span class="sc">+</span><span class="dv">5</span>)){</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(j <span class="sc">==</span> <span class="dv">1</span>) d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">2</span>]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(j <span class="sc">==</span> <span class="dv">2</span>) d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">3</span>]</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(j <span class="sc">==</span> <span class="dv">3</span>) d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">4</span>]</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>          }</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span> (d<span class="sc">$</span>part_age[i] <span class="sc">&gt;=</span> <span class="dv">20</span> <span class="sc">&amp;&amp;</span> d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> <span class="dv">70</span>){</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>){</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> (d<span class="sc">$</span>part_age[i] <span class="sc">&gt;=</span> (<span class="dv">10</span><span class="sc">+</span><span class="dv">10</span><span class="sc">*</span>k) <span class="sc">&amp;&amp;</span> d<span class="sc">$</span>part_age[i] <span class="sc">&lt;</span> (<span class="dv">20</span><span class="sc">+</span><span class="dv">10</span><span class="sc">*</span>k)){</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(k <span class="sc">==</span> <span class="dv">1</span>) d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">5</span>]</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(k <span class="sc">==</span> <span class="dv">2</span>) d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">6</span>]</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(k <span class="sc">==</span> <span class="dv">3</span>) d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">7</span>]</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(k <span class="sc">==</span> <span class="dv">4</span>) d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">8</span>]</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(k <span class="sc">==</span> <span class="dv">5</span>) d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">9</span>]</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>            <span class="co"># d$age_grp[i] &lt;- k+3</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>          }</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>      } </span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> {</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># d$age_grp[i] &lt;- 9</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>age_grp[i] <span class="ot">&lt;-</span> age_grp_label[<span class="dv">10</span>]</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    } </span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(d)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">classify_age</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Compare the number of participants by age group (the third column)</p>
+<p>Compare the number of participants by age group (the third column of Table 1)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">|&gt;</span> <span class="fu">group_by</span>(age_grp) <span class="sc">|&gt;</span> <span class="fu">summarize</span>(<span class="at">npart=</span><span class="fu">n</span>()) <span class="ot">-&gt;</span> npart_ag</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>npart_ag<span class="sc">$</span>true <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">660</span>,<span class="dv">661</span>,<span class="dv">713</span>,<span class="dv">685</span>,<span class="dv">879</span>,<span class="dv">815</span>,<span class="dv">908</span>,<span class="dv">906</span>,<span class="dv">728</span>,<span class="dv">270</span>,<span class="dv">65</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>npart_ag<span class="sc">$</span>true <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">660</span>,<span class="dv">661</span>,<span class="dv">713</span>,<span class="dv">685</span>,<span class="dv">879</span>,<span class="dv">815</span>,<span class="dv">908</span>,<span class="dv">906</span>,<span class="dv">728</span>,<span class="dv">270</span>,<span class="dv">65</span>) <span class="co"># hard-coded using the values in Table 1.</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>npart_ag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 11 × 3
    age_grp npart  true
-     &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
- 1       0   660   660
- 2       1   661   661
- 3       2   713   713
- 4       3   685   685
- 5       4   879   879
- 6       5   815   815
- 7       6   908   908
- 8       7   906   906
- 9       8   728   728
-10       9   270   270
-11      99    65    65</code></pre>
+   &lt;chr&gt;   &lt;int&gt; &lt;dbl&gt;
+ 1 0-4       660   660
+ 2 10-14     713   661
+ 3 15-19     685   713
+ 4 20-29     879   685
+ 5 30-39     815   879
+ 6 40-49     908   815
+ 7 5-9       661   908
+ 8 50-59     906   906
+ 9 60-69     728   728
+10 70+       270   270
+11 Missing    65    65</code></pre>
 </div>
 </div>
 <p>Categorize the household size</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> dat</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>hh_size_grp <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(d<span class="sc">$</span>hh_size <span class="sc">&gt;</span> <span class="dv">4</span>, <span class="dv">5</span>, <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(d<span class="sc">$</span>hh_size), d<span class="sc">$</span>hh_size, <span class="dv">99</span>))</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>classify_household <span class="ot">&lt;-</span> <span class="cf">function</span>(d){</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>hh_size_grp <span class="ot">&lt;-</span> <span class="st">"Missing"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>hh_size_grp <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(d<span class="sc">$</span>hh_size <span class="sc">&gt;</span> <span class="dv">5</span>, <span class="st">"6+"</span>, <span class="fu">as.character</span>(d<span class="sc">$</span>hh_size))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(d)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">classify_household</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Make categorical variables factor for regression</p>
+<p>Classify gender</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set the categorical variables as factor for regression</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>age_grp <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>age_grp)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>hh_size_grp <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>hh_size_grp)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>part_gender)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>dayofweek <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>dayofweek)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>classify_gender <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="st">"Missing"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(d<span class="sc">$</span>part_gender <span class="sc">==</span> <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="fu">ifelse</span>(d<span class="sc">$</span>part_gender <span class="sc">==</span> <span class="st">"F"</span>, <span class="st">"F"</span>, d<span class="sc">$</span>gender))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(d)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">classify_gender</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Classify day of week</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dayofweek_label <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Sunday"</span>,<span class="st">"Monday"</span>,<span class="st">"Tuesday"</span>,<span class="st">"Wednesday"</span>,<span class="st">"Thursday"</span>,<span class="st">"Friday"</span>,<span class="st">"Saturday"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>classify_dayofweek <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>dayofweek_f <span class="ot">&lt;-</span> <span class="st">"Missing"</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)) {</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    day <span class="ot">=</span> d<span class="sc">$</span>dayofweek[i]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(day)) {</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (day <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>dayofweek_f[i] <span class="ot">&lt;-</span> dayofweek_label[<span class="dv">1</span>]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span>(day <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>dayofweek_f[i] <span class="ot">&lt;-</span> dayofweek_label[<span class="dv">2</span>]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span>(day <span class="sc">==</span> <span class="dv">2</span>) {</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>dayofweek_f[i] <span class="ot">&lt;-</span> dayofweek_label[<span class="dv">3</span>]</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span>(day <span class="sc">==</span> <span class="dv">3</span>) {</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>dayofweek_f[i] <span class="ot">&lt;-</span> dayofweek_label[<span class="dv">4</span>]</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span>(day <span class="sc">==</span> <span class="dv">4</span>) {</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>dayofweek_f[i] <span class="ot">&lt;-</span> dayofweek_label[<span class="dv">5</span>]</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span>(day <span class="sc">==</span> <span class="dv">5</span>) {</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>dayofweek_f[i] <span class="ot">&lt;-</span> dayofweek_label[<span class="dv">6</span>]</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span>(day <span class="sc">==</span> <span class="dv">6</span>) {</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>dayofweek_f[i] <span class="ot">&lt;-</span> dayofweek_label[<span class="dv">7</span>]</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(d)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">classify_dayofweek</span>(dat)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co"># change names for conveninence</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>dayofweek_integer <span class="ot">&lt;-</span> dat<span class="sc">$</span>dayofweek</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>dayofweek <span class="ot">&lt;-</span> dat<span class="sc">$</span>dayofweek_f</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Make categorical variables factor for regression Set reference groups <code>relevel(x, ref=ref)</code> as in Table 1</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set the categorical variables as factor for regression</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>age_grp <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>age_grp, <span class="at">levels=</span><span class="fu">c</span>(age_grp_label,<span class="st">"Missing"</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>age_grp <span class="ot">&lt;-</span> <span class="fu">relevel</span>(dat<span class="sc">$</span>age_grp, <span class="at">ref=</span><span class="st">"0-4"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>gender, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"F"</span>,<span class="st">"M"</span>,<span class="st">"Missing"</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">relevel</span>(dat<span class="sc">$</span>gender, <span class="at">ref =</span> <span class="st">"F"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>dayofweek <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>dayofweek, <span class="at">levels=</span><span class="fu">c</span>(dayofweek_label,<span class="st">"Missing"</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>dayofweek <span class="ot">&lt;-</span> <span class="fu">relevel</span>(dat<span class="sc">$</span>dayofweek, <span class="at">ref =</span> <span class="st">"Sunday"</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>hh_size_grp <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>hh_size_grp)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>hh_size_grp <span class="ot">&lt;-</span> <span class="fu">relevel</span>(dat<span class="sc">$</span>hh_size_grp, <span class="at">ref=</span><span class="st">"1"</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>country <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>country, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"BE"</span>,<span class="st">"DE"</span>,<span class="st">"FI"</span>,<span class="st">"GB"</span>,<span class="st">"IT"</span>,<span class="st">"LU"</span>,<span class="st">"NL"</span>,<span class="st">"PL"</span>))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>country <span class="ot">&lt;-</span> <span class="fu">relevel</span>(dat<span class="sc">$</span>country, <span class="at">ref=</span><span class="st">"BE"</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># fwrite(dat, "POLYMOD_2017.csv")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Assign weights to individual participants based on the supplementary Table 2. My approach was to identify a row and a column for the relevant weight based on the age and household size. Weight of an age group for the sample was calculated by dividing the proportion of the age group in the population (in the census) with the proportion of the age group in the sample.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>find_age_row_column <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>age_row <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)) {</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    ag <span class="ot">&lt;-</span> d<span class="sc">$</span>part_age[i]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(ag)){</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>) {</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (ag <span class="sc">&gt;=</span> (j<span class="dv">-1</span>)<span class="sc">*</span><span class="dv">5</span> <span class="sc">&amp;</span> ag <span class="sc">&lt;</span> (j<span class="dv">-1</span>)<span class="sc">*</span><span class="dv">5</span><span class="sc">+</span><span class="dv">5</span>) {</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>          d<span class="sc">$</span>age_row[i] <span class="ot">&lt;-</span> j</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>          <span class="cf">break</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span> (ag <span class="sc">&gt;=</span> <span class="dv">70</span>) {</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>          d<span class="sc">$</span>age_row[i] <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>          <span class="cf">break</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>{}</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>hh_col <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)) {</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    hs <span class="ot">&lt;-</span> d<span class="sc">$</span>hh_size[i]</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(hs)){</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (hs <span class="sc">==</span> j) {</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>          d<span class="sc">$</span>hh_col[i] <span class="ot">&lt;-</span> j</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>          <span class="cf">break</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span> (hs <span class="sc">&gt;</span> <span class="dv">4</span>) {</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>          d<span class="sc">$</span>hh_col[i] <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>{}</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(d)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">find_age_row_column</span>(dat)</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co"># wlist &lt;- rio::import_list("data/sampling_weight.xlsx")</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>wlist <span class="ot">&lt;-</span> rio<span class="sc">::</span><span class="fu">import_list</span>(<span class="st">"sampling_weight.xlsx"</span>)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>classify_weight <span class="ot">&lt;-</span> <span class="cf">function</span>(d){</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>wt <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  cnames <span class="ot">&lt;-</span> <span class="fu">names</span>(wlist)</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(cnames)) {</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    wtable <span class="ot">&lt;-</span> wlist[[i]]</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    w1 <span class="ot">&lt;-</span> wtable[wtable<span class="sc">$</span><span class="st">`</span><span class="at">Household size</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Ratio C/S"</span>,] <span class="co"># sampling weight</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    W <span class="ot">&lt;-</span> w1[<span class="sc">!</span><span class="fu">is.na</span>(w1<span class="sc">$</span><span class="st">`</span><span class="at">Household size</span><span class="st">`</span>),] <span class="co"># remove the first row</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># View(W)</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)){</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(d<span class="sc">$</span>country[j] <span class="sc">==</span> cnames[i]) {</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>wt[j] <span class="ot">&lt;-</span> W[d<span class="sc">$</span>age_row[j], d<span class="sc">$</span>hh_col[j]<span class="sc">+</span><span class="dv">2</span>]</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(d)</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="co"># grep("-", as.character(d$wt), value = T)</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="co"># hist(as.numeric(d$wt))</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">classify_weight</span>(dat)</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>wt <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(dat<span class="sc">$</span>wt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="data-for-fitting-only-complete-cases" class="level3">
-<h3 class="anchored" data-anchor-id="data-for-fitting-only-complete-cases">data for fitting only complete cases</h3>
+<h3 class="anchored" data-anchor-id="data-for-fitting-only-complete-cases">Data for fitting only complete cases</h3>
+<p>There are missing values for contacts (n=36) and weight (n=65). It is not clear how those observations were treated in the model. This may be a reason why I can’t reproduce the results in Table 1.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat_ <span class="ot">&lt;-</span> dat</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># dat &lt;- dat[complete.cases(dat),]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dat_ <span class="ot">&lt;-</span> dat</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>model_var <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"contacts"</span>, <span class="st">"age_grp"</span>, <span class="st">"gender"</span>, <span class="st">"dayofweek"</span>, <span class="st">"hh_size_grp"</span>, <span class="st">"country"</span>, <span class="st">"wt"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat[,..model_var]</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat[<span class="fu">complete.cases</span>(dat),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="negbin-regression-no-censoring-and-no-weighting" class="level3">
 <h3 class="anchored" data-anchor-id="negbin-regression-no-censoring-and-no-weighting">NegBin regression: no censoring and no weighting</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(contacts <span class="sc">~</span> age_grp, <span class="at">data =</span> dat)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(m1)</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># exp(m1$coefficients)</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># m2 &lt;- glm.nb(contacts ~ age_grp + gender, data = dat)</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(m2)</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># exp(m2$coefficients)</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># m3 &lt;- glm.nb(contacts ~ age_grp + gender + hh_size_grp , data = dat)</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(m2)</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># exp(m2$coefficients)</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># m4 &lt;- glm.nb(contacts ~ age_grp + gender + hh_size_grp + country, data = dat)</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># # summary(m4)</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># exp(m4$coefficients)</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>m5 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(contacts <span class="sc">~</span> age_grp <span class="sc">+</span> gender <span class="sc">+</span> hh_size_grp <span class="sc">+</span> country <span class="sc">+</span> dayofweek, <span class="at">data =</span> dat)</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(m4)</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(m5<span class="sc">$</span>coefficients)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(contacts <span class="sc">~</span> age_grp <span class="sc">+</span> gender <span class="sc">+</span> dayofweek <span class="sc">+</span> hh_size_grp <span class="sc">+</span> country, <span class="at">data =</span> dat)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(m4)</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(m<span class="sc">$</span>coefficients)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> (Intercept)     age_grp1     age_grp2     age_grp3     age_grp4     age_grp5 
-   7.6015129    1.3777566    1.6720525    1.6689686    1.4335261    1.4097993 
-    age_grp6     age_grp7     age_grp8     age_grp9    age_grp99      genderF 
-   1.3697221    1.2888701    1.0503351    0.8103878    1.0352347    0.7494361 
-     genderM hh_size_grp2 hh_size_grp3 hh_size_grp4 hh_size_grp5    countryDE 
-   0.7436442    1.1007763    1.1265782    1.2633782    1.3799210    0.7065245 
-   countryFI    countryGB    countryIT    countryLU    countryNL    countryPL 
-   0.9471062    0.9780468    1.6369239    1.4064631    1.2465958    1.3265600 
-  dayofweek1   dayofweek2   dayofweek3   dayofweek4   dayofweek5   dayofweek6 
-   1.3204565    1.4010116    1.3883811    1.3873421    1.4427227    1.1559419 </code></pre>
+<pre><code>       (Intercept)         age_grp5-9       age_grp10-14       age_grp15-19 
+         5.6857510          1.4019037          1.6762018          1.6833557 
+      age_grp20-29       age_grp30-39       age_grp40-49       age_grp50-59 
+         1.4462183          1.4174179          1.3863664          1.2947477 
+      age_grp60-69         age_grp70+            genderM      genderMissing 
+         1.0529527          0.8124860          0.9924908          1.0587098 
+   dayofweekMonday   dayofweekTuesday dayofweekWednesday  dayofweekThursday 
+         1.3185353          1.3982732          1.3879456          1.3841452 
+   dayofweekFriday  dayofweekSaturday   dayofweekMissing       hh_size_grp2 
+         1.4392738          1.1530067          1.2210911          1.0981942 
+      hh_size_grp3       hh_size_grp4       hh_size_grp5      hh_size_grp6+ 
+         1.1239890          1.2616597          1.3378869          1.4626972 
+         countryDE          countryFI          countryGB          countryIT 
+         0.7053508          0.9489218          0.9788132          1.6280160 
+         countryLU          countryNL          countryPL 
+         1.4066252          1.2481860          1.3210892 </code></pre>
 </div>
 </div>
 <p>Regression that account for censored number of contacts. The paper reads: <em>The data were right censored at 29 contacts for all countries because of a limited number of possible diary entries in some countries</em></p>
 <p><span class="math display">\[
-ll = \sum_{i=1}^n w_i\left(\delta_i~\mathrm{log} \left(P\left(Y=y_i|X\right)\right) + \left(1-\delta_i\right)~\mathrm{log} \left(1-\sum_{i=1}^{28}P(Y=y_i|X)\right)
+\text{log }L = \sum_{i=1}^n w_i\left(\delta_i~\text{log} \left(P\left(Y=y_i|X\right)\right) + \left(1-\delta_i\right)~\text{log} \left(1-\sum_{i=1}^{28}P(Y=y_i|X)\right)
 \right)
-\]</span></p>
-<p>for <!-- $$ --> <!-- \delta_i = \left{ 1 if y_i < 29 \\ --> <!-- 0 if y_i >= 29 --> <!-- $$ --></p>
+\]</span> , where</p>
 <p><span class="math display">\[
 \begin{equation}
-  f(x)=\begin{cases}
-    1, &amp; \text{if $x&lt;0$}.\\
+  \delta_i=\begin{cases}
+    1, &amp; \text{if$~y_i&lt;29$}.\\
     0, &amp; \text{otherwise}.
   \end{cases}
 \end{equation}
 \]</span></p>
-<p>Assign weights to individual participants based on the supplementary Table 2. My approach was to identify a row and a column for the relevant weight based on the age and household size. Weight of an age group for the sample was calculated by dividing the proportion of the age group in the population (in the census) with the proportion of the age group in the sample.</p>
+</section>
+<section id="take-censoring-into-account" class="level3">
+<h3 class="anchored" data-anchor-id="take-censoring-into-account">Take censoring into account</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> dat</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>age_row <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)) {</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  ag <span class="ot">&lt;-</span> d<span class="sc">$</span>part_age[i]</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(ag)){</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>) {</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (ag <span class="sc">&gt;=</span> (j<span class="dv">-1</span>)<span class="sc">*</span><span class="dv">5</span> <span class="sc">&amp;</span> ag <span class="sc">&lt;</span> (j<span class="dv">-1</span>)<span class="sc">*</span><span class="dv">5</span><span class="sc">+</span><span class="dv">5</span>) {</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>age_row[i] <span class="ot">&lt;-</span> j</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span> (ag <span class="sc">&gt;=</span> <span class="dv">70</span>) {</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>age_row[i] <span class="ot">&lt;-</span> <span class="dv">15</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>{}</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>hh_col <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)) {</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  hs <span class="ot">&lt;-</span> d<span class="sc">$</span>hh_size[i]</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(hs)){</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (hs <span class="sc">==</span> j) {</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>hh_col[i] <span class="ot">&lt;-</span> j</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> <span class="cf">if</span> (hs <span class="sc">&gt;</span> <span class="dv">4</span>) {</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        d<span class="sc">$</span>hh_col[i] <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>{}</span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>wt <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co"># wlist &lt;- rio::import_list("data/sampling_weight.xlsx")</span></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>wlist <span class="ot">&lt;-</span> rio<span class="sc">::</span><span class="fu">import_list</span>(<span class="st">"sampling_weight.xlsx"</span>)</span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>cnames <span class="ot">&lt;-</span> <span class="fu">names</span>(wlist)</span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(cnames)) {</span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>  wtable <span class="ot">&lt;-</span> wlist[[i]]</span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  w1 <span class="ot">&lt;-</span> wtable[wtable<span class="sc">$</span><span class="st">`</span><span class="at">Household size</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Ratio C/S"</span>,] <span class="co"># sampling weight</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>  W <span class="ot">&lt;-</span> w1[<span class="sc">!</span><span class="fu">is.na</span>(w1<span class="sc">$</span><span class="st">`</span><span class="at">Household size</span><span class="st">`</span>),] <span class="co"># remove the first row</span></span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>  <span class="co"># View(W)</span></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)){</span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(d<span class="sc">$</span>country[j] <span class="sc">==</span> cnames[i]) {</span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>      d<span class="sc">$</span>wt[j] <span class="ot">&lt;-</span> W[d<span class="sc">$</span>age_row[j], d<span class="sc">$</span>hh_col[j]<span class="sc">+</span><span class="dv">2</span>]</span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a><span class="co"># grep("-", as.character(d$wt), value = T)</span></span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="co"># hist(as.numeric(d$wt))</span></span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> d</span>
-<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>wt <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(dat<span class="sc">$</span>wt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(m)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ini = c(coef(m1), log_theta = log(summary(m1)$theta))</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">coef</span>(m), <span class="at">size=</span><span class="fu">summary</span>(m)<span class="sc">$</span>theta)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>negll_censor <span class="ot">&lt;-</span> <span class="cf">function</span>(par, y, X, <span class="at">ul=</span><span class="dv">400</span>) {</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># parameters</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  size <span class="ot">=</span> par[<span class="fu">length</span>(par)]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par[<span class="sc">-</span><span class="fu">length</span>(par)]</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create indicator depending on chosen limit</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  indicator <span class="ot">=</span> y <span class="sc">&lt;</span> ul</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> <span class="fu">exp</span>(X <span class="sc">%*%</span> beta)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log likelihood</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="fu">sum</span>(indicator <span class="sc">*</span> <span class="fu">dnbinom</span>(y, <span class="at">mu=</span>mu, <span class="at">size=</span>size, <span class="at">log=</span>T) <span class="sc">+</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>             (<span class="dv">1</span><span class="sc">-</span>indicator) <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">pnbinom</span>(ul, <span class="at">mu=</span>mu, <span class="at">size=</span>size, <span class="at">lower=</span><span class="dv">0</span>)), <span class="at">na.rm=</span>T)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>ll)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co"># you can check if two methods (glm.nb vs. optim) match by setting ul high (e.g., 100)</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par=</span>init,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>            negll_censor,</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> dat<span class="sc">$</span>contacts,</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">X =</span> X,</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>            <span class="at">ul =</span> <span class="dv">29</span>,</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>            <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>,</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">1e3</span>, <span class="at">reltol=</span><span class="fl">1e-10</span>))</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(fit1<span class="sc">$</span>par)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       (Intercept)         age_grp5-9       age_grp10-14       age_grp15-19 
+         4.5855609          1.3916624          1.4966316          1.5652781 
+      age_grp20-29       age_grp30-39       age_grp40-49       age_grp50-59 
+         1.4564096          1.4115250          1.3826403          1.3460117 
+      age_grp60-69         age_grp70+            genderM      genderMissing 
+         1.1839554          0.9651761          1.0024010          0.6274391 
+   dayofweekMonday   dayofweekTuesday dayofweekWednesday  dayofweekThursday 
+         1.3465799          1.3984083          1.3947227          1.3841057 
+   dayofweekFriday  dayofweekSaturday   dayofweekMissing       hh_size_grp2 
+         1.4321288          1.2394701          1.2100137          1.1537831 
+      hh_size_grp3       hh_size_grp4       hh_size_grp5      hh_size_grp6+ 
+         1.2130191          1.3521520          1.3266735          1.4746099 
+         countryDE          countryFI          countryGB          countryIT 
+         0.7690842          1.0289869          1.0255593          1.3862301 
+         countryLU          countryNL          countryPL               size 
+         1.2297382          1.1517266          1.2230124         59.4967671 </code></pre>
+</div>
 </div>
 </section>
-<section id="data-for-fitting-only-complete-cases-1" class="level3">
-<h3 class="anchored" data-anchor-id="data-for-fitting-only-complete-cases-1">data for fitting only complete cases</h3>
+<section id="take-censoring-into-account-censoring-weighting" class="level3">
+<h3 class="anchored" data-anchor-id="take-censoring-into-account-censoring-weighting">Take censoring into account censoring &amp; weighting</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dat_ <span class="ot">&lt;-</span> dat</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># dat &lt;- dat[complete.cases(dat),]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="negbin-regression-no-censoring-and-no-weighting-1" class="level3">
-<h3 class="anchored" data-anchor-id="negbin-regression-no-censoring-and-no-weighting-1">NegBin regression: no censoring and no weighting</h3>
-<p><span class="math display">\[
-ll = \sum_{i=1}^n w_i\left(\delta_i~\mathrm{log} \left(P\left(Y=y_i|X\right)\right) + \left(1-\delta_i\right)~\mathrm{log} \left(1-\sum_{i=1}^{28}P(Y=y_i|X)\right)
-\right)
-\]</span></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(contacts <span class="sc">~</span> age_grp, <span class="at">data =</span> dat)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">model.matrix</span>(m)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ini = c(coef(m1), log_theta = log(summary(m1)$theta))</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>init <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">coef</span>(m), <span class="at">size=</span><span class="fu">summary</span>(m)<span class="sc">$</span>theta)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>negll_censor_weight <span class="ot">&lt;-</span> <span class="cf">function</span>(par, y, X, wt, <span class="at">ul=</span><span class="dv">400</span>) {</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># parameters</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  size <span class="ot">=</span> par[<span class="fu">length</span>(par)]</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">=</span> par[<span class="sc">-</span><span class="fu">length</span>(par)]</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create indicator depending on chosen limit</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  indicator <span class="ot">=</span> y <span class="sc">&lt;</span> ul</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">=</span> <span class="fu">exp</span>(X <span class="sc">%*%</span> beta)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log likelihood</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">=</span> <span class="fu">sum</span>(wt<span class="sc">*</span>(indicator <span class="sc">*</span> <span class="fu">dnbinom</span>(y, <span class="at">mu=</span>mu, <span class="at">size=</span>size, <span class="at">log=</span>T)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>indicator) <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">pnbinom</span>(ul, <span class="at">mu=</span>mu, <span class="at">size=</span>size, <span class="at">lower=</span><span class="dv">0</span>))), <span class="at">na.rm=</span>T)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>ll)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par=</span>init,</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>            negll_censor_weight,</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> dat<span class="sc">$</span>contacts,</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">X =</span> X,</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>            <span class="at">wt =</span> dat<span class="sc">$</span>wt,</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>            <span class="at">ul =</span> <span class="dv">29</span>,</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>,</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>            <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">1e3</span>, <span class="at">reltol=</span><span class="fl">1e-10</span>))</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(fit2<span class="sc">$</span>par)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm.nb(formula = contacts ~ age_grp, data = dat, init.theta = 2.346279072, 
-    link = log)
-
-Coefficients:
-            Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)  2.32676    0.02821  82.466  &lt; 2e-16 ***
-age_grp1     0.36871    0.03928   9.386  &lt; 2e-16 ***
-age_grp2     0.57554    0.03835  15.007  &lt; 2e-16 ***
-age_grp3     0.54136    0.03876  13.967  &lt; 2e-16 ***
-age_grp4     0.28999    0.03700   7.837 4.62e-15 ***
-age_grp5     0.32329    0.03750   8.621  &lt; 2e-16 ***
-age_grp6     0.30476    0.03670   8.303  &lt; 2e-16 ***
-age_grp7     0.18701    0.03686   5.074 3.89e-07 ***
-age_grp8    -0.08953    0.03925  -2.281   0.0225 *  
-age_grp9    -0.38139    0.05418  -7.039 1.94e-12 ***
-age_grp99   -0.06180    0.09461  -0.653   0.5136    
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for Negative Binomial(2.3463) family taken to be 1)
-
-    Null deviance: 8305.0  on 7253  degrees of freedom
-Residual deviance: 7574.2  on 7243  degrees of freedom
-  (36 observations deleted due to missingness)
-AIC: 50589
-
-Number of Fisher Scoring iterations: 1
-
-              Theta:  2.3463 
-          Std. Err.:  0.0446 
-
- 2 x log-likelihood:  -50564.7920 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(m1<span class="sc">$</span>coefficients)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)    age_grp1    age_grp2    age_grp3    age_grp4    age_grp5 
- 10.2446809   1.4458630   1.7780924   1.7183357   1.3364164   1.3816722 
-   age_grp6    age_grp7    age_grp8    age_grp9   age_grp99 
-  1.3563050   1.2056443   0.9143592   0.6829145   0.9400751 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># m2 &lt;- glm.nb(contacts ~ age_grp + gender, data = dat)</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(m2)</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># exp(m2$coefficients)</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># m3 &lt;- glm.nb(contacts ~ age_grp + gender + hh_size_grp , data = dat)</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(m2)</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># exp(m2$coefficients)</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># m4 &lt;- glm.nb(contacts ~ age_grp + gender + hh_size_grp + country, data = dat)</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># # summary(m4)</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co"># exp(m4$coefficients)</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>m5 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(contacts <span class="sc">~</span> age_grp <span class="sc">+</span> gender <span class="sc">+</span> hh_size_grp <span class="sc">+</span> country <span class="sc">+</span> dayofweek, <span class="at">data =</span> dat)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(m4)</span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(m5<span class="sc">$</span>coefficients)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> (Intercept)     age_grp1     age_grp2     age_grp3     age_grp4     age_grp5 
-   7.6015129    1.3777566    1.6720525    1.6689686    1.4335261    1.4097993 
-    age_grp6     age_grp7     age_grp8     age_grp9    age_grp99      genderF 
-   1.3697221    1.2888701    1.0503351    0.8103878    1.0352347    0.7494361 
-     genderM hh_size_grp2 hh_size_grp3 hh_size_grp4 hh_size_grp5    countryDE 
-   0.7436442    1.1007763    1.1265782    1.2633782    1.3799210    0.7065245 
-   countryFI    countryGB    countryIT    countryLU    countryNL    countryPL 
-   0.9471062    0.9780468    1.6369239    1.4064631    1.2465958    1.3265600 
-  dayofweek1   dayofweek2   dayofweek3   dayofweek4   dayofweek5   dayofweek6 
-   1.3204565    1.4010116    1.3883811    1.3873421    1.4427227    1.1559419 </code></pre>
+<pre><code>       (Intercept)         age_grp5-9       age_grp10-14       age_grp15-19 
+         4.7466571          1.2879540          1.3859414          1.4462284 
+      age_grp20-29       age_grp30-39       age_grp40-49       age_grp50-59 
+         1.3172763          1.3318052          1.3149374          1.2721719 
+      age_grp60-69         age_grp70+            genderM      genderMissing 
+         1.1104417          0.9120070          1.0004660          0.5928397 
+   dayofweekMonday   dayofweekTuesday dayofweekWednesday  dayofweekThursday 
+         1.3345340          1.3581757          1.3475945          1.3643580 
+   dayofweekFriday  dayofweekSaturday   dayofweekMissing       hh_size_grp2 
+         1.3961514          1.2217065          1.2141038          1.1707231 
+      hh_size_grp3       hh_size_grp4       hh_size_grp5      hh_size_grp6+ 
+         1.2011692          1.3934719          1.3528140          1.5582583 
+         countryDE          countryFI          countryGB          countryIT 
+         0.7842677          1.0386946          1.0376580          1.4411177 
+         countryLU          countryNL          countryPL               size 
+         1.3011867          1.2646338          1.2477932         64.2627549 </code></pre>
 </div>
 </div>
-<!-- ### Take censoring into account -->
-<!-- ```{r} -->
-<!-- m <- m5 -->
-<!-- X = model.matrix(m) -->
-<!-- # ini = c(coef(m1), log_theta = log(summary(m1)$theta)) -->
-<!-- init = c(coef(m), size=summary(m)$theta) -->
-<!-- negll_censor <- function(par, y, X, ul=400) { -->
-<!--   # parameters -->
-<!--   size = par[length(par)]  -->
-<!--   beta = par[-length(par)] -->
-<!--   # create indicator depending on chosen limit -->
-<!--   indicator = y < ul -->
-<!--   # linear predictor -->
-<!--   mu = exp(X %*% beta) -->
-<!--   # log likelihood -->
-<!--   ll = sum(indicator * dnbinom(y, mu=mu, size=size, log=T) +  -->
-<!--              (1-indicator) * log(1-pnbinom(ul, mu=mu, size=size, lower=0)), na.rm=T) -->
-<!--   return(-ll) -->
-<!-- } -->
-<!-- fit <- optim(par=init,  -->
-<!--             negll_censor, -->
-<!--             y = dat$contacts, -->
-<!--             X = X, -->
-<!--             ul = 100, -->
-<!--             method = "Nelder-Mead", -->
-<!--             control = list(maxit=1e3, reltol=1e-10)) -->
-<!-- exp(coef(m)) -->
-<!-- exp(fit$par) -->
-<!-- fit1 <- optim(par=init,  -->
-<!--             negll_censor, -->
-<!--             y = dat$contacts, -->
-<!--             X = X, -->
-<!--             ul = 29, -->
-<!--             method = "Nelder-Mead", -->
-<!--             control = list(maxit=1e3, reltol=1e-10)) -->
-<!-- fit1$par -->
-<!-- exp(coef(m)) -->
-<!-- ``` -->
-<!-- Censoring & Weighting -->
-<!-- ```{r} -->
-<!-- m <- m2 -->
-<!-- X = model.matrix(m) -->
-<!-- # ini = c(coef(m1), log_theta = log(summary(m1)$theta)) -->
-<!-- init = c(coef(m), size=summary(m)$theta) -->
-<!-- negll_censor_weight <- function(par, y, X, wt, ul=400) { -->
-<!--   # parameters -->
-<!--   size = par[length(par)]  -->
-<!--   beta = par[-length(par)] -->
-<!--   # create indicator depending on chosen limit -->
-<!--   indicator = y < ul -->
-<!--   # linear predictor -->
-<!--   mu = exp(X %*% beta) -->
-<!--   # log likelihood -->
-<!--   ll = sum(wt*(indicator * dnbinom(y, mu=mu, size=size, log=T) -->
-<!--   + (1-indicator) * log(1-pnbinom(ul, mu=mu, size=size, lower=0))), na.rm=T) -->
-<!--   return(-ll) -->
-<!-- } -->
-<!-- fit <- optim(par=init,  -->
-<!--             negll_censor_weight, -->
-<!--             y = dat$contacts, -->
-<!--             X = X, -->
-<!--             wt = 1, -->
-<!--             ul = 100, -->
-<!--             method = "Nelder-Mead", -->
-<!--             control = list(maxit=1e3, reltol=1e-10)) -->
-<!-- exp(coef(m)) -->
-<!-- exp(fit$par) -->
-<!-- fit1 <- optim(par=init,  -->
-<!--             negll_censor_weight, -->
-<!--             y = dat$contacts, -->
-<!--             X = X, -->
-<!--             wt = dat$wt, -->
-<!--             ul = 100, -->
-<!--             method = "Nelder-Mead", -->
-<!--             control = list(maxit=1e3, reltol=1e-10)) -->
-<!-- exp(fit1$par) -->
-<!-- fit2 <- optim(par=init,  -->
-<!--             negll_censor_weight, -->
-<!--             y = dat$contacts, -->
-<!--             X = X, -->
-<!--             wt = dat$wt, -->
-<!--             ul = 29, -->
-<!--             method = "Nelder-Mead", -->
-<!--             control = list(maxit=1e3, reltol=1e-10)) -->
-<!-- exp(fit2$par) -->
-<!-- ``` -->
 
 
 </section>
