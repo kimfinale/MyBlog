@@ -12,7 +12,7 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
-This post describes my attempt to reproduce Table 1 of the paper, [Social Contacts and Mixing Patterns Relevant to the Spread of Infectious Diseases](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0050074). Data were downloaded from [Social Contact Data](http://www.socialcontactdata.org/), which was hosted in [zenodo](https://zenodo.org/record/3746312#.Xo85CcgzZPY). I used the version 1.1. In summary, I wasn't successful at reproducing the table exatly but still wanted to document the processes that I went through.
+This post describes my attempt to reproduce Table 1 of the paper, [Social Contacts and Mixing Patterns Relevant to the Spread of Infectious Diseases](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0050074). Data were downloaded from [Social Contact Data](http://www.socialcontactdata.org/), which was hosted in [zenodo](https://zenodo.org/record/3746312#.Xo85CcgzZPY). I used the version 1.1. In summary, I wasn't successful at reproducing the table exactly but still wanted to document the processes that I went through.
 
 ### Data preparation
 
@@ -49,32 +49,23 @@ classify_age <- function(d){
   for (i in 1:nrow(d)) {
     if(!is.na(d$part_age[i])){
       if(d$part_age[i] < 5){
-        # d$age_grp[i] <- 0
         d$age_grp[i] <- age_grp_label[1]
       }
       else if (d$part_age[i] >= 5 && d$part_age[i] < 20){
         for(j in 1:3){
           if(d$part_age[i] >= 5*j && d$part_age[i] < (5*j+5)){
-            if(j == 1) d$age_grp[i] <- age_grp_label[2]
-            if(j == 2) d$age_grp[i] <- age_grp_label[3]
-            if(j == 3) d$age_grp[i] <- age_grp_label[4]
+            d$age_grp[i] <- age_grp_label[j+1]
           }
         }
       }
       else if (d$part_age[i] >= 20 && d$part_age[i] < 70){
         for (k in 1:5){
           if (d$part_age[i] >= (10+10*k) && d$part_age[i] < (20+10*k)){
-            if(k == 1) d$age_grp[i] <- age_grp_label[5]
-            if(k == 2) d$age_grp[i] <- age_grp_label[6]
-            if(k == 3) d$age_grp[i] <- age_grp_label[7]
-            if(k == 4) d$age_grp[i] <- age_grp_label[8]
-            if(k == 5) d$age_grp[i] <- age_grp_label[9]
-            # d$age_grp[i] <- k+3
+            d$age_grp[i] <- age_grp_label[k+4]
           }
         }
       } 
       else {
-        # d$age_grp[i] <- 9
         d$age_grp[i] <- age_grp_label[10]
       }
     } 
@@ -127,27 +118,7 @@ classify_dayofweek <- function(d) {
   for (i in 1:nrow(d)) {
     day = d$dayofweek[i]
     if (!is.na(day)) {
-      if (day == 0) {
-        d$dayofweek_f[i] <- dayofweek_label[1]
-      }
-      else if(day == 1) {
-        d$dayofweek_f[i] <- dayofweek_label[2]
-      }
-      else if(day == 2) {
-        d$dayofweek_f[i] <- dayofweek_label[3]
-      }
-      else if(day == 3) {
-        d$dayofweek_f[i] <- dayofweek_label[4]
-      }
-      else if(day == 4) {
-        d$dayofweek_f[i] <- dayofweek_label[5]
-      }
-      else if(day == 5) {
-        d$dayofweek_f[i] <- dayofweek_label[6]
-      }
-      else if(day == 6) {
-        d$dayofweek_f[i] <- dayofweek_label[7]
-      }
+      d$dayofweek_f[i] <- dayofweek_label[day+1]
     }
   }
   return(d)
@@ -248,7 +219,7 @@ dat$wt <- as.numeric(dat$wt)
 
 ### Data for fitting only complete cases
 
-There are missing values for contacts (n=36) and weight (n=65). It is not clear how those observations were treated in the model. This may be a reason why I can't reproduce the results in Table 1.
+There are missing values for contacts (\$n\$=36) and weight (\$n\$=65). It is not clear how those observations were treated in the model. This may be a reason why I can't reproduce the results in Table 1.
 
 ```{r}
 dat_ <- dat
@@ -314,7 +285,7 @@ fit1 <- optim(par=init,
 exp(fit1$par)
 ```
 
-### Take censoring into account censoring & weighting
+### Take censoring & weighting into account 
 
 ```{r}
 X = model.matrix(m)
