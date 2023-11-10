@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2023-11-02T06:11:45.009Z</lastmod>
+    <lastmod>2023-11-10T02:23:22.346Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -46,7 +46,7 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/nb-censored-regression/index.html</loc>
-    <lastmod>2023-11-02T06:15:17.829Z</lastmod>
+    <lastmod>2023-11-02T06:57:37.133Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/about.html</loc>
@@ -82,7 +82,7 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/modeling-philosophy/index.html</loc>
-    <lastmod>2023-10-17T01:43:20.980Z</lastmod>
+    <lastmod>2023-11-10T02:12:10.120Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/R0-sympy/index.html</loc>
@@ -91,5 +91,13 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/apartment-data-api/index.html</loc>
     <lastmod>2023-11-02T01:57:23.815Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/rootsolve_optimize/index.html</loc>
+    <lastmod>2023-11-10T02:23:49.794Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/branching_process/index.html</loc>
+    <lastmod>2023-11-10T02:12:09.377Z</lastmod>
   </url>
 </urlset>

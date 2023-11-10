@@ -72,7 +72,8 @@ ul.task-list li input[type="checkbox"] {
 
     const options = {
       valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
+      page: 25,
+    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
       searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
     };
 
@@ -157,7 +158,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(24)</span></div><div class="category" data-category="API">API <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ChatGPT">ChatGPT <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Monte Carlo">Monte Carlo <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ODE">ODE <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(18)</span></div><div class="category" data-category="RColorBrewer">RColorBrewer <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RcolorBrewer">RcolorBrewer <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SIR">SIR <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SymPy">SymPy <span class="quarto-category-count">(1)</span></div><div class="category" data-category="analysis">analysis <span class="quarto-category-count">(5)</span></div><div class="category" data-category="apartment">apartment <span class="quarto-category-count">(1)</span></div><div class="category" data-category="censor">censor <span class="quarto-category-count">(2)</span></div><div class="category" data-category="code">code <span class="quarto-category-count">(5)</span></div><div class="category" data-category="contact">contact <span class="quarto-category-count">(2)</span></div><div class="category" data-category="crop">crop <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ggplot2">ggplot2 <span class="quarto-category-count">(2)</span></div><div class="category" data-category="httr">httr <span class="quarto-category-count">(2)</span></div><div class="category" data-category="map">map <span class="quarto-category-count">(1)</span></div><div class="category" data-category="mask">mask <span class="quarto-category-count">(1)</span></div><div class="category" data-category="maximum likelihood">maximum likelihood <span class="quarto-category-count">(4)</span></div><div class="category" data-category="modeling">modeling <span class="quarto-category-count">(2)</span></div><div class="category" data-category="news">news <span class="quarto-category-count">(2)</span></div><div class="category" data-category="odin">odin <span class="quarto-category-count">(1)</span></div><div class="category" data-category="optim">optim <span class="quarto-category-count">(1)</span></div><div class="category" data-category="paper">paper <span class="quarto-category-count">(1)</span></div><div class="category" data-category="parameter estimation">parameter estimation <span class="quarto-category-count">(6)</span></div><div class="category" data-category="philosophy">philosophy <span class="quarto-category-count">(1)</span></div><div class="category" data-category="profile likelihood">profile likelihood <span class="quarto-category-count">(4)</span></div><div class="category" data-category="raster">raster <span class="quarto-category-count">(2)</span></div><div class="category" data-category="regression">regression <span class="quarto-category-count">(4)</span></div><div class="category" data-category="reproduction number">reproduction number <span class="quarto-category-count">(1)</span></div><div class="category" data-category="sf">sf <span class="quarto-category-count">(3)</span></div><div class="category" data-category="shapefile">shapefile <span class="quarto-category-count">(2)</span></div><div class="category" data-category="tobit">tobit <span class="quarto-category-count">(1)</span></div><div class="category" data-category="writing">writing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="xml">xml <span class="quarto-category-count">(2)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(26)</span></div><div class="category" data-category="API">API <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ChatGPT">ChatGPT <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Monte Carlo">Monte Carlo <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ODE">ODE <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(20)</span></div><div class="category" data-category="RColorBrewer">RColorBrewer <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RcolorBrewer">RcolorBrewer <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SIR">SIR <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SymPy">SymPy <span class="quarto-category-count">(1)</span></div><div class="category" data-category="analysis">analysis <span class="quarto-category-count">(5)</span></div><div class="category" data-category="apartment">apartment <span class="quarto-category-count">(2)</span></div><div class="category" data-category="censor">censor <span class="quarto-category-count">(2)</span></div><div class="category" data-category="code">code <span class="quarto-category-count">(5)</span></div><div class="category" data-category="contact">contact <span class="quarto-category-count">(2)</span></div><div class="category" data-category="crop">crop <span class="quarto-category-count">(1)</span></div><div class="category" data-category="epidemic">epidemic <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ggplot2">ggplot2 <span class="quarto-category-count">(2)</span></div><div class="category" data-category="httr">httr <span class="quarto-category-count">(2)</span></div><div class="category" data-category="map">map <span class="quarto-category-count">(1)</span></div><div class="category" data-category="mask">mask <span class="quarto-category-count">(1)</span></div><div class="category" data-category="maximum likelihood">maximum likelihood <span class="quarto-category-count">(4)</span></div><div class="category" data-category="modeling">modeling <span class="quarto-category-count">(1)</span></div><div class="category" data-category="news">news <span class="quarto-category-count">(2)</span></div><div class="category" data-category="odin">odin <span class="quarto-category-count">(1)</span></div><div class="category" data-category="optim">optim <span class="quarto-category-count">(1)</span></div><div class="category" data-category="optimize">optimize <span class="quarto-category-count">(1)</span></div><div class="category" data-category="paper">paper <span class="quarto-category-count">(1)</span></div><div class="category" data-category="parameter estimation">parameter estimation <span class="quarto-category-count">(6)</span></div><div class="category" data-category="profile likelihood">profile likelihood <span class="quarto-category-count">(4)</span></div><div class="category" data-category="raster">raster <span class="quarto-category-count">(2)</span></div><div class="category" data-category="regression">regression <span class="quarto-category-count">(4)</span></div><div class="category" data-category="reproduction number">reproduction number <span class="quarto-category-count">(1)</span></div><div class="category" data-category="sf">sf <span class="quarto-category-count">(3)</span></div><div class="category" data-category="shapefile">shapefile <span class="quarto-category-count">(2)</span></div><div class="category" data-category="size">size <span class="quarto-category-count">(1)</span></div><div class="category" data-category="tobit">tobit <span class="quarto-category-count">(1)</span></div><div class="category" data-category="uniroot">uniroot <span class="quarto-category-count">(1)</span></div><div class="category" data-category="writing">writing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="xml">xml <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
 
@@ -170,7 +171,115 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="R,regression,contact,censor" data-listing-date-sort="1698850800000" data-listing-file-modified-sort="1698905431805" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8">
+<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1699229017442" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./posts/modeling-philosophy/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+</div>
+<div class="body">
+<a href="./posts/modeling-philosophy/index.html">
+<h3 class="no-anchor listing-title">
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+Please visit the website below how to reproduce the work presented in the report. https://github.com/kimfinale/COVID-19_NorthKorea
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/modeling-philosophy/index.html"> </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="epidemic,size,R,uniroot,optimize" data-listing-date-sort="1699542000000" data-listing-file-modified-sort="1699582987333" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="thumbnail">
+<p><a href="./posts/rootsolve_optimize/index.html"> <img src="./posts/rootsolve_optimize/epidemicsize_R.png" class="thumbnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/rootsolve_optimize/index.html">
+<h3 class="no-anchor listing-title">
+Final epidemic size: uniroot vs.&nbsp;optimize
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('epidemic'); return false;">
+epidemic
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('size'); return false;">
+size
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('uniroot'); return false;">
+uniroot
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('optimize'); return false;">
+optimize
+</div>
+</div>
+<a href="./posts/rootsolve_optimize/index.html">
+<div class="listing-description">
+Miller 2012 shows that the…<span class="math inline"></span>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/rootsolve_optimize/index.html">
+<div class="listing-date">
+Nov 10, 2023
+</div>
+<div class="listing-author">
+Jong-Hoon Kim
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-categories="R,API,apartment" data-listing-date-sort="1699369200000" data-listing-file-modified-sort="1699582307034" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7">
+<div class="thumbnail">
+<p><a href="./posts/branching_process/index.html"> <img src="./posts/branching_process/apt_price.png" class="thumbnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/branching_process/index.html">
+<h3 class="no-anchor listing-title">
+Branching process model
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('API'); return false;">
+API
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('apartment'); return false;">
+apartment
+</div>
+</div>
+<a href="./posts/branching_process/index.html">
+<div class="listing-description">
+
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/branching_process/index.html">
+<div class="listing-date">
+Nov 8, 2023
+</div>
+<div class="listing-author">
+Jong-Hoon Kim
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-categories="R,regression,contact,censor" data-listing-date-sort="1698850800000" data-listing-file-modified-sort="1698908181933" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8">
 <div class="thumbnail">
 <p><a href="./posts/nb-censored-regression/index.html"> <img src="./posts/nb-censored-regression/image.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -214,7 +323,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="R,API,apartment" data-listing-date-sort="1698764400000" data-listing-file-modified-sort="1698890142105" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="4" data-categories="R,API,apartment" data-listing-date-sort="1698764400000" data-listing-file-modified-sort="1698890142105" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
 <div class="thumbnail">
 <p><a href="./posts/apartment-data-api/index.html"> <img src="./posts/apartment-data-api/apt_price.png" class="thumbnail-image"> </a></p>
 </div>
@@ -255,7 +364,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="SIR,SymPy" data-listing-date-sort="1697382000000" data-listing-file-modified-sort="1697417364907" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="5" data-categories="SIR,SymPy" data-listing-date-sort="1697382000000" data-listing-file-modified-sort="1697417364907" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
 <div class="thumbnail">
 <p><a href="./posts/SIR-sympy/index.html"> <img src="./posts/SIR-sympy/SimPy_logo.svg.png" class="thumbnail-image"> </a></p>
 </div>
@@ -293,7 +402,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="R,regression,censor,tobit" data-listing-date-sort="1697295600000" data-listing-file-modified-sort="1697426223269" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="6" data-categories="R,regression,censor,tobit" data-listing-date-sort="1697295600000" data-listing-file-modified-sort="1697426223269" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
 <div class="thumbnail">
 <p><a href="./posts/censored-regression-optim/index.html"> <img src="./posts/censored-regression-optim/apt_censored.png" class="thumbnail-image"> </a></p>
 </div>
@@ -337,7 +446,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="R,regression,contact" data-listing-date-sort="1697036400000" data-listing-file-modified-sort="1697686604712" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="7" data-categories="R,regression,contact" data-listing-date-sort="1697036400000" data-listing-file-modified-sort="1697686604712" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
 <div class="thumbnail">
 <p><a href="./posts/POLYMOD-multiple-regression/index.html"> <img src="./posts/POLYMOD-multiple-regression/polymod-age-contact.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -378,7 +487,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="R,optim,regression" data-listing-date-sort="1696950000000" data-listing-file-modified-sort="1697426301366" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="8" data-categories="R,optim,regression" data-listing-date-sort="1696950000000" data-listing-file-modified-sort="1697426301366" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
 <div class="thumbnail">
 <p><a href="./posts/nb-regression-optim/index.html"> <img src="./posts/nb-regression-optim/plot_car.png" class="thumbnail-image"> </a></p>
 </div>
@@ -419,7 +528,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="R,raster,shapefile,crop,mask,sf" data-listing-date-sort="1695394800000" data-listing-file-modified-sort="1697425676228" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="9" data-categories="R,raster,shapefile,crop,mask,sf" data-listing-date-sort="1695394800000" data-listing-file-modified-sort="1697425676228" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
 <div class="thumbnail">
 <p><a href="./posts/crop-raster-polygon/index.html"> <img src="./posts/crop-raster-polygon/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -469,7 +578,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="ODE,R,odin" data-listing-date-sort="1694703600000" data-listing-file-modified-sort="1697426170761" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="10" data-categories="ODE,R,odin" data-listing-date-sort="1694703600000" data-listing-file-modified-sort="1697426170761" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
 <div class="thumbnail">
 <p><a href="./posts/odin/index.html"> <img src="./posts/odin/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -510,7 +619,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="ChatGPT,R,xml,httr" data-listing-date-sort="1693494000000" data-listing-file-modified-sort="1697426634309" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="11" data-categories="ChatGPT,R,xml,httr" data-listing-date-sort="1693494000000" data-listing-file-modified-sort="1697426634309" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
 <div class="thumbnail">
 <p><a href="./posts/pubmed-chatgpt-summary-python/index.html"> <img src="./posts/pubmed-chatgpt-summary-python/chatgpt.png" class="thumbnail-image"> </a></p>
 </div>
@@ -554,7 +663,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="9" data-categories="ChatGPT,R,xml,httr" data-listing-date-sort="1693494000000" data-listing-file-modified-sort="1697426635897" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10">
+<div class="quarto-post image-right" data-index="12" data-categories="ChatGPT,R,xml,httr" data-listing-date-sort="1693494000000" data-listing-file-modified-sort="1697426635897" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10">
 <div class="thumbnail">
 <p><a href="./posts/pubmed-chatgpt_summary/index.html"> <img src="./posts/pubmed-chatgpt_summary/chatgpt.png" class="thumbnail-image"> </a></p>
 </div>
@@ -598,7 +707,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="10" data-categories="R,shapefile,ggplot2,sf,raster,RcolorBrewer" data-listing-date-sort="1693321200000" data-listing-file-modified-sort="1697426187523" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="13" data-categories="R,shapefile,ggplot2,sf,raster,RcolorBrewer" data-listing-date-sort="1693321200000" data-listing-file-modified-sort="1697426187523" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
 <div class="thumbnail">
 <p><a href="./posts/area-polygon/index.html"> <img src="./posts/area-polygon/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -648,7 +757,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="11" data-categories="R,map,ggplot2,sf,RColorBrewer" data-listing-date-sort="1693321200000" data-listing-file-modified-sort="1697426236419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="14" data-categories="R,map,ggplot2,sf,RColorBrewer" data-listing-date-sort="1693321200000" data-listing-file-modified-sort="1697426236419" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
 <div class="thumbnail">
 <p><a href="./posts/drawing-map/index.html"> <img src="./posts/drawing-map/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -695,7 +804,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="12" data-categories="writing,paper" data-listing-date-sort="1693321200000" data-listing-file-modified-sort="1697426247051" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="15" data-categories="writing,paper" data-listing-date-sort="1693321200000" data-listing-file-modified-sort="1697426247051" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
 <div class="thumbnail">
 <p><a href="./posts/how-to-write-a-paper/index.html"> <img src="./posts/how-to-write-a-paper/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -733,7 +842,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="13" data-categories="parameter estimation,R,maximum likelihood,profile likelihood" data-listing-date-sort="1693148400000" data-listing-file-modified-sort="1697426104475" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="16" data-categories="parameter estimation,R,maximum likelihood,profile likelihood" data-listing-date-sort="1693148400000" data-listing-file-modified-sort="1697426104475" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
 <div class="thumbnail">
 <p><a href="./posts/climate-disaster/index.html"> <img src="./posts/climate-disaster/gates-climate-book.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -777,7 +886,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="14" data-categories="parameter estimation,R,maximum likelihood,profile likelihood" data-listing-date-sort="1692889200000" data-listing-file-modified-sort="1697426344640" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="17" data-categories="parameter estimation,R,maximum likelihood,profile likelihood" data-listing-date-sort="1692889200000" data-listing-file-modified-sort="1697426344640" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
 <div class="thumbnail">
 <p><a href="./posts/regression-toward-mean/index.html"> <img src="./posts/regression-toward-mean/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -821,7 +930,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="15" data-categories="parameter estimation,R,maximum likelihood,profile likelihood" data-listing-date-sort="1692889200000" data-listing-file-modified-sort="1697426430192" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="18" data-categories="parameter estimation,R,maximum likelihood,profile likelihood" data-listing-date-sort="1692889200000" data-listing-file-modified-sort="1697426430192" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
 <div class="thumbnail">
 <p><a href="./posts/survivor-bias/index.html"> <img src="./posts/survivor-bias/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -865,7 +974,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="16" data-categories="parameter estimation,R,maximum likelihood,profile likelihood" data-listing-date-sort="1691938800000" data-listing-file-modified-sort="1697426262365" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="19" data-categories="parameter estimation,R,maximum likelihood,profile likelihood" data-listing-date-sort="1691938800000" data-listing-file-modified-sort="1697426262365" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
 <div class="thumbnail">
 <p><a href="./posts/max-likelihood/index.html"> <img src="./posts/max-likelihood/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -909,7 +1018,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="17" data-categories="Monte Carlo,R,parameter estimation,code,analysis" data-listing-date-sort="1691679600000" data-listing-file-modified-sort="1697426784520" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="20" data-categories="Monte Carlo,R,parameter estimation,code,analysis" data-listing-date-sort="1691679600000" data-listing-file-modified-sort="1697426784520" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
 <div class="thumbnail">
 <p><a href="./posts/R0-sympy/index.html"> <img src="./posts/R0-sympy/SimPy_logo.svg.png" class="thumbnail-image"> </a></p>
 </div>
@@ -956,7 +1065,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="18" data-categories="Monte Carlo,R,parameter estimation,code,analysis" data-listing-date-sort="1691593200000" data-listing-file-modified-sort="1697426717109" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8">
+<div class="quarto-post image-right" data-index="21" data-categories="Monte Carlo,R,parameter estimation,code,analysis" data-listing-date-sort="1691593200000" data-listing-file-modified-sort="1697426717109" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8">
 <div class="thumbnail">
 <p><a href="./posts/pop-monte-carlo/index.html"> <img src="./posts/pop-monte-carlo/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -1003,7 +1112,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="19" data-categories="R,code,analysis" data-listing-date-sort="1691420400000" data-listing-file-modified-sort="1691818360396" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="22" data-categories="R,code,analysis" data-listing-date-sort="1691420400000" data-listing-file-modified-sort="1691818360396" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
 <div class="thumbnail">
 <p><a href="./posts/simple-model-complicated-dynamics/index.html"> <img src="./posts/simple-model-complicated-dynamics/image.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -1044,7 +1153,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="20" data-categories="news,code,analysis" data-listing-date-sort="1691334000000" data-listing-file-modified-sort="1691724846234" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="23" data-categories="news,code,analysis" data-listing-date-sort="1691334000000" data-listing-file-modified-sort="1691724846234" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
 <div class="thumbnail">
 <p><a href="./posts/ode-in-stan/index.html"> <img src="./posts/ode-in-stan/unnamed-chunk-5-1.png" class="thumbnail-image"> </a></p>
 </div>
@@ -1085,7 +1194,7 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="21" data-categories="news,code,analysis" data-listing-date-sort="1691334000000" data-listing-file-modified-sort="1691793843133" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6">
+<div class="quarto-post image-right" data-index="24" data-categories="news,code,analysis" data-listing-date-sort="1691334000000" data-listing-file-modified-sort="1691793843133" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6">
 <div class="thumbnail">
 <p><a href="./posts/sub-exponential-growth/index.html"> <img src="./posts/sub-exponential-growth/image.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -1126,47 +1235,9 @@ Jong-Hoon Kim
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="22" data-categories="modeling,philosophy" data-listing-date-sort="1691074800000" data-listing-file-modified-sort="1697426673384" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="25" data-categories="modeling,reproduction number" data-listing-date-sort="1691074800000" data-listing-file-modified-sort="1697426403695" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
 <div class="thumbnail">
-<p><a href="./posts/modeling-philosophy/index.html"> <img src="./posts/modeling-philosophy/sep-man-red.png" class="thumbnail-image"> </a></p>
-</div>
-<div class="body">
-<a href="./posts/modeling-philosophy/index.html">
-<h3 class="no-anchor listing-title">
-모델링이 뭔지는 알고 하나
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('modeling'); return false;">
-modeling
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('philosophy'); return false;">
-philosophy
-</div>
-</div>
-<a href="./posts/modeling-philosophy/index.html">
-<div class="listing-description">
-감염병 전파를 이해하는 데에는 수리 모형 (mathematical model)이 아주 중요한 역할을 한다. 그런데 어떻게 현실과는 다른 모형을 이용하여 현실에 대해 배울 수 있을까? 스탠포드 철학 백과사전에 이러한 내용을 담고 있는 부분이 있어 여기에 정리를 해본다. 아직 만족한 만한 해답을 찾지는 못했다.
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/modeling-philosophy/index.html">
-<div class="listing-date">
-Aug 4, 2023
-</div>
-<div class="listing-author">
-Jong-Hoon Kim
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="23" data-categories="modeling,reproduction number" data-listing-date-sort="1691074800000" data-listing-file-modified-sort="1697426403695" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
-<div class="thumbnail">
-<p><a href="./posts/reproduction-number/index.html"> <img src="./posts/reproduction-number/daily_case.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/reproduction-number/index.html"> <img data-src="./posts/reproduction-number/daily_case.png" class="thumbnail-image"> </a></p>
 </div>
 <div class="body">
 <a href="./posts/reproduction-number/index.html">
@@ -1206,6 +1277,9 @@ Jong-Hoon Kim
 <div class="listing-no-matching d-none">
 No matching items
 </div>
+<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
+  <ul class="pagination"></ul>
+</nav>
 </div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

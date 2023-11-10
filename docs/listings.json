@@ -2,6 +2,9 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/modeling-philosophy/index.html",
+      "/posts/rootsolve_optimize/index.html",
+      "/posts/branching_process/index.html",
       "/posts/nb-censored-regression/index.html",
       "/posts/apartment-data-api/index.html",
       "/posts/SIR-sympy/index.html",
@@ -24,7 +27,6 @@
       "/posts/simple-model-complicated-dynamics/index.html",
       "/posts/ode-in-stan/index.html",
       "/posts/sub-exponential-growth/index.html",
-      "/posts/modeling-philosophy/index.html",
       "/posts/reproduction-number/index.html"
     ]
   }
