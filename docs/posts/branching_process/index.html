@@ -96,6 +96,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -145,8 +147,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <h1 class="title">Branching process model</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R</div>
-                <div class="quarto-category">API</div>
-                <div class="quarto-category">apartment</div>
+                <div class="quarto-category">branching process</div>
+                <div class="quarto-category">final epidemic size</div>
               </div>
                   </div>
   </div>
@@ -182,256 +184,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<section id="branching-process-model" class="level3">
+<h3 class="anchored" data-anchor-id="branching-process-model">Branching process model</h3>
+<p>In the branching process model, the number of secondary infections is realized as a random number (e.g., Poission or Negative binomial).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(12)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>si_mean <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>recov_mean <span class="ot">&lt;-</span> <span class="dv">9</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>r0_mean <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>r0_size <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>R0_mean <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>popsize <span class="ot">=</span> <span class="dv">1000</span> <span class="co"># population size for each iteration</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>nrun <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="co"># number of iterations to compute the mean</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>outbreaks <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, nrun) <span class="co"># to store outbreak size for each iteration</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>init_inf <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># initially infected people</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">"S"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>status[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"I"</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_infected <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_infected[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_recovered <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_recovered[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape=</span>recov_shape, <span class="at">scale=</span>recov_scale)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># x &lt;- rnbinom(100, mu=si_mean, size=si_size)</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>current_time <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>recov_time <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(I<span class="sc">$</span>time_recovered[j]), time_recovered, </span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape=</span>recov_shape, <span class="at">scale=</span>recov_scale))</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (<span class="fu">nrow</span>(pop[pop<span class="sc">$</span>status <span class="sc">==</span><span class="st">"I"</span>,]) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(pop)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  nS <span class="ot">&lt;-</span> <span class="fu">nrow</span>(pop[pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"S"</span>,])</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  row <span class="ot">&lt;-</span> <span class="fu">which</span>(pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"I"</span>)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  nI <span class="ot">&lt;-</span> <span class="fu">length</span>(row)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  cnt <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nI) {</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    pop[row[j], ]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">"R"</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    recov_time <span class="ot">&lt;-</span> pop[row[j], ]<span class="sc">$</span>time_recovered</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    offspring <span class="ot">&lt;-</span> <span class="fu">rnbinom</span>(<span class="dv">1</span>, <span class="at">mu=</span>r0_mean<span class="sc">*</span>nS<span class="sc">/</span>N, <span class="at">size=</span>r0_size)</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (offspring <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>      inf_times <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(offspring, <span class="at">shape=</span>si_shape, <span class="at">scale=</span>si_scale)</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(inf_times)) {</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>        time_i <span class="ot">&lt;-</span> pop[row[j],]<span class="sc">$</span>time_infected <span class="sc">+</span> inf_times[k]</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (time_i <span class="sc">&lt;</span> recov_time) {</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">"I"</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>time_infected <span class="ot">&lt;-</span> time_i </span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>time_recovered <span class="ot">&lt;-</span> time_i <span class="sc">+</span> </span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape=</span>recov_shape, <span class="at">scale=</span>recov_scale)</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>          cnt <span class="ot">&lt;-</span> cnt <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nrun) {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  pop <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id=</span><span class="dv">1</span><span class="sc">:</span>popsize)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  pop<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">"S"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  pop<span class="sc">$</span>status[<span class="dv">1</span><span class="sc">:</span>init_inf] <span class="ot">&lt;-</span> <span class="st">"I"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  nS <span class="ot">&lt;-</span> <span class="fu">sum</span>(pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"S"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  nI <span class="ot">&lt;-</span> <span class="fu">sum</span>(pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"I"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(pop)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  cnt <span class="ot">&lt;-</span> init_inf <span class="sc">+</span> <span class="dv">1</span> <span class="co"># infecteds are placed from the first position</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (nI <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> nS <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    row <span class="ot">&lt;-</span> <span class="fu">which</span>(pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"I"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    nI <span class="ot">&lt;-</span> <span class="fu">length</span>(row)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nI) {</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>      pop<span class="sc">$</span>status[row[i]] <span class="ot">&lt;-</span> <span class="st">"R"</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      offspring <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">1</span>, <span class="at">lambda=</span>R0_mean<span class="sc">*</span>nS<span class="sc">/</span>N)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      nS <span class="ot">=</span> nS <span class="sc">-</span> offspring</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (offspring <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>offspring) {</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>          pop<span class="sc">$</span>status[cnt] <span class="ot">&lt;-</span> <span class="st">"I"</span> </span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>          cnt <span class="ot">&lt;-</span> cnt <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  outbreaks[r] <span class="ot">=</span> popsize <span class="sc">-</span> <span class="fu">sum</span>(pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"S"</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(outbreaks) <span class="co"># minor and major outbreaks</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/sir_branch-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(12)</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>si_mean <span class="ot">&lt;-</span> <span class="dv">7</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>si_sd <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>get_gamma_shape <span class="ot">&lt;-</span> <span class="cf">function</span>(mean, var){</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  scale <span class="ot">&lt;-</span> var<span class="sc">/</span>mean</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  shape <span class="ot">&lt;-</span> mean<span class="sc">/</span>scale</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">scale=</span>scale, <span class="at">shape=</span>shape))</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">get_gamma_shape</span>(<span class="at">mean=</span>si_mean, <span class="at">var=</span>si_sd<span class="sc">*</span>si_sd)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>si_shape <span class="ot">&lt;-</span> x<span class="sc">$</span>shape</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>si_scale <span class="ot">&lt;-</span> x<span class="sc">$</span>scale</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>recov_mean <span class="ot">&lt;-</span> <span class="dv">12</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>recov_sd <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">get_gamma_shape</span>(<span class="at">mean=</span>recov_mean, <span class="at">var=</span>recov_sd<span class="sc">*</span>recov_sd)</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>recov_shape <span class="ot">&lt;-</span> r<span class="sc">$</span>shape</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>recov_scale <span class="ot">&lt;-</span> r<span class="sc">$</span>scale</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>r0_mean <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>r0_size <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">"S"</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>status[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"I"</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_infected <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_infected[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_recovered <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_recovered[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape=</span>recov_shape, <span class="at">scale=</span>recov_scale)</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># x &lt;- rnbinom(100, mu=si_mean, size=si_size)</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>current_time <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>recov_time <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(I<span class="sc">$</span>time_recovered[j]), time_recovered, </span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape=</span>recov_shape, <span class="at">scale=</span>recov_scale))</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (<span class="fu">nrow</span>(pop[pop<span class="sc">$</span>status <span class="sc">==</span><span class="st">"I"</span>,]) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(pop)</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  nS <span class="ot">&lt;-</span> <span class="fu">nrow</span>(pop[pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"S"</span>,])</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  row <span class="ot">&lt;-</span> <span class="fu">which</span>(pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"I"</span>)</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  nI <span class="ot">&lt;-</span> <span class="fu">length</span>(row)</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  cnt <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nI) {</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    pop[row[j], ]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">"R"</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    recov_time <span class="ot">&lt;-</span> pop[row[j], ]<span class="sc">$</span>time_recovered</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    offspring <span class="ot">&lt;-</span> <span class="fu">rnbinom</span>(<span class="dv">1</span>, <span class="at">mu=</span>r0_mean<span class="sc">*</span>nS<span class="sc">/</span>N, <span class="at">size=</span>r0_size)</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (offspring <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>      inf_times <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(offspring, <span class="at">shape=</span>si_shape, <span class="at">scale=</span>si_scale)</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(inf_times)) {</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>        time_i <span class="ot">&lt;-</span> pop[row[j],]<span class="sc">$</span>time_infected <span class="sc">+</span> inf_times[k]</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (time_i <span class="sc">&lt;</span> recov_time) {</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">"I"</span></span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>time_infected <span class="ot">&lt;-</span> time_i </span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>time_recovered <span class="ot">&lt;-</span> time_i <span class="sc">+</span> </span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape=</span>recov_shape, <span class="at">scale=</span>recov_scale)</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>          cnt <span class="ot">&lt;-</span> cnt <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(outbreaks[outbreaks<span class="sc">&gt;</span><span class="dv">200</span>])<span class="sc">/</span>popsize <span class="co"># only major outbreaks</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7976577</code></pre>
 </div>
-<section id="branching-process-model-with-intervention" class="level3">
-<h3 class="anchored" data-anchor-id="branching-process-model-with-intervention">Branching process model with intervention</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(12)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>get_gamma_parms <span class="ot">&lt;-</span> <span class="cf">function</span>(mean, var){</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  scale <span class="ot">&lt;-</span> var<span class="sc">/</span>mean</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  shape <span class="ot">&lt;-</span> mean<span class="sc">/</span>scale</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">scale=</span>scale, <span class="at">shape=</span>shape))</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>si_mean <span class="ot">&lt;-</span> <span class="dv">7</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>si_sd <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">get_gamma_parms</span>(<span class="at">mean=</span>si_mean, <span class="at">var=</span>si_sd<span class="sc">*</span>si_sd)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>si_shape <span class="ot">&lt;-</span> x<span class="sc">$</span>shape</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>si_scale <span class="ot">&lt;-</span> x<span class="sc">$</span>scale</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>incub_mean <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>incub_sd <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>inc <span class="ot">&lt;-</span> <span class="fu">get_gamma_parms</span>(<span class="at">mean=</span>recov_mean, <span class="at">var=</span>recov_sd<span class="sc">*</span>recov_sd)</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>inc_shape <span class="ot">&lt;-</span> inc<span class="sc">$</span>shape</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>inc_scale <span class="ot">&lt;-</span> inc<span class="sc">$</span>scale</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>recov_mean <span class="ot">&lt;-</span> <span class="dv">12</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>recov_sd <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">get_gamma_parms</span>(<span class="at">mean=</span>recov_mean, <span class="at">var=</span>recov_sd<span class="sc">*</span>recov_sd)</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>recov_shape <span class="ot">&lt;-</span> rec<span class="sc">$</span>shape</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>recov_scale <span class="ot">&lt;-</span> rec<span class="sc">$</span>scale</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>r0_mean <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>r0_size <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>frac_asymp <span class="ot">=</span> <span class="fl">0.2</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>tracing_prob <span class="ot">=</span> <span class="fl">0.4</span></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>traced <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">"S"</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>status[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"I"</span></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_infected <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_infected[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_isolated <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_recovered <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>pop<span class="sc">$</span>time_recovered[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape=</span>recov_shape, <span class="at">scale=</span>recov_scale)</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co"># x &lt;- rnbinom(100, mu=si_mean, size=si_size)</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>current_time <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (<span class="fu">nrow</span>(pop[pop<span class="sc">$</span>status <span class="sc">==</span><span class="st">"I"</span>,]) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(pop)</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  nS <span class="ot">&lt;-</span> <span class="fu">nrow</span>(pop[pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"S"</span>,])</span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  row <span class="ot">&lt;-</span> <span class="fu">which</span>(pop<span class="sc">$</span>status <span class="sc">==</span> <span class="st">"I"</span>)</span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>  nI <span class="ot">&lt;-</span> <span class="fu">length</span>(row)</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>  cnt <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nI) {</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    pop[row[j], ]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">"R"</span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    recov_time <span class="ot">&lt;-</span> pop[row[j], ]<span class="sc">$</span>time_recovered</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    traced <span class="ot">&lt;-</span> pop[row[j], ]<span class="sc">$</span>traced</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    offspring <span class="ot">&lt;-</span> <span class="fu">rnbinom</span>(<span class="dv">1</span>, <span class="at">mu=</span>r0_mean<span class="sc">*</span>nS<span class="sc">/</span>N, <span class="at">size=</span>r0_size)</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (offspring <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>      inf_times <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(offspring, <span class="at">shape=</span>si_shape, <span class="at">scale=</span>si_scale)</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(inf_times)) {</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>        time_i <span class="ot">&lt;-</span> pop[row[j],]<span class="sc">$</span>time_infected <span class="sc">+</span> inf_times[k]</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (time_i <span class="sc">&lt;</span> recov_time ) {</span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>() <span class="sc">&gt;</span> frac_asymp, <span class="st">"I"</span>, <span class="st">"A"</span>)</span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>time_infected <span class="ot">&lt;-</span> time_i </span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>time_recovered <span class="ot">&lt;-</span> time_i <span class="sc">+</span> </span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape=</span>recov_shape, <span class="at">scale=</span>recov_scale)</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>          cnt <span class="ot">&lt;-</span> cnt <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ((time_i <span class="sc">&gt;</span> incub_time) <span class="sc">&amp;</span> traced) {</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>() <span class="sc">&gt;</span> frac_asymp, <span class="st">"I"</span>, <span class="st">"A"</span>)</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>time_infected <span class="ot">&lt;-</span> time_i </span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>          pop[nI <span class="sc">+</span> cnt,]<span class="sc">$</span>time_recovered <span class="ot">&lt;-</span> time_i <span class="sc">+</span> </span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape=</span>recov_shape, <span class="at">scale=</span>recov_scale)</span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>          cnt <span class="ot">&lt;-</span> cnt <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="final-epidemic-size" class="level3">
+<h3 class="anchored" data-anchor-id="final-epidemic-size">Final epidemic size</h3>
+<p>To make sure that my branching process model makes sense, let’s compare the final size of an epidemic. As shown in the previous post, for the <span class="math inline">\(SIR\)</span> model in a well-mixed population, the final epidemic size, <span class="math inline">\(R(\infty)\)</span> is given as follows: <span class="math display">\[R(\infty) = 1 − \text{exp}\left[-R_0R(\infty)\right]\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># million won</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>price <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">'</span><span class="sc">\\</span><span class="st">,'</span>, <span class="st">""</span>, d<span class="sc">$</span>거래금액)) <span class="sc">/</span> <span class="dv">100</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>area_sq_meter <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(d<span class="sc">$</span>전용면적) <span class="co"># q</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>area_category <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(d)) {</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  ar <span class="ot">&lt;-</span> d<span class="sc">$</span>area_sq_meter[i]</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(ar <span class="sc">&lt;</span> <span class="dv">50</span>){</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    d<span class="sc">$</span>area_category[i] <span class="ot">&lt;-</span> <span class="st">"&lt;50"</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span>(ar <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">&amp;</span> ar <span class="sc">&lt;</span> <span class="dv">80</span>) {</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    d<span class="sc">$</span>area_category[i] <span class="ot">&lt;-</span> <span class="st">"50-80"</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span>(ar <span class="sc">&gt;=</span> <span class="dv">80</span> <span class="sc">&amp;</span> ar <span class="sc">&lt;</span> <span class="dv">100</span>) {</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    d<span class="sc">$</span>area_category[i] <span class="ot">&lt;-</span> <span class="st">"80-100"</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span>(ar <span class="sc">&gt;=</span> <span class="dv">100</span>) {</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    d<span class="sc">$</span>area_category[i] <span class="ot">&lt;-</span> <span class="st">"&gt;100"</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>area_category <span class="ot">&lt;-</span> <span class="fu">factor</span>(d<span class="sc">$</span>area_category, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"&lt;50"</span>, <span class="st">"50-80"</span>, <span class="st">"80-100"</span>,<span class="st">"&gt;100"</span>))</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                             </span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>levels <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(d<span class="sc">$</span>층)</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>d <span class="sc">|&gt;</span> <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(area_category, price, <span class="at">color=</span>levels)) <span class="sc">+</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="fu">parse</span>(<span class="at">text=</span><span class="fu">paste0</span>(<span class="st">"Area~(m^2)"</span>)), <span class="at">y=</span><span class="st">"Price (million won)"</span>, <span class="at">color=</span><span class="fu">parse</span>(<span class="at">text=</span><span class="fu">paste0</span>(<span class="st">"Levels"</span>)))<span class="sc">+</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Apartment price in Jongno-gu, Seoul, 2022"</span>) </span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("apt_price.png", width=3.4*1.5, height=2.7*1.5, units="in")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># final size of an epidemic, R</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>final_size <span class="ot">&lt;-</span> <span class="cf">function</span>(R, R0){</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  R <span class="sc">-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>R0<span class="sc">*</span>R)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># lower bound set at a positive number to avoid R=0, which is also a solution</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">uniroot</span>(final_size, <span class="at">interval=</span><span class="fu">c</span>(<span class="fl">1e-3</span>,<span class="dv">1</span>), <span class="at">R0=</span>R0_mean)<span class="sc">$</span>root</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7968115</code></pre>
+</div>
 </div>
 
 

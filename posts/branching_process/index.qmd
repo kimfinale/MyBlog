@@ -2,8 +2,8 @@
 title: "Branching process model"
 author: "Jong-Hoon Kim"
 date: "2023-11-08"
-categories: [R, API, apartment]
-image: "apt_price.png"
+categories: [R, branching process, final epidemic size]
+image: "thumbnail.jpg"
 editor_options: 
   chunk_output_type: console
 ---
@@ -12,259 +12,56 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
+### Branching process model
 
-```{r eval=FALSE}
-# set.seed(12)
-si_mean <- 5
-recov_mean <- 9
-r0_mean <- 1
-r0_size <- 0.5
+In the branching process model, the number of secondary infections is realized as a random number (e.g., Poission or Negative binomial).
 
+```{r sir_branch}
+R0_mean <- 2
+popsize = 1000 # population size for each iteration
+nrun <- 1000 # number of iterations to compute the mean
+outbreaks <- rep(NA, nrun) # to store outbreak size for each iteration
+init_inf <- 1 # initially infected people
 
-pop <- data.frame(id=1:1000)
-pop$status <- "S"
-pop$status[1] <- "I"
-pop$time_infected <- NA
-pop$time_infected[1] <- 0
-pop$time_recovered <- NA
-pop$time_recovered[1] <- rgamma(1, shape=recov_shape, scale=recov_scale)
-
-# x <- rnbinom(100, mu=si_mean, size=si_size)
-current_time <- 0
-recov_time <- ifelse(!is.na(I$time_recovered[j]), time_recovered, 
-                         rgamma(1, shape=recov_shape, scale=recov_scale))
-
-while (nrow(pop[pop$status =="I",]) > 0) {
+for (r in 1:nrun) {
+  pop <- data.frame(id=1:popsize)
+  pop$status <- "S"
+  pop$status[1:init_inf] <- "I"
+  nS <- sum(pop$status == "S")
+  nI <- sum(pop$status == "I")
   N <- nrow(pop)
-  nS <- nrow(pop[pop$status == "S",])
-  row <- which(pop$status == "I")
-  nI <- length(row)
-  cnt <- 1
-  for (j in 1:nI) {
-    pop[row[j], ]$status <- "R"
-    recov_time <- pop[row[j], ]$time_recovered
-    offspring <- rnbinom(1, mu=r0_mean*nS/N, size=r0_size)
-    if (offspring > 0) {
-      inf_times <- rgamma(offspring, shape=si_shape, scale=si_scale)
-      
-      for (k in 1:length(inf_times)) {
-        time_i <- pop[row[j],]$time_infected + inf_times[k]
-        if (time_i < recov_time) {
-          pop[nI + cnt,]$status <- "I"
-          pop[nI + cnt,]$time_infected <- time_i 
-          pop[nI + cnt,]$time_recovered <- time_i + 
-            rgamma(1, shape=recov_shape, scale=recov_scale)
-          
+  cnt <- init_inf + 1 # infecteds are placed from the first position
+  while (nI > 0 & nS > 0) {
+    row <- which(pop$status == "I")
+    nI <- length(row)
+    for (i in 1:nI) {
+      pop$status[row[i]] <- "R"
+      offspring <- rpois(1, lambda=R0_mean*nS/N)
+      nS = nS - offspring
+      if (offspring > 0) {
+        for (k in 1:offspring) {
+          pop$status[cnt] <- "I" 
           cnt <- cnt + 1
-          
         }
       }
     }
   }
+  outbreaks[r] = popsize - sum(pop$status == "S")
 }
 
-sum(pop$status == "R")
+hist(outbreaks) # minor and major outbreaks
+mean(outbreaks[outbreaks>200])/popsize # only major outbreaks
 ```
 
-```{r eval=FALSE}
-# set.seed(12)
-si_mean <- 7
-si_sd <- 3
+### Final epidemic size
 
-get_gamma_shape <- function(mean, var){
-  scale <- var/mean
-  shape <- mean/scale
-  return(list(scale=scale, shape=shape))
+To make sure that my branching process model makes sense, let's compare the final size of an epidemic. As shown in the previous post, for the $SIR$ model in a well-mixed population, the final epidemic size, $R(\infty)$ is given as follows: $$R(\infty) = 1 − \text{exp}\left[-R_0R(\infty)\right]$$
+
+```{r sir_epidemic_size}
+# final size of an epidemic, R
+final_size <- function(R, R0){
+  R - 1 + exp(-R0*R)
 }
-
-x <- get_gamma_shape(mean=si_mean, var=si_sd*si_sd)
-
-si_shape <- x$shape
-si_scale <- x$scale
-  
-recov_mean <- 12
-recov_sd <- 3
-r <- get_gamma_shape(mean=recov_mean, var=recov_sd*recov_sd)
-
-recov_shape <- r$shape
-recov_scale <- r$scale
-
-r0_mean <- 4
-r0_size <- 0.5
-
-
-pop <- data.frame(id=1:1000)
-pop$status <- "S"
-pop$status[1] <- "I"
-pop$time_infected <- NA
-pop$time_infected[1] <- 0
-pop$time_recovered <- NA
-pop$time_recovered[1] <- rgamma(1, shape=recov_shape, scale=recov_scale)
-
-# x <- rnbinom(100, mu=si_mean, size=si_size)
-current_time <- 0
-recov_time <- ifelse(!is.na(I$time_recovered[j]), time_recovered, 
-                         rgamma(1, shape=recov_shape, scale=recov_scale))
-
-while (nrow(pop[pop$status =="I",]) > 0) {
-  N <- nrow(pop)
-  nS <- nrow(pop[pop$status == "S",])
-  row <- which(pop$status == "I")
-  nI <- length(row)
-  cnt <- 1
-  for (j in 1:nI) {
-    pop[row[j], ]$status <- "R"
-    recov_time <- pop[row[j], ]$time_recovered
-    offspring <- rnbinom(1, mu=r0_mean*nS/N, size=r0_size)
-    if (offspring > 0) {
-      inf_times <- rgamma(offspring, shape=si_shape, scale=si_scale)
-      
-      for (k in 1:length(inf_times)) {
-        time_i <- pop[row[j],]$time_infected + inf_times[k]
-        if (time_i < recov_time) {
-          pop[nI + cnt,]$status <- "I"
-          pop[nI + cnt,]$time_infected <- time_i 
-          pop[nI + cnt,]$time_recovered <- time_i + 
-            rgamma(1, shape=recov_shape, scale=recov_scale)
-          
-          cnt <- cnt + 1
-          
-        }
-      }
-    }
-  }
-}
-
-sum(pop$status == "R")
-```
-
-### Branching process model with intervention
-
-```{r eval=FALSE}
-# set.seed(12)
-
-
-get_gamma_parms <- function(mean, var){
-  scale <- var/mean
-  shape <- mean/scale
-  return(list(scale=scale, shape=shape))
-}
-
-si_mean <- 7
-si_sd <- 3
-x <- get_gamma_parms(mean=si_mean, var=si_sd*si_sd)
-
-si_shape <- x$shape
-si_scale <- x$scale
-  
-incub_mean <- 4
-incub_sd <- 2
-inc <- get_gamma_parms(mean=recov_mean, var=recov_sd*recov_sd)
-
-inc_shape <- inc$shape
-inc_scale <- inc$scale
-
-recov_mean <- 12
-recov_sd <- 3
-rec <- get_gamma_parms(mean=recov_mean, var=recov_sd*recov_sd)
-
-recov_shape <- rec$shape
-recov_scale <- rec$scale
-
-r0_mean <- 4
-r0_size <- 0.5
-
-frac_asymp = 0.2
-tracing_prob = 0.4
-pop <- data.frame(id=1:1000)
-pop$traced <- FALSE
-pop$status <- "S"
-pop$status[1] <- "I"
-pop$time_infected <- NA
-pop$time_infected[1] <- 0
-pop$time_isolated <- NA
-pop$time_recovered <- NA
-pop$time_recovered[1] <- rgamma(1, shape=recov_shape, scale=recov_scale)
-
-# x <- rnbinom(100, mu=si_mean, size=si_size)
-current_time <- 0
-
-while (nrow(pop[pop$status =="I",]) > 0) {
-  N <- nrow(pop)
-  nS <- nrow(pop[pop$status == "S",])
-  row <- which(pop$status == "I")
-  nI <- length(row)
-  cnt <- 1
-  for (j in 1:nI) {
-    pop[row[j], ]$status <- "R"
-    recov_time <- pop[row[j], ]$time_recovered
-    traced <- pop[row[j], ]$traced
-    
-    offspring <- rnbinom(1, mu=r0_mean*nS/N, size=r0_size)
-    if (offspring > 0) {
-      inf_times <- rgamma(offspring, shape=si_shape, scale=si_scale)
-      
-      for (k in 1:length(inf_times)) {
-        time_i <- pop[row[j],]$time_infected + inf_times[k]
-        if (time_i < recov_time ) {
-          pop[nI + cnt,]$status <- ifelse(runif() > frac_asymp, "I", "A")
-          pop[nI + cnt,]$time_infected <- time_i 
-          pop[nI + cnt,]$time_recovered <- time_i + 
-            rgamma(1, shape=recov_shape, scale=recov_scale)
-          
-          cnt <- cnt + 1
-          
-        }
-        if ((time_i > incub_time) & traced) {
-          pop[nI + cnt,]$status <- ifelse(runif() > frac_asymp, "I", "A")
-          pop[nI + cnt,]$time_infected <- time_i 
-          pop[nI + cnt,]$time_recovered <- time_i + 
-            rgamma(1, shape=recov_shape, scale=recov_scale)
-          
-          cnt <- cnt + 1
-          
-        }
-      }
-    }
-  }
-}
-
-```
-
-```{r eval=FALSE}
-# million won
-d$price <- as.numeric(gsub('\\,', "", d$거래금액)) / 100
-d$area_sq_meter <- as.numeric(d$전용면적) # q
-d$area_category <- NA
-
-for(i in 1:nrow(d)) {
-  ar <- d$area_sq_meter[i]
-  if(ar < 50){
-    d$area_category[i] <- "<50"
-  }
-  else if(ar >= 50 & ar < 80) {
-    d$area_category[i] <- "50-80"
-  }
-  else if(ar >= 80 & ar < 100) {
-    d$area_category[i] <- "80-100"
-  }
-  else if(ar >= 100) {
-    d$area_category[i] <- ">100"
-  }
-}
-
-d$area_category <- factor(d$area_category, levels=c("<50", "50-80", "80-100",">100"))
-                             
-d$levels <- as.numeric(d$층)
-
-library(ggplot2)
-
-d |> as.data.frame() |> 
-  ggplot()+
-  geom_point(aes(area_category, price, color=levels)) +
-  labs(x=parse(text=paste0("Area~(m^2)")), y="Price (million won)", color=parse(text=paste0("Levels")))+
-  theme_bw()+
-  ggtitle("Apartment price in Jongno-gu, Seoul, 2022") 
-
-# ggsave("apt_price.png", width=3.4*1.5, height=2.7*1.5, units="in")
+# lower bound set at a positive number to avoid R=0, which is also a solution
+uniroot(final_size, interval=c(1e-3,1), R0=R0_mean)$root
 ```
