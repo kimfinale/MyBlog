@@ -67,7 +67,7 @@ final_size <- function(R, R0){
 uniroot(final_size, interval=c(1e-3,1), R0=R0_mean)$root
 ```
 
-### Negative binomial distribution 
+### Negative binomial distribution
 
 What would happen if I allow the negative binomial distribution for the offspring
 

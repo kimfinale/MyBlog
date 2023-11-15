@@ -10,7 +10,457 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Jong-Hoon Kim&#39;s Blog</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Mon, 13 Nov 2023 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 14 Nov 2023 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Estimating incubation period: interval cenoring</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/interval-censoring/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="interval-censoring" class="level3">
+<h3 class="anchored" data-anchor-id="interval-censoring">Interval censoring</h3>
+<p>In the branching process model, the number of secondary infections is realized as a random number (e.g., Poission or Negative binomial). <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D%20=%20%5Cprod_%7Bi=1%7D%5E%7Bn%7D%20f(t%5E%7BB%7D_i%20-%20t%5E%0A%7BA%7D_i)"> , where <img src="https://latex.codecogs.com/png.latex?f"> is a probability density function which we assume follows a Gamma distribution.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>)</span>
+<span id="cb1-2">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb1-3">shape_true <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.2</span></span>
+<span id="cb1-4">scale_true <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.3</span></span>
+<span id="cb1-5"></span>
+<span id="cb1-6">onset_infector <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size=</span>n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb1-7">onset_infectee <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> onset_infector <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgamma</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>shape_true, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>scale_true)</span>
+<span id="cb1-8">nll <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(parms, x) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dgamma</span>(x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">log=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>))</span>
+<span id="cb1-9">res1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">optim</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">par=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fn=</span>nll, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span>onset_infectee <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> onset_infector, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Nelder-Mead"</span>,</span>
+<span id="cb1-10">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">control =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">maxit=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2e4</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">reltol=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-15</span>))</span></code></pre></div>
+</div>
+</section>
+<section id="interval-censoring-1" class="level3">
+<h3 class="anchored" data-anchor-id="interval-censoring-1">Interval censoring</h3>
+<p>Now suppose that the date of infection of the infector is given only as an interval: <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D%20=%20%5Cprod_%7Bi=1%7D%5E%7Bn%7D%20%5Cint_%7Bt%5E%7BA%7D_%7BiL%7D%7D%5E%7Bt%5E%7BA%7D_%7BiR%7D%7D%20g(%5Ctau)%20f(t%5E%7BB%7D_i-%5Ctau)%20~%5Ctext%7Bd%7D%5Ctau"> , where <img src="https://latex.codecogs.com/png.latex?A_L,%20A_R,%20t"> present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>)</span>
+<span id="cb2-2">L <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb2-3">R <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>L <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># this will lead to potentially shorter serial interval</span></span>
+<span id="cb2-4">AL <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> onset_infector <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> L</span>
+<span id="cb2-5">AR <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> onset_infector <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> R</span>
+<span id="cb2-6"></span>
+<span id="cb2-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># x</span></span>
+<span id="cb2-8">nll_interval_censor <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(parms, AL, AR, t){</span>
+<span id="cb2-9">  <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dunif</span>(AL, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">min=</span>AL, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">max=</span>AR)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pgamma</span>(t<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>AL, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pgamma</span>(t<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>AR, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]]))))</span>
+<span id="cb2-10">}</span>
+<span id="cb2-11"></span>
+<span id="cb2-12"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nll_interval_censor</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">AL=</span>AL, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">AR=</span>AR, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">t=</span>onset_infectee)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 312.9278</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">res2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">optim</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">par=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fn=</span>nll_interval_censor, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">AL=</span>AL, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">AR=</span>AR, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">t=</span>onset_infectee, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Nelder-Mead"</span>,</span>
+<span id="cb4-2">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">control =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">maxit=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2e4</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">reltol=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-15</span>))</span>
+<span id="cb4-3"></span>
+<span id="cb4-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># integrate(function(x) dgamma(x, shape=shape_true, scale=scale_true), lower=2, upper=3)</span></span>
+<span id="cb4-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># pgamma(3, shape=shape_true, scale=scale_true) - pgamma(2, shape=shape_true, scale=scale_true) </span></span>
+<span id="cb4-6">x1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgamma</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>res1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>res1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]])</span>
+<span id="cb4-7">x2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgamma</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>res2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>res2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]])</span>
+<span id="cb4-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(x1)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.1677  3.7743  6.2386  7.3706 10.0134 36.0535 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(x2)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+ 0.05973  2.01266  3.88932  4.85497  6.77875 20.17723 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">model=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"No censoring"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Interval censoring"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">each=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">val=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(x1,x2))</span>
+<span id="cb8-2"></span>
+<span id="cb8-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb8-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>))</span>
+<span id="cb8-5"></span>
+<span id="cb8-6">df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span>val, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill=</span>model))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"value"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"density"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottom"</span>, </span>
+<span id="cb8-10">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>()) </span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/interval-censoring/index_files/figure-html/uniform_interval-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ggsave("interval_censor.png", gg, width=3.4*2, height=2.7*2, units="in")</span></span></code></pre></div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>incubation period</category>
+  <category>interval censoring</category>
+  <guid>https://kimfinale.github.io/myblog/posts/interval-censoring/index.html</guid>
+  <pubDate>Tue, 14 Nov 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/interval-censoring/interval_censor.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
 <item>
   <title>Branching process model 2</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -6931,46 +7381,6 @@ font-style: inherit;">12</span>))</span>
   <guid>https://kimfinale.github.io/myblog/posts/regression-toward-mean/index.html</guid>
   <pubDate>Thu, 24 Aug 2023 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/regression-toward-mean/thumbnail.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>Survivor bias</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/survivor-bias/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>In his <a href="https://www.youtube.com/watch?v=dzFf3r1yph8&amp;t=209s">lecture</a> titled “The Soul of statistics” Joseph Blitzstein talks about a survivor bias (or conditioning more broadly) Dr.&nbsp;Derek Muller also talks about various examples of Korean houses in <a href="https://english.visitkorea.or.kr/svc/whereToGo/locIntrdn/locIntrdnList.do?vcontsId=97932&amp;menuSn=351">Bukchon Hanok Village</a> on his <a href="https://www.youtube.com/watch?v=_Qd3erAPI9w">YouTube</a></p>
-<p>Survivor bias is today’s topic and the following was written mostly by GPT 4.</p>
-<p><strong>Survivor Bias: What Remains Tells Only Half the Story</strong></p>
-<p>Imagine walking through a forest and noticing the tallest trees. You marvel at their height and strength, thinking that this is the natural order of things. But what about the saplings and smaller trees that didn’t survive? This is the essence of survivor bias.</p>
-<p><strong>What is Survivor Bias?</strong></p>
-<p>Survivor bias, or survivorship bias, is a logical error of focusing on the people or things that made it past some selection process and overlooking those that did not, typically because of their lack of visibility. This can lead to false conclusions in numerous different ways.</p>
-<p><strong>A Classic Example: WWII Airplanes</strong></p>
-<p>During World War II, military officials examined planes returning from combat missions to determine where they were most frequently hit by enemy fire. The plan was simple: reinforce these areas to improve the aircraft’s survival rate. The bullet holes were predominantly in the wings, body, and tail. So, it might seem logical to reinforce these parts.</p>
-<p>However, a statistician named Abraham Wald pointed out a flaw in this reasoning. The planes they were inspecting had survived. The real question was: where were the bullet holes on the planes that didn’t return? Wald hypothesized that the missing airplanes had been hit in the engine, a critical area absent of damage in the returning planes. By only looking at the survivors, the military had almost made a grave error.</p>
-<p><strong>Why Does It Matter?</strong></p>
-<p>Survivor bias can skew our understanding and lead to incorrect conclusions in various fields:</p>
-<ul>
-<li><p><strong>Business:</strong> When studying successful companies, we might conclude that their practices are best. But what about companies that followed the same practices and failed?</p></li>
-<li><p><strong>Medicine:</strong> If we only focus on patients who return for follow-up after treatment, we might miss side effects or outcomes in those who didn’t return.</p></li>
-<li><p><strong>Culture:</strong> Celebrating only the top artists or authors might make us think that a particular style or theme is the key to success, overlooking other potential talents.</p></li>
-</ul>
-<p><strong>Overcoming Survivor Bias</strong></p>
-<p>Awareness is the first step. Whenever you’re examining successes, ask yourself: “What am I not seeing?” Seek out the failures, the unseen, the unreturned. By considering the whole picture, not just the apparent survivors, you get a clearer, more accurate view of reality.</p>
-<p>In conclusion, while it’s natural to focus on winners and success stories, it’s crucial to remember the unseen and unspoken failures. They often hold the most valuable lessons.</p>
-
-
-
- ]]></description>
-  <category>parameter estimation</category>
-  <category>R</category>
-  <category>maximum likelihood</category>
-  <category>profile likelihood</category>
-  <guid>https://kimfinale.github.io/myblog/posts/survivor-bias/index.html</guid>
-  <pubDate>Thu, 24 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/survivor-bias/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>
