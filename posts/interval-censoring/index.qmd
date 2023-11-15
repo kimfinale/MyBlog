@@ -12,7 +12,7 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
-### Vanialla maximum likelihood estimation
+### Vanilla maximum likelihood estimation
 
 Suppose dates of onsets of infectors, $t^{A}$, and infectees $t^{B}$, are given specific dates.  Then, serial interval may be estimated as follows:  
 $$\mathcal{L} = \prod_{i=1}^{n} f(t^{B}_i - t^
@@ -37,6 +37,8 @@ Now suppose that the dates of onset of the infectors are given only as intervals
 
 $$\mathcal{L} = \prod_{i=1}^{n} \int_{t^{A}_{iL}}^{t^{A}_{iR}} g(\tau) f(t^{B}_i-\tau) ~\text{d}\tau$$
 , where $A_L, A_R, t$ present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively. $g(x)$ represents the density function to represent the interval and we assume it follows a uniform distribution. 
+
+This is a simplified version of doubly interval-censored data analysis, which was discussed by [Reich *et al* 2009](https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.3659). The same concept has recently been applied to estimation of serial interval of CVODI-19 by [Nishiura *et al*. 2020](https://www.ijidonline.com/article/S1201-9712(20)30119-3/fulltext#supplementaryMaterial). I will cover the doubly interval-censored data in a future post.
 ```{r uniform_interval}
 set.seed(42)
 L <- - sample(1:5, n, replace=TRUE)

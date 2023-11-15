@@ -184,8 +184,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="vanialla-maximum-likelihood-estimation" class="level3">
-<h3 class="anchored" data-anchor-id="vanialla-maximum-likelihood-estimation">Vanialla maximum likelihood estimation</h3>
+<section id="vanilla-maximum-likelihood-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="vanilla-maximum-likelihood-estimation">Vanilla maximum likelihood estimation</h3>
 <p>Suppose dates of onsets of infectors, <span class="math inline">\(t^{A}\)</span>, and infectees <span class="math inline">\(t^{B}\)</span>, are given specific dates. Then, serial interval may be estimated as follows:<br>
 <span class="math display">\[\mathcal{L} = \prod_{i=1}^{n} f(t^{B}_i - t^
 {A}_i)\]</span> , where <span class="math inline">\(f\)</span> is a probability density function which we assume follows a Gamma distribution.</p>
@@ -206,6 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="mle-with-interval-censoring">MLE with interval censoring</h3>
 <p>Now suppose that the dates of onset of the infectors are given only as intervals. In this case, the above likelihood function may be modified as follows:</p>
 <p><span class="math display">\[\mathcal{L} = \prod_{i=1}^{n} \int_{t^{A}_{iL}}^{t^{A}_{iR}} g(\tau) f(t^{B}_i-\tau) ~\text{d}\tau\]</span> , where <span class="math inline">\(A_L, A_R, t\)</span> present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively. <span class="math inline">\(g(x)\)</span> represents the density function to represent the interval and we assume it follows a uniform distribution.</p>
+<p>This is a simplified version of doubly interval-censored data analysis, which was discussed by <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.3659">Reich <em>et al</em> 2009</a>. The same concept has recently been applied to estimation of serial interval of CVODI-19 by <a href="https://www.ijidonline.com/article/S1201-9712(20)30119-3/fulltext#supplementaryMaterial">Nishiura <em>et al</em>. 2020</a>. I will cover the doubly interval-censored data in a future post.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="sc">-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, n, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>

@@ -20,8 +20,8 @@
 
 
 
-<section id="vanialla-maximum-likelihood-estimation" class="level3">
-<h3 class="anchored" data-anchor-id="vanialla-maximum-likelihood-estimation">Vanialla maximum likelihood estimation</h3>
+<section id="vanilla-maximum-likelihood-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="vanilla-maximum-likelihood-estimation">Vanilla maximum likelihood estimation</h3>
 <p>Suppose dates of onsets of infectors, <img src="https://latex.codecogs.com/png.latex?t%5E%7BA%7D">, and infectees <img src="https://latex.codecogs.com/png.latex?t%5E%7BB%7D">, are given specific dates. Then, serial interval may be estimated as follows:<br>
 <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D%20=%20%5Cprod_%7Bi=1%7D%5E%7Bn%7D%20f(t%5E%7BB%7D_i%20-%20t%5E%0A%7BA%7D_i)"> , where <img src="https://latex.codecogs.com/png.latex?f"> is a probability density function which we assume follows a Gamma distribution.</p>
 <div class="cell">
@@ -139,6 +139,7 @@ font-style: inherit;">1e-15</span>))</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="mle-with-interval-censoring">MLE with interval censoring</h3>
 <p>Now suppose that the dates of onset of the infectors are given only as intervals. In this case, the above likelihood function may be modified as follows:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D%20=%20%5Cprod_%7Bi=1%7D%5E%7Bn%7D%20%5Cint_%7Bt%5E%7BA%7D_%7BiL%7D%7D%5E%7Bt%5E%7BA%7D_%7BiR%7D%7D%20g(%5Ctau)%20f(t%5E%7BB%7D_i-%5Ctau)%20~%5Ctext%7Bd%7D%5Ctau"> , where <img src="https://latex.codecogs.com/png.latex?A_L,%20A_R,%20t"> present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively. <img src="https://latex.codecogs.com/png.latex?g(x)"> represents the density function to represent the interval and we assume it follows a uniform distribution.</p>
+<p>This is a simplified version of doubly interval-censored data analysis, which was discussed by <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.3659">Reich <em>et al</em> 2009</a>. The same concept has recently been applied to estimation of serial interval of CVODI-19 by <a href="https://www.ijidonline.com/article/S1201-9712(20)30119-3/fulltext#supplementaryMaterial">Nishiura <em>et al</em>. 2020</a>. I will cover the doubly interval-censored data in a future post.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
 background-color: null;
