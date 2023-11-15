@@ -9,7 +9,7 @@
 <meta name="author" content="Jong-Hoon Kim">
 <meta name="dcterms.date" content="2023-11-15">
 
-<title>Jong-Hoon Kim’s Blog - Estimating incubation period: interval cenoring</title>
+<title>Jong-Hoon Kim’s Blog - Estimating serial interval: interval cenoring</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -144,7 +144,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Estimating incubation period: interval cenoring</h1>
+      <h1 class="title">Estimating serial interval: interval cenoring</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R</div>
                 <div class="quarto-category">incubation period</div>
@@ -184,9 +184,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="interval-censoring" class="level3">
-<h3 class="anchored" data-anchor-id="interval-censoring">Interval censoring</h3>
-<p>In the branching process model, the number of secondary infections is realized as a random number (e.g., Poission or Negative binomial). <span class="math display">\[\mathcal{L} = \prod_{i=1}^{n} f(t^{B}_i - t^
+<section id="vanialla-maximum-likelihood-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="vanialla-maximum-likelihood-estimation">Vanialla maximum likelihood estimation</h3>
+<p>Suppose dates of onsets of infectors, <span class="math inline">\(t^{A}\)</span>, and infectees <span class="math inline">\(t^{B}\)</span>, are given specific dates. Then, serial interval may be estimated as follows:<br>
+<span class="math display">\[\mathcal{L} = \prod_{i=1}^{n} f(t^{B}_i - t^
 {A}_i)\]</span> , where <span class="math inline">\(f\)</span> is a probability density function which we assume follows a Gamma distribution.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
@@ -201,9 +202,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">2e4</span>, <span class="at">reltol=</span><span class="fl">1e-15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="interval-censoring-1" class="level3">
-<h3 class="anchored" data-anchor-id="interval-censoring-1">Interval censoring</h3>
-<p>Now suppose that the date of infection of the infector is given only as an interval: <span class="math display">\[\mathcal{L} = \prod_{i=1}^{n} \int_{t^{A}_{iL}}^{t^{A}_{iR}} g(\tau) f(t^{B}_i-\tau) ~\text{d}\tau\]</span> , where <span class="math inline">\(A_L, A_R, t\)</span> present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively.</p>
+<section id="mle-with-interval-censoring" class="level3">
+<h3 class="anchored" data-anchor-id="mle-with-interval-censoring">MLE with interval censoring</h3>
+<p>Now suppose that the dates of onset of the infectors are given only as intervals. In this case, the above likelihood function may be modified as follows:</p>
+<p><span class="math display">\[\mathcal{L} = \prod_{i=1}^{n} \int_{t^{A}_{iL}}^{t^{A}_{iR}} g(\tau) f(t^{B}_i-\tau) ~\text{d}\tau\]</span> , where <span class="math inline">\(A_L, A_R, t\)</span> present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively. <span class="math inline">\(g(x)\)</span> represents the density function to represent the interval and we assume it follows a uniform distribution.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="sc">-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, n, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
@@ -216,41 +218,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">dunif</span>(AL, <span class="at">min=</span>AL, <span class="at">max=</span>AR)<span class="sc">*</span>(<span class="fu">pgamma</span>(t<span class="sc">-</span>AL, <span class="at">shape=</span>parms[[<span class="dv">1</span>]], <span class="at">scale=</span>parms[[<span class="dv">2</span>]]) <span class="sc">-</span> <span class="fu">pgamma</span>(t<span class="sc">-</span>AR, <span class="at">shape=</span>parms[[<span class="dv">1</span>]], <span class="at">scale=</span>parms[[<span class="dv">2</span>]]))))</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">nll_interval_censor</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), <span class="at">AL=</span>AL, <span class="at">AR=</span>AR, <span class="at">t=</span>onset_infectee)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 312.9278</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>res2 <span class="ot">=</span> <span class="fu">optim</span>(<span class="at">par=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">fn=</span>nll_interval_censor, <span class="at">AL=</span>AL, <span class="at">AR=</span>AR, <span class="at">t=</span>onset_infectee, <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>,</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">2e4</span>, <span class="at">reltol=</span><span class="fl">1e-15</span>))</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># integrate(function(x) dgamma(x, shape=shape_true, scale=scale_true), lower=2, upper=3)</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># pgamma(3, shape=shape_true, scale=scale_true) - pgamma(2, shape=shape_true, scale=scale_true) </span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="fl">1e3</span>, <span class="at">shape=</span>res1<span class="sc">$</span>par[[<span class="dv">1</span>]], <span class="at">scale=</span>res1<span class="sc">$</span>par[[<span class="dv">2</span>]])</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="fl">1e3</span>, <span class="at">shape=</span>res2<span class="sc">$</span>par[[<span class="dv">1</span>]], <span class="at">scale=</span>res2<span class="sc">$</span>par[[<span class="dv">2</span>]])</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(x1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>res2 <span class="ot">=</span> <span class="fu">optim</span>(<span class="at">par=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">fn=</span>nll_interval_censor, <span class="at">AL=</span>AL, <span class="at">AR=</span>AR, <span class="at">t=</span>onset_infectee, <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">2e4</span>, <span class="at">reltol=</span><span class="fl">1e-15</span>))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="fl">1e3</span>, <span class="at">shape=</span>res1<span class="sc">$</span>par[[<span class="dv">1</span>]], <span class="at">scale=</span>res1<span class="sc">$</span>par[[<span class="dv">2</span>]])</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="fl">1e3</span>, <span class="at">shape=</span>res2<span class="sc">$</span>par[[<span class="dv">1</span>]], <span class="at">scale=</span>res2<span class="sc">$</span>par[[<span class="dv">2</span>]])</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(x1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.1677  3.7743  6.2386  7.3706 10.0134 36.0535 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(x2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(x2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
  0.05973  2.01266  3.88932  4.85497  6.77875 20.17723 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">model=</span><span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"No censoring"</span>, <span class="st">"Interval censoring"</span>), <span class="at">each=</span><span class="fl">1e3</span>), <span class="at">val=</span><span class="fu">c</span>(x1,x2))</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(hrbrthemes<span class="sc">::</span><span class="fu">theme_ipsum_rc</span>(<span class="at">base_size=</span><span class="dv">14</span>, <span class="at">subtitle_size=</span><span class="dv">16</span>, <span class="at">axis_title_size=</span><span class="dv">12</span>))</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>val, <span class="at">fill=</span>model))<span class="sc">+</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"value"</span>, <span class="at">y=</span><span class="st">"density"</span>)<span class="sc">+</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, </span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_blank</span>()) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">model=</span><span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"No censoring"</span>, <span class="st">"Interval censoring"</span>), <span class="at">each=</span><span class="fl">1e3</span>), <span class="at">val=</span><span class="fu">c</span>(x1,x2))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(hrbrthemes<span class="sc">::</span><span class="fu">theme_ipsum_rc</span>(<span class="at">base_size=</span><span class="dv">14</span>, <span class="at">subtitle_size=</span><span class="dv">16</span>, <span class="at">axis_title_size=</span><span class="dv">12</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>val, <span class="at">fill=</span>model))<span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"value"</span>, <span class="at">y=</span><span class="st">"density"</span>)<span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_blank</span>()) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/uniform_interval-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("interval_censor.png", gg, width=3.4*2, height=2.7*2, units="in")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

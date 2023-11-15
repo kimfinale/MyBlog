@@ -12,7 +12,7 @@
 <generator>quarto-1.3.450</generator>
 <lastBuildDate>Tue, 14 Nov 2023 15:00:00 GMT</lastBuildDate>
 <item>
-  <title>Estimating incubation period: interval cenoring</title>
+  <title>Estimating serial interval: interval cenoring</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
   <link>https://kimfinale.github.io/myblog/posts/interval-censoring/index.html</link>
   <description><![CDATA[ 
@@ -20,9 +20,10 @@
 
 
 
-<section id="interval-censoring" class="level3">
-<h3 class="anchored" data-anchor-id="interval-censoring">Interval censoring</h3>
-<p>In the branching process model, the number of secondary infections is realized as a random number (e.g., Poission or Negative binomial). <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D%20=%20%5Cprod_%7Bi=1%7D%5E%7Bn%7D%20f(t%5E%7BB%7D_i%20-%20t%5E%0A%7BA%7D_i)"> , where <img src="https://latex.codecogs.com/png.latex?f"> is a probability density function which we assume follows a Gamma distribution.</p>
+<section id="vanialla-maximum-likelihood-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="vanialla-maximum-likelihood-estimation">Vanialla maximum likelihood estimation</h3>
+<p>Suppose dates of onsets of infectors, <img src="https://latex.codecogs.com/png.latex?t%5E%7BA%7D">, and infectees <img src="https://latex.codecogs.com/png.latex?t%5E%7BB%7D">, are given specific dates. Then, serial interval may be estimated as follows:<br>
+<img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D%20=%20%5Cprod_%7Bi=1%7D%5E%7Bn%7D%20f(t%5E%7BB%7D_i%20-%20t%5E%0A%7BA%7D_i)"> , where <img src="https://latex.codecogs.com/png.latex?f"> is a probability density function which we assume follows a Gamma distribution.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -134,9 +135,10 @@ background-color: null;
 font-style: inherit;">1e-15</span>))</span></code></pre></div>
 </div>
 </section>
-<section id="interval-censoring-1" class="level3">
-<h3 class="anchored" data-anchor-id="interval-censoring-1">Interval censoring</h3>
-<p>Now suppose that the date of infection of the infector is given only as an interval: <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D%20=%20%5Cprod_%7Bi=1%7D%5E%7Bn%7D%20%5Cint_%7Bt%5E%7BA%7D_%7BiL%7D%7D%5E%7Bt%5E%7BA%7D_%7BiR%7D%7D%20g(%5Ctau)%20f(t%5E%7BB%7D_i-%5Ctau)%20~%5Ctext%7Bd%7D%5Ctau"> , where <img src="https://latex.codecogs.com/png.latex?A_L,%20A_R,%20t"> present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively.</p>
+<section id="mle-with-interval-censoring" class="level3">
+<h3 class="anchored" data-anchor-id="mle-with-interval-censoring">MLE with interval censoring</h3>
+<p>Now suppose that the dates of onset of the infectors are given only as intervals. In this case, the above likelihood function may be modified as follows:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D%20=%20%5Cprod_%7Bi=1%7D%5E%7Bn%7D%20%5Cint_%7Bt%5E%7BA%7D_%7BiL%7D%7D%5E%7Bt%5E%7BA%7D_%7BiR%7D%7D%20g(%5Ctau)%20f(t%5E%7BB%7D_i-%5Ctau)%20~%5Ctext%7Bd%7D%5Ctau"> , where <img src="https://latex.codecogs.com/png.latex?A_L,%20A_R,%20t"> present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively. <img src="https://latex.codecogs.com/png.latex?g(x)"> represents the density function to represent the interval and we assume it follows a uniform distribution.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -233,25 +235,7 @@ background-color: null;
 font-style: inherit;">2</span>]]))))</span>
 <span id="cb2-10">}</span>
 <span id="cb2-11"></span>
-<span id="cb2-12"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">nll_interval_censor</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">AL=</span>AL, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">AR=</span>AR, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">t=</span>onset_infectee)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 312.9278</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">res2 <span class="ot" style="color: #003B4F;
+<span id="cb2-12">res2 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -276,7 +260,7 @@ background-color: null;
 font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Nelder-Mead"</span>,</span>
-<span id="cb4-2">            <span class="at" style="color: #657422;
+<span id="cb2-13">            <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">control =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -289,14 +273,8 @@ background-color: null;
 font-style: inherit;">reltol=</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1e-15</span>))</span>
-<span id="cb4-3"></span>
-<span id="cb4-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># integrate(function(x) dgamma(x, shape=shape_true, scale=scale_true), lower=2, upper=3)</span></span>
-<span id="cb4-5"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># pgamma(3, shape=shape_true, scale=scale_true) - pgamma(2, shape=shape_true, scale=scale_true) </span></span>
-<span id="cb4-6">x1 <span class="ot" style="color: #003B4F;
+<span id="cb2-14"></span>
+<span id="cb2-15">x1 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -315,7 +293,7 @@ background-color: null;
 font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>]])</span>
-<span id="cb4-7">x2 <span class="ot" style="color: #003B4F;
+<span id="cb2-16">x2 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -334,21 +312,21 @@ background-color: null;
 font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>]])</span>
-<span id="cb4-8"><span class="fu" style="color: #4758AB;
+<span id="cb2-17"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">summary</span>(x1)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.1677  3.7743  6.2386  7.3706 10.0134 36.0535 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">summary</span>(x2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
  0.05973  2.01266  3.88932  4.85497  6.77875 20.17723 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">df <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">df <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -371,11 +349,11 @@ background-color: null;
 font-style: inherit;">val=</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">c</span>(x1,x2))</span>
-<span id="cb8-2"></span>
-<span id="cb8-3"><span class="fu" style="color: #4758AB;
+<span id="cb6-2"></span>
+<span id="cb6-3"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb8-4"><span class="fu" style="color: #4758AB;
+<span id="cb6-4"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -394,8 +372,8 @@ background-color: null;
 font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">12</span>))</span>
-<span id="cb8-5"></span>
-<span id="cb8-6">df <span class="sc" style="color: #5E5E5E;
+<span id="cb6-5"></span>
+<span id="cb6-6">df <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -408,7 +386,7 @@ background-color: null;
 font-style: inherit;">fill=</span>model))<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb8-7">  <span class="fu" style="color: #4758AB;
+<span id="cb6-7">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -417,7 +395,7 @@ background-color: null;
 font-style: inherit;">0.2</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb8-8">  <span class="fu" style="color: #4758AB;
+<span id="cb6-8">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -430,14 +408,14 @@ background-color: null;
 font-style: inherit;">"density"</span>)<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb8-9">  <span class="fu" style="color: #4758AB;
+<span id="cb6-9">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"bottom"</span>, </span>
-<span id="cb8-10">        <span class="at" style="color: #657422;
+<span id="cb6-10">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend.title =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -445,9 +423,6 @@ font-style: inherit;">element_blank</span>()) </span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://kimfinale.github.io/myblog/posts/interval-censoring/index_files/figure-html/uniform_interval-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ggsave("interval_censor.png", gg, width=3.4*2, height=2.7*2, units="in")</span></span></code></pre></div>
 </div>
 
 

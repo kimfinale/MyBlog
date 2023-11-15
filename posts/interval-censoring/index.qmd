@@ -1,5 +1,5 @@
 ---
-title: "Estimating incubation period: interval cenoring"
+title: "Estimating serial interval: interval cenoring"
 author: "Jong-Hoon Kim"
 date: "2023-11-15"
 categories: [R, incubation period, interval censoring]
@@ -12,9 +12,9 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
-### Interval censoring
+### Vanialla maximum likelihood estimation
 
-In the branching process model, the number of secondary infections is realized as a random number (e.g., Poission or Negative binomial).
+Suppose dates of onsets of infectors, $t^{A}$, and infectees $t^{B}$, are given specific dates.  Then, serial interval may be estimated as follows:  
 $$\mathcal{L} = \prod_{i=1}^{n} f(t^{B}_i - t^
 {A}_i)$$
 , where $f$ is a probability density function which we assume follows a Gamma distribution.
@@ -31,10 +31,12 @@ res1 = optim(par=c(1,2), fn=nll, x=onset_infectee - onset_infector, method = "Ne
             control = list(maxit=2e4, reltol=1e-15))
 ```
 
-### Interval censoring
+### MLE with interval censoring
 
-Now suppose that the date of infection of the infector is given only as an interval: $$\mathcal{L} = \prod_{i=1}^{n} \int_{t^{A}_{iL}}^{t^{A}_{iR}} g(\tau) f(t^{B}_i-\tau) ~\text{d}\tau$$
-, where $A_L, A_R, t$ present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively. 
+Now suppose that the dates of onset of the infectors are given only as intervals. In this case, the above likelihood function may be modified as follows:
+
+$$\mathcal{L} = \prod_{i=1}^{n} \int_{t^{A}_{iL}}^{t^{A}_{iR}} g(\tau) f(t^{B}_i-\tau) ~\text{d}\tau$$
+, where $A_L, A_R, t$ present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively. $g(x)$ represents the density function to represent the interval and we assume it follows a uniform distribution. 
 ```{r uniform_interval}
 set.seed(42)
 L <- - sample(1:5, n, replace=TRUE)
@@ -47,13 +49,9 @@ nll_interval_censor <- function(parms, AL, AR, t){
   -sum(log(dunif(AL, min=AL, max=AR)*(pgamma(t-AL, shape=parms[[1]], scale=parms[[2]]) - pgamma(t-AR, shape=parms[[1]], scale=parms[[2]]))))
 }
 
-nll_interval_censor(c(2,3), AL=AL, AR=AR, t=onset_infectee)
-
 res2 = optim(par=c(1,2), fn=nll_interval_censor, AL=AL, AR=AR, t=onset_infectee, method = "Nelder-Mead",
             control = list(maxit=2e4, reltol=1e-15))
 
-# integrate(function(x) dgamma(x, shape=shape_true, scale=scale_true), lower=2, upper=3)
-# pgamma(3, shape=shape_true, scale=scale_true) - pgamma(2, shape=shape_true, scale=scale_true) 
 x1 <- rgamma(1e3, shape=res1$par[[1]], scale=res1$par[[2]])
 x2 <- rgamma(1e3, shape=res2$par[[1]], scale=res2$par[[2]])
 summary(x1)
@@ -69,8 +67,5 @@ df |> ggplot(aes(x=val, fill=model))+
   labs(x="value", y="density")+
   theme(legend.position = "bottom", 
         legend.title = element_blank()) 
-
-# ggsave("interval_censor.png", gg, width=3.4*2, height=2.7*2, units="in")
-  
 ```
 
