@@ -14,10 +14,10 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 ### Vanilla maximum likelihood estimation
 
-Suppose dates of onsets of infectors, $t^{A}$, and infectees, $t^{B}$, are given as specific dates. Then the likelihood function for the  serial interval may be written down as follows:  
+Suppose dates of onsets of infectors, $t^{A}$, and infectees, $t^{B}$, are given as specific dates. Then the likelihood function for the serial interval may be written down as follows:\
 $$\mathcal{L} = \prod_{i=1}^{n} f(t^{B}_i - t^
-{A}_i)$$
-, where $f$ is a probability density function for the serial interval, which we assume follows a Gamma distribution.
+{A}_i)$$ , where $f$ is a probability density function for the serial interval, which we assume follows a Gamma distribution.
+
 ```{r gamma_no_censoring}
 set.seed(42)
 n <- 100
@@ -35,10 +35,10 @@ res1 = optim(par=c(1,2), fn=nll, x=onset_infectee - onset_infector, method = "Ne
 
 Now suppose that the dates of onset of the infectors are given as intervals. In this case, the above likelihood function may be modified as follows:
 
-$$\mathcal{L} = \prod_{i=1}^{n} \int_{t^{A}_{Li}}^{t^{A}_{Ri}} g(\tau) f(t^{B}_i-\tau) ~\text{d}\tau$$
-, where $t^A_L, t^A_R, t^B$ present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively. $g(x)$ represents the probability density function for the time of symptom onset of the infector, which we assume follows a uniform distribution. 
+$$\mathcal{L} = \prod_{i=1}^{n} \int_{t^{A}_{Li}}^{t^{A}_{Ri}} g(\tau) f(t^{B}_i-\tau) ~\text{d}\tau$$ , where $t^A_L, t^A_R, t^B$ present the times for lower end and upper end of the interval for the time of onset of the infector, and the onset time of the infectee, respectively. $g(x)$ represents the probability density function for the time of symptom onset of the infector, which we assume follows a uniform distribution.
 
 This is a simplified version of doubly interval-censored data analysis, which was discussed by [Reich *et al* 2009](https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.3659). The same concept has recently been applied to estimation of serial interval of CVODI-19 by [Nishiura *et al*. 2020](https://www.ijidonline.com/article/S1201-9712(20)30119-3/fulltext#supplementaryMaterial). I will cover the doubly interval-censored data in a future post.
+
 ```{r uniform_interval}
 set.seed(42)
 L <- - sample(1:5, n, replace=TRUE)
@@ -70,4 +70,3 @@ df |> ggplot(aes(x=val, fill=model))+
   theme(legend.position = "bottom", 
         legend.title = element_blank()) 
 ```
-
