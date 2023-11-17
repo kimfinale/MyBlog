@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/double-interval-censoring/index.html",
       "/posts/interval-censoring/index.html",
       "/posts/branching_process2/index.html",
       "/posts/modeling-philosophy/index.html",

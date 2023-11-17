@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2023-11-15T01:45:13.392Z</lastmod>
+    <lastmod>2023-11-17T00:11:43.330Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -106,6 +106,10 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/interval-censoring/index.html</loc>
-    <lastmod>2023-11-15T01:45:14.868Z</lastmod>
+    <lastmod>2023-11-17T00:11:54.637Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/double-interval-censoring/index.html</loc>
+    <lastmod>2023-11-17T00:11:41.015Z</lastmod>
   </url>
 </urlset>
