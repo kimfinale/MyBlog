@@ -1,0 +1,80 @@
+---
+title: "Estimating serial interval: double interval cenoring"
+author: "Jong-Hoon Kim"
+date: "2023-11-17"
+categories: [R, serial interval, interval censoring]
+image: "double_interval_censor.png"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+In the previous [post](https://www.jonghoonk.com/posts/interval-censoring/), We have covered how we could estimate the serial interval when symptom onset dates of the infectors and the infectees are given as specific dates or either of the two is given as intervals using maximum likelihood estimation method. 
+
+Now suppose that both the dates of onset of the infectors and infectees are given as intervals. This is so called the doubly interval-censored case discussed by [Reich *et al* 2009](https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.3659). The likelihood function may be given as follows:
+
+$$\mathcal{L} = \prod_{i=1}^{n} \int_{t^{A}_{Li}}^{t^{A}_{Ri}} \int_{t^B_{Li}}^{t^B_{Ri}} g(\tau) h(s) f(s-\tau) ~\text{d}\tau \text{d}s$$ , where $t^A_l, t^A_r, t^B_l, t^B_r$ present the times for lower end and upper end of the interval for the time of onset of the infector and the infectee, respectively. $g(x), h(x)$ represent the probability density function for the time of symptom onset of the infector and the infectee, which we assume follow a uniform distribution.
+
+
+
+```{r}
+set.seed(42)
+n <- 100
+shape_true <- 2.2
+scale_true <- 3.3
+
+onset_infector <- sample(20:30, size=n, replace=TRUE)
+onset_infectee <- onset_infector + rgamma(n, shape=shape_true, scale=scale_true)
+
+nll <- function(parms, x) -sum(dgamma(x, shape=parms[[1]], scale=parms[[2]], log=TRUE))
+
+res1 = optim(par=c(1,2), fn=nll, x=onset_infectee - onset_infector, method="Nelder-Mead", control=list(maxit=2e4, reltol=1e-15))
+
+tau <- sample(1:5, n, replace=TRUE)
+AL <- onset_infector 
+AR <- onset_infector + 2*tau# this will lead to shorter serial interval
+
+nll_interval_censor <- function(parms, AL, AR, t){
+  -sum(log(dunif(AL, min=AL, max=AR)*(pgamma(t-AL, shape=parms[[1]], scale=parms[[2]]) - pgamma(t-AR, shape=parms[[1]], scale=parms[[2]]))))
+}
+
+res2 = optim(par=c(1,2), fn=nll_interval_censor, AL=AL, AR=AR, 
+             t=onset_infectee, method="Nelder-Mead",
+            control = list(maxit=2e4, reltol=1e-15))
+
+BL <- onset_infectee - 2*tau # this will lead to even shorter serial interval
+BR <- onset_infectee
+
+nll_double_interval_censor <- function(parms, AL, AR, BL, BR){
+  -sum(log(dunif(AL, min=AL, max=AR)*dunif(BL, min=BL, max=BR)*(pgamma(BR-AL, shape=parms[[1]], scale=parms[[2]]) - pgamma(BL-AR, shape=parms[[1]], scale=parms[[2]]))))
+}
+
+res3 = optim(par=c(1,2), fn=nll_double_interval_censor, AL=AL, AR=AR,
+             BL=BL, BR=BR, method="Nelder-Mead",
+            control=list(maxit=2e4, reltol=1e-15))
+
+x1 <- rgamma(1e3, shape=res1$par[[1]], scale=res1$par[[2]])
+x2 <- rgamma(1e3, shape=res2$par[[1]], scale=res2$par[[2]])
+x3 <- rgamma(1e3, shape=res3$par[[1]], scale=res3$par[[2]])
+summary(x1)
+summary(x2)
+summary(x3)
+
+df = data.frame(model=rep(c("No censoring", "Interval censoring",
+                            "Double interval censoring"), each=1e3),
+                val=c(x1,x2, x3))
+
+library(ggplot2)
+theme_set(hrbrthemes::theme_ipsum_rc(base_size=14, subtitle_size=16, axis_title_size=12))
+
+df |> ggplot(aes(x=val, fill=model))+
+  geom_density(alpha=0.2) +
+  labs(x="value", y="density")+
+  theme(legend.position = "bottom", 
+        legend.title = element_blank())
+
+# ggsave("double_interval_censor.png", gg, units="in", width=3.4*2, height=2.7*2)
+```
