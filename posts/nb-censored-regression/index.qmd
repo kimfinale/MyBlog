@@ -3,7 +3,7 @@ title: "Negative binomial regression with censored data: POLYMOD data"
 author: "Jong-Hoon Kim"
 date: "2023-11-02"
 categories: [R, regression, contact, censor]
-image: "image.jpg"
+image: "POLYMOD_Table1.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -151,7 +151,6 @@ dat$country <- relevel(dat$country, ref="BE")
 Assign weights to individual participants based on the supplementary Table 2. My approach was to identify a row and a column for the relevant weight based on the age and household size. Weight of an age group for the sample was calculated by dividing the proportion of the age group in the population (in the census) with the proportion of the age group in the sample.
 
 ```{r}
-
 find_age_row_column <- function(d) {
   d$age_row <- NA
   for (i in 1:nrow(d)) {
@@ -223,9 +222,14 @@ There are missing values for contacts (\$n\$=36) and weight (\$n\$=65). It is no
 
 ```{r}
 dat_ <- dat
+## would imputation for the 36 observations make a difference?
+# dat$contacts_ori <- dat$contacts
+# dat$contacts <- ifelse(is.na(dat$contacts), round(mean(dat$contacts, na.rm=T)), dat$contacts)
+
 model_var <- c("contacts", "age_grp", "gender", "dayofweek", "hh_size_grp", "country", "wt")
 dat <- dat[,..model_var]
-dat <- dat[complete.cases(dat),]
+# dat <- dat[complete.cases(dat),]
+dat <- dat[!is.na(contacts),]
 ```
 
 ### NegBin regression: no censoring and no weighting
@@ -257,6 +261,8 @@ $$
 
 ```{r}
 X = model.matrix(m)
+# X <- model.matrix(~ age_grp + gender + dayofweek + hh_size_grp + country, data=dat)
+
 # ini = c(coef(m1), log_theta = log(summary(m1)$theta))
 init = c(coef(m), size=summary(m)$theta)
 
@@ -285,10 +291,11 @@ fit1 <- optim(par=init,
 exp(fit1$par)
 ```
 
-### Take censoring & weighting into account 
+### Take censoring & weighting into account
 
 ```{r}
 X = model.matrix(m)
+# X <- model.matrix(~ age_grp + gender + dayofweek + hh_size_grp + country, data=dat) # full matrix
 # ini = c(coef(m1), log_theta = log(summary(m1)$theta))
 init = c(coef(m), size=summary(m)$theta)
 
@@ -318,3 +325,28 @@ fit2 <- optim(par=init,
 
 exp(fit2$par)
 ```
+
+
+```{r}
+da <- data.frame(
+  parm=c("0-4", "5-9", "10-14", "15-19", "20-29", "30-39", "40-49", 
+"50-59", "60-69", "70+", "Missing", 
+"F","M","Missing",
+"1", "2", "3", "4", "5", "6+",
+"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
+"Saturday", "Missing",
+"BE", "DE", "FI", "GB", "IT", "LU", "NL", "PL"),
+est = c(1.00, 1.42, 1.73, 1.68, 1.45, 1.45, 1.38, 1.31, 1.06, 0.81,0.91, 
+        1.00, 0.99, 1.57, 
+        1.00, 1.17, 1.20, 1.36, 1.46, 1.56,
+        1.00, 1.33, 1.39, 1.38, 1.41, 1.43, 1.20, 1.24,
+        1.00, 0.70, 0.94, 0.99, 1.66, 1.42, 1.34, 1.37))
+
+da$myest = round(c(1.00, exp(fit2$par)[2:11], 
+             1.00, exp(fit2$par)[12:13],
+             1.00, exp(fit2$par)[21:25],
+             1.00, exp(fit2$par)[14:20],
+             1.00, exp(fit2$par)[26:32]), digits=2)
+da
+```
+

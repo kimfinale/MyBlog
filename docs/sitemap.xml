@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2023-11-17T11:23:51.436Z</lastmod>
+    <lastmod>2023-11-20T05:27:53.180Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -46,7 +46,7 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/nb-censored-regression/index.html</loc>
-    <lastmod>2023-11-02T06:57:37.133Z</lastmod>
+    <lastmod>2023-11-20T05:25:00.205Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/about.html</loc>
@@ -111,5 +111,9 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/double-interval-censoring/index.html</loc>
     <lastmod>2023-11-17T11:23:54.011Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/right-truncation/index.html</loc>
+    <lastmod>2023-11-20T05:27:56.505Z</lastmod>
   </url>
 </urlset>
