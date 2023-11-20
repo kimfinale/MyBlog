@@ -997,17 +997,14 @@ font-style: inherit;">"bottom"</span>, </span>
 background-color: null;
 font-style: inherit;">legend.title =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">element_blank</span>()) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">-&gt;</span> gg</span>
-<span id="cb13-12"></span>
-<span id="cb13-13"><span class="co" style="color: #5E5E5E;
+font-style: inherit;">element_blank</span>())</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/right-truncation/index_files/figure-html/no_censoring-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># ggsave("right_trunc.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code></pre></div>
 </div>
-<p>Now suppose an exponentially growing epidemic with rate, <img src="https://latex.codecogs.com/png.latex?r">, We expect the that we see that the p.d.f that accounts for the right truncation that arises from Then, the <img src="https://latex.codecogs.com/png.latex?%20%5Cfrac%20%7Bf_%7B%5Ctheta%7D(B_i-A_i)%7D%7B%5Cint%5E%7BT-A_i%7D_0%20%5Cfrac%7Br%5Ctext%7Bexp%7D(-ru)%7D%7B1-%5Ctext%7Bexp%7D(-ru)%7D%20F(T-A_i-u)%7D%20"> that both the dates of onset of the infectors and infectees are given as intervals. This is so called the doubly interval-censored data discussed by <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.3659">Reich <em>et al</em> 2009</a>. The likelihood function may be given as follows:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D(X;%5Ctheta,%5Clambda)%20=%20%5Cprod_%7Bi=1%7D%5E%7Bn%7D%20%5Cint_%7BA%5EL_i%7D%5E%7BA%5ER_i%7D%20%5Cint_%7BB%5EL_i%7D%5E%7BB%5ER_i%7D%20h_%7B%5Clambda%7D(a)%20f_%7B%5Ctheta%7D(b-a)%20~%5Ctext%7Bd%7Db%20%5Ctext%7Bd%7Da"> , where <img src="https://latex.codecogs.com/png.latex?A%5EL,%20A%5ER,%20B%5EL,%20B%5ER"> present the times for left and right boundaires on the possible onset times of the infector, <img src="https://latex.codecogs.com/png.latex?A">, and the infectee, <img src="https://latex.codecogs.com/png.latex?B">, respectively. <img src="https://latex.codecogs.com/png.latex?h_%7B%5Clambda%7D(x)"> represents the probability density function for the time of symptom onset of the infector, which we assume follows a uniform distribution.</p>
-<p>In the following codes, we create the fake data set and add intervals such that the serial intervals may become shorter.</p>
 
 
 

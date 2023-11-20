@@ -283,13 +283,12 @@ NULL</code></pre>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"value"</span>, <span class="at">y=</span><span class="st">"density"</span>)<span class="sc">+</span></span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, </span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_blank</span>()) <span class="ot">-&gt;</span> gg</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("right_trunc.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/no_censoring-1.png" class="img-fluid" width="672"></p>
 </div>
-<p>Now suppose an exponentially growing epidemic with rate, <span class="math inline">\(r\)</span>, We expect the that we see that the p.d.f that accounts for the right truncation that arises from Then, the <span class="math display">\[ \frac {f_{\theta}(B_i-A_i)}{\int^{T-A_i}_0 \frac{r\text{exp}(-ru)}{1-\text{exp}(-ru)} F(T-A_i-u)} \]</span> that both the dates of onset of the infectors and infectees are given as intervals. This is so called the doubly interval-censored data discussed by <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.3659">Reich <em>et al</em> 2009</a>. The likelihood function may be given as follows:</p>
-<p><span class="math display">\[\mathcal{L}(X;\theta,\lambda) = \prod_{i=1}^{n} \int_{A^L_i}^{A^R_i} \int_{B^L_i}^{B^R_i} h_{\lambda}(a) f_{\theta}(b-a) ~\text{d}b \text{d}a\]</span> , where <span class="math inline">\(A^L, A^R, B^L, B^R\)</span> present the times for left and right boundaires on the possible onset times of the infector, <span class="math inline">\(A\)</span>, and the infectee, <span class="math inline">\(B\)</span>, respectively. <span class="math inline">\(h_{\lambda}(x)\)</span> represents the probability density function for the time of symptom onset of the infector, which we assume follows a uniform distribution.</p>
-<p>In the following codes, we create the fake data set and add intervals such that the serial intervals may become shorter.</p>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("right_trunc.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 

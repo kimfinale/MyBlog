@@ -17,9 +17,6 @@ In this case, the above likelihood function may be modified as follows:
 $$\mathcal{L}(X;\theta) = \prod_{i=1}^{n} f_{\theta}(B_i-A_i)$$ , where $A^L, A^R, B$ present the times for lower end and upper bound on the potential dates of symptom onset of the infector, and the symptom onset time of the infectee, respectively.  
 
 $$f^t_{\theta}(B_i-A_i) = \frac{f_{\theta}(B_i-A_i)}{F(T-A_i)}$$
-
-
-
 ```{r no_censoring}
 set.seed(42)
 n <- 1000
@@ -71,18 +68,8 @@ df |> ggplot(aes(x=val, fill=model))+
   geom_density(alpha=0.2) +
   labs(x="value", y="density")+
   theme(legend.position = "bottom", 
-        legend.title = element_blank()) -> gg
+        legend.title = element_blank())
 
 # ggsave("right_trunc.png", gg, units="in", width=3.4*2, height=2.7*2)
 
 ```
-
-
-
-
-Now suppose an exponentially growing epidemic with rate, $r$, We expect the that we see that the p.d.f that accounts for the right truncation that arises from  Then, the $$ \frac {f_{\theta}(B_i-A_i)}{\int^{T-A_i}_0 \frac{r\text{exp}(-ru)}{1-\text{exp}(-ru)} F(T-A_i-u)} $$
-that both the dates of onset of the infectors and infectees are given as intervals. This is so called the doubly interval-censored data discussed by [Reich *et al* 2009](https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.3659). The likelihood function may be given as follows:
-
-$$\mathcal{L}(X;\theta,\lambda) = \prod_{i=1}^{n} \int_{A^L_i}^{A^R_i} \int_{B^L_i}^{B^R_i} h_{\lambda}(a) f_{\theta}(b-a) ~\text{d}b \text{d}a$$ , where $A^L, A^R, B^L, B^R$ present the times for left and right boundaires on the possible onset times of the infector, $A$, and the infectee, $B$, respectively. $h_{\lambda}(x)$ represents the probability density function for the time of symptom onset of the infector, which we assume follows a uniform distribution.
-
-In the following codes, we create the fake data set and add intervals such that the serial intervals may become shorter.
