@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/right-truncation2/index.html",
       "/posts/double-interval-censoring/index.html",
       "/posts/right-truncation/index.html",
       "/posts/interval-censoring/index.html",

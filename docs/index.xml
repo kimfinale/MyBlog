@@ -10,7 +10,827 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Jong-Hoon Kim&#39;s Blog</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Thu, 16 Nov 2023 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 22 Nov 2023 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Estimating a time-to-event distribution from right-truncated data</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/right-truncation2/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/34931911/">Seamen writes</a>: Data on time to an event are said to be right truncated if they come from a set of individuals who have been randomly sampled from a population using a sampling mechanism that selects only individuals who have experienced the event by a given time, called the truncation time.</p>
+<p>The analysis of right-truncated data requires statistical methods that account for the fact that each of the sampled individuals must have experienced the final event by their truncation time.</p>
+<p>Let’s assume that we are interested in estimating the serial interval and let <img src="https://latex.codecogs.com/png.latex?X"> and <img src="https://latex.codecogs.com/png.latex?Y"> denote the times of symptom onset of the infector and the infectee, with <img src="https://latex.codecogs.com/png.latex?0%5Cleq%20X%20%5Cleq%20Y">. Let <img src="https://latex.codecogs.com/png.latex?T=Y-X"> denote the serial interval. Let <img src="https://latex.codecogs.com/png.latex?f_T%5E%E2%88%97(t)"> and <img src="https://latex.codecogs.com/png.latex?F_T%5E%E2%88%97(t)"> denote, respectively, the probability density (or mass) function of <img src="https://latex.codecogs.com/png.latex?T"> and the distribution function of <img src="https://latex.codecogs.com/png.latex?T">. We obtain an i.i.d. sample, <img src="https://latex.codecogs.com/png.latex?(x_1,%20t_1),%20.%20.%20.%20,%20(x_n,%20t_n)">, from the probability distribution of <img src="https://latex.codecogs.com/png.latex?(X,%20T)"> given <img src="https://latex.codecogs.com/png.latex?X%20+%20T%20%E2%89%A4%20%5Ctau"> for some <img src="https://latex.codecogs.com/png.latex?%5Ctau%20%3E%200">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?f_%7BX,%20T%7D(x,t%7CX+T%20%5Cleq%20%5Ctau)%20=%20%5Cfrac%7Bf_X(x)%20f%5E*_T(t)I(x+t%20%5Cleq%20%5Ctau)%7D%7B%5Cint_0%5E%7B%5Ctau%7D%20f_X(x')%20F%5E*_T(%5Ctau-x')%5Ctext%7Bd%7Dx'%7D"> , where <img src="https://latex.codecogs.com/png.latex?f_X%20(x)"> denotes the conditional probability density (or mass) function of <img src="https://latex.codecogs.com/png.latex?X"> given <img src="https://latex.codecogs.com/png.latex?X%20%5Cleq%20%5Ctau">, and <img src="https://latex.codecogs.com/png.latex?I(%5Ccdot)"> denotes the indicator function. If <img src="https://latex.codecogs.com/png.latex?X"> and <img src="https://latex.codecogs.com/png.latex?T"> are discrete, we shall assume, without loss of generality, that <img src="https://latex.codecogs.com/png.latex?%5Ctau"> is an integer. We should like to estimate <img src="https://latex.codecogs.com/png.latex?F%5E%E2%88%97_T(t)"></p>
+<p>If we assume no truncation (i.e., <img src="https://latex.codecogs.com/png.latex?F%5E*_T(%5Ctau-x)=1~%20%5Cforall%20x">)</p>
+<section id="during-an-initial-period-of-an-epidemic" class="level3">
+<h3 class="anchored" data-anchor-id="during-an-initial-period-of-an-epidemic">During an initial period of an epidemic</h3>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/34931911/">Seamen</a> provides two approaches to formulating a likelihood that can be applied during the initial period of an epidemic. The first approach is: <img src="https://latex.codecogs.com/png.latex?f_X%20(x;r)%20=%20%20%5Cfrac%7B%5Ctext%7Bexp%7D(rx)%7D%7B%5Cint_0%5E%7B%5Ctau%7D%5Ctext%7Bexp%7D(rs)ds%20%7D=%5Cfrac%7Br%5Ctext%7Bexp%7D(rx)%7D%7B%5Ctext%7Bexp%7D(r%5Ctau)%20-%201%20%7D%20%5Cpropto%20%5Ctext%7Bexp%7D(rx)">,</p>
+<p>and <img src="https://latex.codecogs.com/png.latex?T%20%5Csim%20%5Ctext%7BGamma%7D(%5Ctheta_1,%20%5Ctheta_2)">. Let’s experiment.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>)</span>
+<span id="cb1-2">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span></span>
+<span id="cb1-3">tmax <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># first events that happened only before time 30</span></span>
+<span id="cb1-4">r <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.14</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># growth rate</span></span>
+<span id="cb1-5">X <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">vector</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"double"</span>, n)</span>
+<span id="cb1-6">i <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb1-7">ct <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb1-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># generate sample through a nonhomogeneous Poisson process</span></span>
+<span id="cb1-9"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">while</span> (ct <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> tmax) {</span>
+<span id="cb1-10">  t <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rexp</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">rate=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(r<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>ct))</span>
+<span id="cb1-11">  ct <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ct <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> t</span>
+<span id="cb1-12">  X[i] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ct</span>
+<span id="cb1-13">  i <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> i<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb1-14">}</span>
+<span id="cb1-15">X <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> X[X <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]</span>
+<span id="cb1-16"></span>
+<span id="cb1-17">shape_true <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.2</span></span>
+<span id="cb1-18">scale_true <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.3</span></span>
+<span id="cb1-19"></span>
+<span id="cb1-20">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">X=</span>X)</span>
+<span id="cb1-21">si <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgamma</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(X), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>shape_true, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>scale_true)</span>
+<span id="cb1-22">df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>X <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> si</span>
+<span id="cb1-23"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Y)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 59.8297</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Y)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  3.918  27.136  31.425  30.688  35.436  59.830 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>T <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>X</span>
+<span id="cb5-2"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># latest time of observation</span></span>
+<span id="cb5-3">tmax <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">33</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># truncation time</span></span>
+<span id="cb5-4">under_tmax <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> tmax </span>
+<span id="cb5-5">newdf <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> df[under_tmax,]</span>
+<span id="cb5-6"></span>
+<span id="cb5-7">nll <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(parms, X, Y) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dgamma</span>(Y<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>X, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">log=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>))</span>
+<span id="cb5-8">res1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">optim</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">par=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fn=</span>nll, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">X=</span>newdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>X, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Y=</span>newdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Y,</span>
+<span id="cb5-9">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Nelder-Mead"</span>,</span>
+<span id="cb5-10">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">control =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">maxit=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2e4</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">reltol=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-15</span>))</span>
+<span id="cb5-11"></span>
+<span id="cb5-12"></span>
+<span id="cb5-13">nll_right_trunc <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(parms, X, Y, tmax) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dgamma</span>(Y<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>X, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pgamma</span>(tmax<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>X, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]])))</span>
+<span id="cb5-14"></span>
+<span id="cb5-15">res2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">optim</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">par=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), </span>
+<span id="cb5-16">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fn=</span>nll_right_trunc, </span>
+<span id="cb5-17">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">X=</span>newdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>X, </span>
+<span id="cb5-18">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Y=</span>newdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Y,</span>
+<span id="cb5-19">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tmax=</span>tmax,</span>
+<span id="cb5-20">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Nelder-Mead"</span>,</span>
+<span id="cb5-21">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">control =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">maxit=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2e4</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">reltol=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-15</span>))</span>
+<span id="cb5-22"></span>
+<span id="cb5-23"></span>
+<span id="cb5-24"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Account for exponential growth</span></span>
+<span id="cb5-25">xmin <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(newdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>X)</span>
+<span id="cb5-26"></span>
+<span id="cb5-27">numerator_func <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x, y, parms){</span>
+<span id="cb5-28">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(r<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>x)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dgamma</span>(y<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]])</span>
+<span id="cb5-29">}</span>
+<span id="cb5-30"></span>
+<span id="cb5-31"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># using the full probability density function</span></span>
+<span id="cb5-32"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># numerator_func &lt;- function(x, y, parms){</span></span>
+<span id="cb5-33"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#   exp(r*x)/(exp(r*tmax)-1)*dgamma(y-x, shape=parms[[1]], scale=parms[[2]])</span></span>
+<span id="cb5-34"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># }</span></span>
+<span id="cb5-35"></span>
+<span id="cb5-36"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># uniform distribution - same as the vanilla truncation assumption</span></span>
+<span id="cb5-37"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># numerator_func &lt;- function(x, y, parms){</span></span>
+<span id="cb5-38"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#   dgamma(y-x, shape=parms[[1]], scale=parms[[2]])</span></span>
+<span id="cb5-39"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># }</span></span>
+<span id="cb5-40"></span>
+<span id="cb5-41"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># NB: x is not used in this formuation but is included as params to make consistent w/ other alternative formulations</span></span>
+<span id="cb5-42">denominator_func <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(t, x, parms, tmax) {</span>
+<span id="cb5-43">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(r<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>t)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pgamma</span>(tmax<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>parms[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]])</span>
+<span id="cb5-44">}</span>
+<span id="cb5-45"></span>
+<span id="cb5-46"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># the following would not give the correct answer. why?</span></span>
+<span id="cb5-47"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># denominator_func &lt;- function(t, x, parms, tmax) {</span></span>
+<span id="cb5-48"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#   exp(r*t)*pgamma(tmax-x-t, shape=parms[[1]], scale=parms[[2]])</span></span>
+<span id="cb5-49"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># }</span></span>
+<span id="cb5-50"></span>
+<span id="cb5-51"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># same as the vanialla truncation model</span></span>
+<span id="cb5-52"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># denominator_func &lt;- function(t, x, parms, tmax) {</span></span>
+<span id="cb5-53"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#   dgamma(tmax-x-t, shape=parms[[1]], scale=parms[[2]])</span></span>
+<span id="cb5-54"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># }</span></span>
+<span id="cb5-55"></span>
+<span id="cb5-56"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># single likelihood</span></span>
+<span id="cb5-57">ll_right_trunc_exp_growth <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(parms,x,y,tmax){</span>
+<span id="cb5-58">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">numerator_func</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">parms=</span>parms)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">integrate</span>(denominator_func,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lower=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">upper=</span>tmax, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">parms=</span>parms, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tmax=</span>tmax)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>value)</span>
+<span id="cb5-59">}</span>
+<span id="cb5-60"></span>
+<span id="cb5-61"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># sum of negative log likelihoods</span></span>
+<span id="cb5-62">nll_right_trunc_exp_growth <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(parms, X, Y, tmax){</span>
+<span id="cb5-63">  sll <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb5-64">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span>(i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq_along</span>(X)) {</span>
+<span id="cb5-65">    sll <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> sll <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ll_right_trunc_exp_growth</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">parms=</span>parms,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span>X[i],<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>Y[i],<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tmax=</span>tmax)</span>
+<span id="cb5-66">  }</span>
+<span id="cb5-67">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>sll)</span>
+<span id="cb5-68">}</span>
+<span id="cb5-69"></span>
+<span id="cb5-70">res3 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">optim</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">par=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), </span>
+<span id="cb5-71">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fn=</span>nll_right_trunc_exp_growth, </span>
+<span id="cb5-72">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">X=</span>newdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>X, </span>
+<span id="cb5-73">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Y=</span>newdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Y,</span>
+<span id="cb5-74">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tmax=</span>tmax,</span>
+<span id="cb5-75">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Nelder-Mead"</span>,</span>
+<span id="cb5-76">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">control =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">maxit=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2e4</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">reltol=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-15</span>))</span>
+<span id="cb5-77"></span>
+<span id="cb5-78">parmdf <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">true =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(shape_true, scale_true))</span>
+<span id="cb5-79">parmdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>no_trunc <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> res1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par</span>
+<span id="cb5-80">parmdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>trunc <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> res2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par</span>
+<span id="cb5-81">parmdf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>trunc_exp_growth <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> res3<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par</span>
+<span id="cb5-82"></span>
+<span id="cb5-83">parmdf</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  true no_trunc    trunc trunc_exp_growth
+1  2.2 2.115872 1.932797         2.100084
+2  3.3 2.273549 3.684688         3.427339</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e5</span></span>
+<span id="cb7-2">x0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgamma</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>shape_true, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>scale_true)</span>
+<span id="cb7-3">x1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgamma</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>res1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>res1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]])</span>
+<span id="cb7-4">x2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgamma</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>res2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>res2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]])</span>
+<span id="cb7-5">x3 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgamma</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span>res3<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale=</span>res3<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]])</span>
+<span id="cb7-6"></span>
+<span id="cb7-7">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">model=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"True"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"No truncation"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Right truncated"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Right truncated, exp growth"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">each=</span>n), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">val=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(x0,x1,x2,x3))</span>
+<span id="cb7-8"></span>
+<span id="cb7-9"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb7-10">extrafont<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">loadfonts</span>()</span>
+<span id="cb7-11"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>))</span>
+<span id="cb7-12"></span>
+<span id="cb7-13">df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span>val, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill=</span>model))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"value"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"density"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-16">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottom"</span>, </span>
+<span id="cb7-17">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>())</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/right-truncation2/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ggsave("right_trunc2.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code></pre></div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>right truncation</category>
+  <category>exponential growth</category>
+  <category>Poisson process</category>
+  <guid>https://kimfinale.github.io/myblog/posts/right-truncation2/index.html</guid>
+  <pubDate>Wed, 22 Nov 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/right-truncation2/right_trunc2.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
 <item>
   <title>Estimating serial interval: doubly interval-censored data</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -8557,27 +9377,6 @@ font-style: inherit;">12</span>))</span>
   <guid>https://kimfinale.github.io/myblog/posts/drawing-map/index.html</guid>
   <pubDate>Tue, 29 Aug 2023 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/drawing-map/thumbnail.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>Writing a paper: Start with an outline</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/how-to-write-a-paper/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>연구자의 업무 중에 연구 만큼 중요한 것이 글쓰기, 특히 논문 쓰기이다. 논문으로 쓰여지지 못한 연구는 타인에게는 존재하지 않는 것이나 다름 없는 것이다.. <a href="https://onlinelibrary.wiley.com/doi/10.1002/adma.200400767">Writing a paper</a> by George M. Whitesides 에 논문 쓰기에 유용한 팁이 있어 여기에 기록으로 남긴다. 한 마디로 요약하면 outline (개요)을 이용하는 것이다. 개요를 연구과제의 초기에 작성하여 연구의 계획표로 활용하며 공저자 (주로 제 1저자와 책임저자) 간에 논문에 대한 의견 교환시 개요를 사용하는 것이다. 그리고, 표, 수식, 그림 등이 거의 최종 상태에 가까워지면 개요를 바탕으로 논문 쓰기를 시작한다. 이렇게 하면 불필요한 실험 및 쓰기 등을 줄일 수 있다.</p>
-<p>지금까지 연구 과정을 돌아보니 프로젝트 초기에 논문의 개요를 작성하는 과정을 대체로 하긴 했었고 최종 논문 쓰기에 효과적임을 느끼고는 있었다. 그런데 개요를 이용하여 논문의 구조를 고민하고 그림이나 표를 최종 상태로 만든 후에 눈문 텍스트를 작성하는 일은 하지 않았던 것 같다. 대체로 개요, 그림, 그리고 표가 최종 상태가 되기 전에 텍스트를 작성하여, Whitesides 가 적었듯이 최종 논문에 사용되지 않은 텍스트가 많았던 것 같다. 개요를 이용하여 논문의 구조를 고민하고, 그림, 표를 최종본으로 만드는 과정에 노력을 기울이고 텍스트를 더하는 일은 그 이후에 하는 것이 더 효과적일 것 같다.</p>
-
-
-
- ]]></description>
-  <category>writing</category>
-  <category>paper</category>
-  <guid>https://kimfinale.github.io/myblog/posts/how-to-write-a-paper/index.html</guid>
-  <pubDate>Tue, 29 Aug 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/how-to-write-a-paper/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>
