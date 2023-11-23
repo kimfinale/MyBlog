@@ -191,8 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If we assume no truncation (i.e., <span class="math inline">\(F^*_T(\tau-x)=1~ \forall x\)</span>)</p>
 <section id="during-an-initial-period-of-an-epidemic" class="level3">
 <h3 class="anchored" data-anchor-id="during-an-initial-period-of-an-epidemic">During an initial period of an epidemic</h3>
-<p><a href="https://pubmed.ncbi.nlm.nih.gov/34931911/">Seamen</a> provides two approaches to formulating a likelihood that can be applied during the initial period of an epidemic. The first approach is: <span class="math display">\[f_X (x;r) =  \frac{\text{exp}(rx)}{\int_0^{\tau}\text{exp}(rs)ds }=\frac{r\text{exp}(rx)}{\text{exp}(r\tau) - 1 } \propto \text{exp}(rx)\]</span>,</p>
-<p>and <span class="math inline">\(T \sim \text{Gamma}(\theta_1, \theta_2)\)</span>. Let’s experiment.</p>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/34931911/">Seamen</a> provides two approaches to formulating a likelihood that can be applied during the initial period of an epidemic. The first approach is: <span class="math display">\[f_X (x;r) =  \frac{\text{exp}(rx)}{\int_0^{\tau}\text{exp}(rs)ds }=\frac{r\text{exp}(rx)}{\text{exp}(r\tau) - 1 } \propto \text{exp}(rx)\]</span>, and <span class="math inline">\(T \sim \text{Gamma}(\theta_1, \theta_2)\)</span>. Let’s experiment.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
@@ -236,78 +235,82 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>,</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">2e4</span>, <span class="at">reltol=</span><span class="fl">1e-15</span>))</span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>nll_right_trunc <span class="ot">&lt;-</span> <span class="cf">function</span>(parms, X, Y, tmax) <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">dgamma</span>(Y<span class="sc">-</span>X, <span class="at">shape=</span>parms[[<span class="dv">1</span>]], <span class="at">scale=</span>parms[[<span class="dv">2</span>]])<span class="sc">/</span><span class="fu">pgamma</span>(tmax<span class="sc">-</span>X, <span class="at">shape=</span>parms[[<span class="dv">1</span>]], <span class="at">scale=</span>parms[[<span class="dv">2</span>]])))</span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>res2 <span class="ot">=</span> <span class="fu">optim</span>(<span class="at">par=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), </span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">fn=</span>nll_right_trunc, </span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">X=</span>newdf<span class="sc">$</span>X, </span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">Y=</span>newdf<span class="sc">$</span>Y,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">tmax=</span>tmax,</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">2e4</span>, <span class="at">reltol=</span><span class="fl">1e-15</span>))</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Account for exponential growth</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>xmin <span class="ot">&lt;-</span> <span class="fu">min</span>(newdf<span class="sc">$</span>X)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># the following would not work. why?</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># nll_right_trunc &lt;- function(parms, X, Y, tmax) -sum(log(dgamma(Y-X, shape=parms[[1]], scale=parms[[2]])/pgamma(tmax, shape=parms[[1]], scale=parms[[2]])))</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>res2 <span class="ot">=</span> <span class="fu">optim</span>(<span class="at">par=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">fn=</span>nll_right_trunc, </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">X=</span>newdf<span class="sc">$</span>X, </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>             <span class="at">Y=</span>newdf<span class="sc">$</span>Y,</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>             <span class="at">tmax=</span>tmax,</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>,</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">2e4</span>, <span class="at">reltol=</span><span class="fl">1e-15</span>))</span>
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>numerator_func <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y, parms){</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">exp</span>(r<span class="sc">*</span>x)<span class="sc">*</span><span class="fu">dgamma</span>(y<span class="sc">-</span>x, <span class="at">shape=</span>parms[[<span class="dv">1</span>]], <span class="at">scale=</span>parms[[<span class="dv">2</span>]])</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Account for exponential growth</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>xmin <span class="ot">&lt;-</span> <span class="fu">min</span>(newdf<span class="sc">$</span>X)</span>
 <span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co"># using the full probability density function</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co"># numerator_func &lt;- function(x, y, parms){</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co">#   exp(r*x)/(exp(r*tmax)-1)*dgamma(y-x, shape=parms[[1]], scale=parms[[2]])</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co"># uniform distribution - same as the vanilla truncation assumption</span></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co"># numerator_func &lt;- function(x, y, parms){</span></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="co">#   dgamma(y-x, shape=parms[[1]], scale=parms[[2]])</span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co"># NB: x is not used in this formuation but is included as params to make consistent w/ other alternative formulations</span></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>denominator_func <span class="ot">&lt;-</span> <span class="cf">function</span>(t, x, parms, tmax) {</span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">exp</span>(r<span class="sc">*</span>t)<span class="sc">*</span><span class="fu">pgamma</span>(tmax<span class="sc">-</span>t, <span class="at">shape=</span>parms[[<span class="dv">1</span>]], <span class="at">scale=</span>parms[[<span class="dv">2</span>]])</span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="co"># the following would not give the correct answer. why?</span></span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="co"># denominator_func &lt;- function(t, x, parms, tmax) {</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="co">#   exp(r*t)*pgamma(tmax-x-t, shape=parms[[1]], scale=parms[[2]])</span></span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="co"># same as the vanialla truncation model</span></span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="co"># denominator_func &lt;- function(t, x, parms, tmax) {</span></span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="co">#   dgamma(tmax-x-t, shape=parms[[1]], scale=parms[[2]])</span></span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="co"># single likelihood</span></span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>ll_right_trunc_exp_growth <span class="ot">&lt;-</span> <span class="cf">function</span>(parms,x,y,tmax){</span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(<span class="fu">numerator_func</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">parms=</span>parms)) <span class="sc">-</span> <span class="fu">log</span>(<span class="fu">integrate</span>(denominator_func,<span class="at">lower=</span><span class="dv">0</span>, <span class="at">upper=</span>tmax, <span class="at">x=</span>x, <span class="at">parms=</span>parms, <span class="at">tmax=</span>tmax)<span class="sc">$</span>value)</span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a><span class="co"># sum of negative log likelihoods</span></span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>nll_right_trunc_exp_growth <span class="ot">&lt;-</span> <span class="cf">function</span>(parms, X, Y, tmax){</span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>  sll <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_along</span>(X)) {</span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>    sll <span class="ot">&lt;-</span> sll <span class="sc">+</span> <span class="fu">ll_right_trunc_exp_growth</span>(<span class="at">parms=</span>parms,<span class="at">x=</span>X[i],<span class="at">y=</span>Y[i],<span class="at">tmax=</span>tmax)</span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>sll)</span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>res3 <span class="ot">=</span> <span class="fu">optim</span>(<span class="at">par=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), </span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>             <span class="at">fn=</span>nll_right_trunc_exp_growth, </span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>             <span class="at">X=</span>newdf<span class="sc">$</span>X, </span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>             <span class="at">Y=</span>newdf<span class="sc">$</span>Y,</span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>             <span class="at">tmax=</span>tmax,</span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>,</span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">2e4</span>, <span class="at">reltol=</span><span class="fl">1e-15</span>))</span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>parmdf <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">true =</span> <span class="fu">c</span>(shape_true, scale_true))</span>
-<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>parmdf<span class="sc">$</span>no_trunc <span class="ot">&lt;-</span> res1<span class="sc">$</span>par</span>
-<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>parmdf<span class="sc">$</span>trunc <span class="ot">&lt;-</span> res2<span class="sc">$</span>par</span>
-<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>parmdf<span class="sc">$</span>trunc_exp_growth <span class="ot">&lt;-</span> res3<span class="sc">$</span>par</span>
-<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>parmdf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>numerator_func <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y, parms){</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">exp</span>(r<span class="sc">*</span>x)<span class="sc">*</span><span class="fu">dgamma</span>(y<span class="sc">-</span>x, <span class="at">shape=</span>parms[[<span class="dv">1</span>]], <span class="at">scale=</span>parms[[<span class="dv">2</span>]])</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="co"># using the full probability density function</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co"># numerator_func &lt;- function(x, y, parms){</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co">#   exp(r*x)/(exp(r*tmax)-1)*dgamma(y-x, shape=parms[[1]], scale=parms[[2]])</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="co"># uniform distribution - same as the vanilla truncation assumption</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co"># numerator_func &lt;- function(x, y, parms){</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="co">#   dgamma(y-x, shape=parms[[1]], scale=parms[[2]])</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="co"># NB: x is not used in this formuation but is included as params to make consistent w/ other alternative formulations</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>denominator_func <span class="ot">&lt;-</span> <span class="cf">function</span>(t, x, parms, tmax) {</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">exp</span>(r<span class="sc">*</span>t)<span class="sc">*</span><span class="fu">pgamma</span>(tmax<span class="sc">-</span>t, <span class="at">shape=</span>parms[[<span class="dv">1</span>]], <span class="at">scale=</span>parms[[<span class="dv">2</span>]])</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="co"># the following would not give the correct answer. why?</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="co"># denominator_func &lt;- function(t, x, parms, tmax) {</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="co">#   exp(r*t)*pgamma(tmax-x-t, shape=parms[[1]], scale=parms[[2]])</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="co"># same as the vanialla truncation model</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="co"># denominator_func &lt;- function(t, x, parms, tmax) {</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="co">#   dgamma(tmax-x-t, shape=parms[[1]], scale=parms[[2]])</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a><span class="co"># single likelihood</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>ll_right_trunc_exp_growth <span class="ot">&lt;-</span> <span class="cf">function</span>(parms,x,y,tmax){</span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(<span class="fu">numerator_func</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">parms=</span>parms)) <span class="sc">-</span> <span class="fu">log</span>(<span class="fu">integrate</span>(denominator_func,<span class="at">lower=</span><span class="dv">0</span>, <span class="at">upper=</span>tmax, <span class="at">x=</span>x, <span class="at">parms=</span>parms, <span class="at">tmax=</span>tmax)<span class="sc">$</span>value)</span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a><span class="co"># sum of negative log likelihoods</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>nll_right_trunc_exp_growth <span class="ot">&lt;-</span> <span class="cf">function</span>(parms, X, Y, tmax){</span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>  sll <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_along</span>(X)) {</span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    sll <span class="ot">&lt;-</span> sll <span class="sc">+</span> <span class="fu">ll_right_trunc_exp_growth</span>(<span class="at">parms=</span>parms,<span class="at">x=</span>X[i],<span class="at">y=</span>Y[i],<span class="at">tmax=</span>tmax)</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>sll)</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>res3 <span class="ot">=</span> <span class="fu">optim</span>(<span class="at">par=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), </span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>             <span class="at">fn=</span>nll_right_trunc_exp_growth, </span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>             <span class="at">X=</span>newdf<span class="sc">$</span>X, </span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>             <span class="at">Y=</span>newdf<span class="sc">$</span>Y,</span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>             <span class="at">tmax=</span>tmax,</span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>,</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="fl">2e4</span>, <span class="at">reltol=</span><span class="fl">1e-15</span>))</span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>parmdf <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">true =</span> <span class="fu">c</span>(shape_true, scale_true))</span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>parmdf<span class="sc">$</span>no_trunc <span class="ot">&lt;-</span> res1<span class="sc">$</span>par</span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>parmdf<span class="sc">$</span>trunc <span class="ot">&lt;-</span> res2<span class="sc">$</span>par</span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>parmdf<span class="sc">$</span>trunc_exp_growth <span class="ot">&lt;-</span> res3<span class="sc">$</span>par</span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>parmdf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  true no_trunc    trunc trunc_exp_growth
 1  2.2 2.115872 1.932797         2.100084

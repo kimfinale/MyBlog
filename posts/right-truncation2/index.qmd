@@ -29,9 +29,7 @@ If we assume no truncation (i.e., $F^*_T(\tau-x)=1~ \forall x$)
 ### During an initial period of an epidemic
 
 [Seamen](https://pubmed.ncbi.nlm.nih.gov/34931911/) provides two approaches to formulating a likelihood that can be applied during the initial period of an epidemic. The first approach is: 
-$$f_X (x;r) =  \frac{\text{exp}(rx)}{\int_0^{\tau}\text{exp}(rs)ds }=\frac{r\text{exp}(rx)}{\text{exp}(r\tau) - 1 } \propto \text{exp}(rx)$$,
-
-and $T \sim  \text{Gamma}(\theta_1, \theta_2)$. Let's experiment.
+$$f_X (x;r) =  \frac{\text{exp}(rx)}{\int_0^{\tau}\text{exp}(rs)ds }=\frac{r\text{exp}(rx)}{\text{exp}(r\tau) - 1 } \propto \text{exp}(rx)$$, and $T \sim  \text{Gamma}(\theta_1, \theta_2)$. Let's experiment.
 ```{r}
 set.seed(42)
 n <- 1000
@@ -68,8 +66,12 @@ res1 = optim(par=c(1,2), fn=nll, X=newdf$X, Y=newdf$Y,
              method = "Nelder-Mead",
             control = list(maxit=2e4, reltol=1e-15))
 
-
+# 
 nll_right_trunc <- function(parms, X, Y, tmax) -sum(log(dgamma(Y-X, shape=parms[[1]], scale=parms[[2]])/pgamma(tmax-X, shape=parms[[1]], scale=parms[[2]])))
+
+# the following would not work. why?
+# nll_right_trunc <- function(parms, X, Y, tmax) -sum(log(dgamma(Y-X, shape=parms[[1]], scale=parms[[2]])/pgamma(tmax, shape=parms[[1]], scale=parms[[2]])))
+
 
 res2 = optim(par=c(1,2), 
              fn=nll_right_trunc, 
