@@ -29,7 +29,11 @@ If we assume no truncation (i.e., $F^*_T(\tau-x)=1~ \forall x$)
 ### During an initial period of an epidemic
 
 [Seamen](https://pubmed.ncbi.nlm.nih.gov/34931911/) provides two approaches to formulating a likelihood that can be applied during the initial period of an epidemic. The first approach is: 
-$$f_X (x;r) =  \frac{\text{exp}(rx)}{\int_0^{\tau}\text{exp}(rs)ds }=\frac{r\text{exp}(rx)}{\text{exp}(r\tau) - 1 } \propto \text{exp}(rx)$$, and $T \sim  \text{Gamma}(\theta_1, \theta_2)$. Let's experiment.
+$$f_X (x;r) =  \frac{\text{exp}(rx)}{\int_0^{\tau}\text{exp}(rs)ds }=\frac{r\text{exp}(rx)}{\text{exp}(r\tau) - 1 } \propto \text{exp}(rx)$$, and $T \sim  \text{Gamma}(\theta_1, \theta_2)$.
+
+### Experiment 
+
+Let's first create samples where infectees ($X$) are created through a non-homogeneous Poisson process where rate, $h$, is modeled as an exponential growth with a rate, $r$, (i.e., $h=\text{exp}(rt)$.
 ```{r}
 set.seed(42)
 n <- 1000
@@ -47,16 +51,14 @@ while (ct < tmax) {
 }
 X <- X[X > 0]
 
+# parameters for the serial interval
 shape_true <- 2.2
 scale_true <- 3.3
 
 df <- data.frame(X=X)
 si <- rgamma(length(X), shape=shape_true, scale=scale_true)
 df$Y <- df$X + si
-max(df$Y)
-summary(df$Y)
-df$T <- df$Y - df$X
- # latest time of observation
+
 tmax <- 33 # truncation time
 under_tmax <- df$Y < tmax 
 newdf <- df[under_tmax,]
@@ -72,7 +74,6 @@ nll_right_trunc <- function(parms, X, Y, tmax) -sum(log(dgamma(Y-X, shape=parms[
 # the following would not work. why?
 # nll_right_trunc <- function(parms, X, Y, tmax) -sum(log(dgamma(Y-X, shape=parms[[1]], scale=parms[[2]])/pgamma(tmax, shape=parms[[1]], scale=parms[[2]])))
 
-
 res2 = optim(par=c(1,2), 
              fn=nll_right_trunc, 
              X=newdf$X, 
@@ -81,10 +82,11 @@ res2 = optim(par=c(1,2),
              method = "Nelder-Mead",
              control = list(maxit=2e4, reltol=1e-15))
 
+```
 
-# Account for exponential growth
-xmin <- min(newdf$X)
+### Exponential growth for $X$
 
+```{r}
 numerator_func <- function(x, y, parms){
   exp(r*x)*dgamma(y-x, shape=parms[[1]], scale=parms[[2]])
 }
@@ -136,13 +138,19 @@ res3 = optim(par=c(1,2),
              method = "Nelder-Mead",
              control = list(maxit=2e4, reltol=1e-15))
 
-parmdf <- data.frame(true = c(shape_true, scale_true))
-parmdf$no_trunc <- res1$par
-parmdf$trunc <- res2$par
-parmdf$trunc_exp_growth <- res3$par
+parmdf <- data.frame(true = c(shape_true, scale_true, shape_true*scale_true))
+parmdf$no_trunc <- c(res1$par, prod(res1$par))
+parmdf$trunc <- c(res2$par, prod(res2$par))
+parmdf$trunc_exp_growth <- c(res3$par, prod(res3$par))
 
 parmdf
+```
+Parameter estimates based on the methods that account for right truncation and exponential growth appear to match better with the true values than the those based on the method that accounts only for right truncation.
 
+### Plot
+
+Let's plot the distribution
+```{r}
 n <- 1e5
 x0 <- rgamma(n, shape=shape_true, scale=scale_true)
 x1 <- rgamma(n, shape=res1$par[[1]], scale=res1$par[[2]])
@@ -162,5 +170,5 @@ df |> ggplot(aes(x=val, fill=model))+
         legend.title = element_blank())
 
 # ggsave("right_trunc2.png", gg, units="in", width=3.4*2, height=2.7*2)
-
 ```
+
