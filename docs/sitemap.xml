@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2023-11-24T11:49:28.610Z</lastmod>
+    <lastmod>2023-11-24T12:38:49.715Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -127,5 +127,9 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/importance-sampling/index.html</loc>
     <lastmod>2023-11-24T11:49:34.855Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/seir-models/index.html</loc>
+    <lastmod>2023-11-24T12:38:52.317Z</lastmod>
   </url>
 </urlset>
