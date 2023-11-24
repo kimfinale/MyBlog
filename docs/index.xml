@@ -5091,11 +5091,11 @@ font-style: inherit;">+</span> </span>
 background-color: null;
 font-style: inherit;">ggtitle</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"Gillespie algorithm"</span>) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">-&gt;</span> gg</span>
-<span id="cb8-15"></span>
-<span id="cb8-16"><span class="co" style="color: #5E5E5E;
+font-style: inherit;">"Gillespie algorithm"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/seir-models/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># ggsave("gillespie.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code></pre></div>
 </div>

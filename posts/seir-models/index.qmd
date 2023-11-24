@@ -230,7 +230,7 @@ ggplot(reslong, aes(x = time, y = value, color = State)) +
   labs(x = 'Time (day)', y = 'Number')+
   theme(legend.title = element_blank(),
         legend.position = "bottom") + 
-  ggtitle("Gillespie algorithm") -> gg
+  ggtitle("Gillespie algorithm")
 
 # ggsave("gillespie.png", gg, units="in", width=3.4*2, height=2.7*2)
 ```
