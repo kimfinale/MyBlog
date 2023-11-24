@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2023-11-23T07:50:14.687Z</lastmod>
+    <lastmod>2023-11-24T04:03:50.570Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -118,6 +118,10 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/right-truncation2/index.html</loc>
-    <lastmod>2023-11-23T07:53:14.680Z</lastmod>
+    <lastmod>2023-11-24T03:58:00.260Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/truncation-in-stan/index.html</loc>
+    <lastmod>2023-11-24T04:04:41.419Z</lastmod>
   </url>
 </urlset>

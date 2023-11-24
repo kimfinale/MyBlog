@@ -12,38 +12,34 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
-[Seamen writes](https://pubmed.ncbi.nlm.nih.gov/34931911/): Data on time to an event are said to be right truncated if they come from a set of individuals who have been randomly sampled from a population using a sampling mechanism that selects only individuals who have experienced the event by a given time, called the truncation time.  
+[Seamen writes](https://pubmed.ncbi.nlm.nih.gov/34931911/): Data on time to an event are said to be right truncated if they come from a set of individuals who have been randomly sampled from a population using a sampling mechanism that selects only individuals who have experienced the event by a given time, called the truncation time.
 
-The analysis of right-truncated data requires statistical methods that account for the fact that each of the sampled individuals must have experienced the final event by their truncation time. 
+The analysis of right-truncated data requires statistical methods that account for the fact that each of the sampled individuals must have experienced the final event by their truncation time.
 
-Let's assume that we are interested in estimating the serial interval and let $X$ and $Y$ denote the times of symptom onset of the infector and the infectee, with $0\leq X \leq Y$. Let $T=Y-X$ denote the serial interval. Let $f_T^∗(t)$ and $F_T^∗(t)$ denote, respectively, the probability density (or mass) function of $T$ and the distribution function of $T$.
-We obtain an i.i.d. sample, $(x_1, t_1), . . . , (x_n, t_n)$, from the probability distribution of $(X, T)$ given $X + T ≤ \tau$ for some
-$\tau > 0$. 
+Let's assume that we are interested in estimating the serial interval and let $X$ and $Y$ denote the times of symptom onset of the infector and the infectee, with $0\leq X \leq Y$. Let $T=Y-X$ denote the serial interval. Let $f_T^∗(t)$ and $F_T^∗(t)$ denote, respectively, the probability density (or mass) function of $T$ and the distribution function of $T$. We obtain an i.i.d. sample, $(x_1, t_1), . . . , (x_n, t_n)$, from the probability distribution of $(X, T)$ given $X + T ≤ \tau$ for some $\tau > 0$.
 
+$$f_{X, T}(x,t|X+T \leq \tau) = \frac{f_X(x) f^*_T(t)I(x+t \leq \tau)}{\int_0^{\tau} f_X(x') F^*_T(\tau-x')\text{d}x'}$$ , where $f_X (x)$ denotes the conditional probability density (or mass) function of $X$ given $X \leq \tau$, and $I(\cdot)$ denotes the indicator function. If $X$ and $T$ are discrete, we shall assume, without loss of generality, that $\tau$ is an integer. We should like to estimate $F^∗_T(t)$
 
-$$f_{X, T}(x,t|X+T \leq \tau) = \frac{f_X(x) f^*_T(t)I(x+t \leq \tau)}{\int_0^{\tau} f_X(x') F^*_T(\tau-x')\text{d}x'}$$
-, where $f_X (x)$ denotes the conditional probability density (or mass) function of $X$ given $X \leq \tau$, and $I(\cdot)$ denotes the indicator function. If $X$ and $T$ are discrete, we shall assume, without loss of generality, that $\tau$ is an integer. We should like to estimate $F^∗_T(t)$
-
-If we assume no truncation (i.e., $F^*_T(\tau-x)=1~ \forall x$) 
+If we assume no truncation (i.e., $F^*_T(\tau-x)=1~ \forall x$)
 
 ### During an initial period of an epidemic
 
-[Seamen](https://pubmed.ncbi.nlm.nih.gov/34931911/) provides two approaches to formulating a likelihood that can be applied during the initial period of an epidemic. The first approach is: 
-$$f_X (x;r) =  \frac{\text{exp}(rx)}{\int_0^{\tau}\text{exp}(rs)ds }=\frac{r\text{exp}(rx)}{\text{exp}(r\tau) - 1 } \propto \text{exp}(rx)$$, and $T \sim  \text{Gamma}(\theta_1, \theta_2)$.
+[Seamen](https://pubmed.ncbi.nlm.nih.gov/34931911/) provides two approaches to formulating a likelihood that can be applied during the initial period of an epidemic. The first approach is: $$f_X (x;r) =  \frac{\text{exp}(rx)}{\int_0^{\tau}\text{exp}(rs)ds }=\frac{r\text{exp}(rx)}{\text{exp}(r\tau) - 1 } \propto \text{exp}(rx)$$, and $T \sim \text{Gamma}(\theta_1, \theta_2)$.
 
-### Experiment 
+### Experiment
 
 Let's first create samples where infectees ($X$) are created through a non-homogeneous Poisson process where rate, $h$, is modeled as an exponential growth with a rate, $r$, (i.e., $h=\text{exp}(rt)$.
+
 ```{r}
 set.seed(42)
 n <- 1000
-tmax <- 30 # first events that happened only before time 30
+tmax_i <- 30 # first events that happened only before time 30
 r <- 0.14 # growth rate
 X <- vector("double", n)
 i <- 1
 ct <- 0
 # generate sample through a nonhomogeneous Poisson process
-while (ct < tmax) {
+while (ct < tmax_i) {
   t <- rexp(1, rate=exp(r*ct))
   ct <- ct + t
   X[i] <- ct
@@ -145,11 +141,13 @@ parmdf$trunc_exp_growth <- c(res3$par, prod(res3$par))
 
 parmdf
 ```
+
 Parameter estimates based on the methods that account for right truncation and exponential growth appear to match better with the true values than the those based on the method that accounts only for right truncation.
 
 ### Plot
 
 Let's plot the distribution
+
 ```{r}
 n <- 1e5
 x0 <- rgamma(n, shape=shape_true, scale=scale_true)
@@ -171,4 +169,3 @@ df |> ggplot(aes(x=val, fill=model))+
 
 # ggsave("right_trunc2.png", gg, units="in", width=3.4*2, height=2.7*2)
 ```
-
