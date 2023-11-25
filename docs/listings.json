@@ -36,7 +36,8 @@
       "/posts/simple-model-complicated-dynamics/index.html",
       "/posts/ode-in-stan/index.html",
       "/posts/sub-exponential-growth/index.html",
-      "/posts/reproduction-number/index.html"
+      "/posts/reproduction-number/index.html",
+      "/posts/particle-filter/index.html"
     ]
   }
 ]
