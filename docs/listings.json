@@ -30,6 +30,7 @@
       "/posts/climate-disaster/index.html",
       "/posts/regression-toward-mean/index.html",
       "/posts/survivor-bias/index.html",
+      "/posts/particle_filter_COVID19/index.html",
       "/posts/max-likelihood/index.html",
       "/posts/R0-sympy/index.html",
       "/posts/pop-monte-carlo/index.html",
@@ -37,6 +38,7 @@
       "/posts/ode-in-stan/index.html",
       "/posts/sub-exponential-growth/index.html",
       "/posts/reproduction-number/index.html",
+      "/posts/0_template/index.html",
       "/posts/particle-filter/index.html"
     ]
   }
