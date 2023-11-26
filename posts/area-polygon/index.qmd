@@ -2,8 +2,8 @@
 title: "Polygon 면적 구하기: sf 와 raster 패키지"
 author: "Jong-Hoon Kim"
 date: "2023-08-30"
-categories: [R, shapefile, ggplot2, sf, raster, RcolorBrewer]
-image: "thumbnail.jpg"
+categories: [R, shapefile, ggplot2, sf, raster, RColorBrewer]
+image: "southkorea_map.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -31,12 +31,16 @@ kor$area_sqkm1 <- as.numeric(st_area(kor))/1e6
 
 # plot population density
 library(ggplot2)
+theme_set(hrbrthemes::theme_ipsum_rc(base_size=14, subtitle_size=16, axis_title_size=12))
+extrafont::loadfonts()
+
 labels = expression(atop("Population density", per~1~km^2))
 plt <- ggplot(kor)+
   geom_sf(aes(fill=area_sqkm1))+
   scale_fill_viridis_c(name=labels) +
-  theme_minimal()+
   theme(legend.position="right")
+
+# ggsave("southkorea_map.png", gg, units="in", width=3.4*2, height=2.7*2)  
 plt
 
 # use RColorBrewer 
