@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/stan_sir_transformed_parameters/index.html",
       "/posts/truncation-in-stan/index.html",
       "/posts/right-truncation2/index.html",
       "/posts/double-interval-censoring/index.html",
@@ -35,8 +36,8 @@
       "/posts/R0-sympy/index.html",
       "/posts/pop-monte-carlo/index.html",
       "/posts/simple-model-complicated-dynamics/index.html",
-      "/posts/ode-in-stan/index.html",
       "/posts/sub-exponential-growth/index.html",
+      "/posts/ode-in-stan/index.html",
       "/posts/reproduction-number/index.html",
       "/posts/0_template/index.html",
       "/posts/particle-filter/index.html",
