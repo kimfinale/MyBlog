@@ -3,7 +3,7 @@ title: "SIR model in Stan: Euler method"
 author: "Jong-Hoon Kim"
 date: "2023-11-28"
 categories: [R, Stan, Euler method, SIR model]
-image: "particle_filter.png"
+image: "sir_euler_stan_param.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -14,14 +14,12 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 ### SIR model in Stan
 
-I developed a SIR model and solved it an Euler method and generated a fake data as a sequence of noisy observation of daily incidence. 
+I developed a SIR model and solved it an Euler method and generated a fake data as a sequence of noisy observation of daily incidence. I could have used the ODE solving routine available in Stan as in my previous [post](https://www.jonghoonk.com/posts/ode-in-stan/). However, an SIR model solved via the Euler method can be extended mor easily (e.g., stochatic model). I also suspect it would be easier to combine with the other statistical modeling techinques (e.g., hierarchical model), which I am going to post later.
 
-simulate the data and fit the model to the data using Bayesian HMC in Stan. I used  to solve the 
 
 #### Simulate the data
 
-Generate $y_{1:N}$ as a sequence of noisy observations of a daily incidence.
-
+Generate $y_{1:N}$ as a sequence of noisy observations of a daily incidence. Almost the same Stan model is used twice: once to create fake data and the second time to estimate parameters via HMC.
 
 #### Stan model to create fake data
 ```{r}
@@ -96,8 +94,8 @@ model {
 generated quantities {
   array[N] int y_sim;
   for (i in 1:N) {
-    # y_sim[i] = neg_binomial_2_rng(daily_inf[i] + 1e-6, phi);
-    y_sim[i] = poisson_rng(daily_inf[i] + 1e-6);
+    y_sim[i] = neg_binomial_2_rng(daily_inf[i] + 1e-6, phi);
+    //y_sim[i] = poisson_rng(daily_inf[i] + 1e-6);
   }
 }
 "
@@ -108,18 +106,20 @@ generated quantities {
 library(rstan)
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
-mod <- stan_model(model_code=stan_code_data, verbose=TRUE)
+mod_data <- stan_model(model_code=stan_code_data, verbose=TRUE)
 
 N=31L 
 S0=999
 I0=1
+dt=0.1
 
-data <- list(N=N,
-  S0=S0, I0=I0, R0=0, CI0=0, iter_per_day=1L,
-  phi=5000, beta=0.3, gamma=0.2, dt=1)
+data = list(N=N,
+  S0=S0, I0=I0, R0=0, CI0=0, iter_per_day=round(1/dt),
+  phi=5000, beta=0.3, gamma=0.2, dt=dt)
 
+set.seed(42)
 
-fit <- sampling(mod, data=data,
+fit = sampling(mod_data, data=data,
                 iter = 200,
                 chains = 1,
                 cores = 1, 
@@ -128,12 +128,16 @@ fit <- sampling(mod, data=data,
 df = as.data.frame(fit)
 y_sim = df[, grepl("^y_sim.*", names(df))]
 plot(1:N, as.numeric(y_sim[1,]))
+
+# saveRDS(y_sim, "stan_sir_daily_inc_NB.rds")
 ```
 
+### Stan model to estimate parameters
 
+Note that there are two parameters in the parameters block
 
 ```{r}
-stan_code <- "
+stan_code_est <- "
 data {
   int<lower=0> N;
   int<lower=0> iter_per_day;
@@ -151,7 +155,6 @@ parameters {
   real<lower=0> gamma;
   real<lower=0> beta;
 }
-
 
 transformed parameters {
   vector<lower=0>[N] daily_inf;
@@ -203,7 +206,7 @@ model {
   beta ~ exponential(r);
   gamma ~ exponential(r);
 
-  y ~ neg_binomial_2(daily_inf + 1e-12, phi);
+  y ~ neg_binomial_2(daily_inf + 1e-6, phi);
 
 }"
 ```
@@ -213,39 +216,51 @@ library(rstan)
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 
-mod <- stan_model(model_code=stan_code, verbose=TRUE)
+mod_est = stan_model(model_code=stan_code_est, verbose=TRUE)
+
+y_sim = readRDS("stan_sir_daily_inc_NB.rds")
 
 y = as.integer(y_sim[1,])
+data = list(N=length(y), y=y, S0=S0, I0=I0, R0=0, CI0=0, iter_per_day=round(1/dt), phi=50, r=0.1, dt=dt)
 
-data <- list(N=length(y), y=y, S0=S0, I0=I0, R0=0, CI0=0, iter_per_day=1L, phi=50, r=0.1, dt=1)
+set.seed(42)
 
-fit <- sampling(mod, data=data,
+fit = sampling(mod_est, data=data,
                 iter = 2000,
-                chains = 2,
+                chains = 4,
                 cores = min(parallel::detectCores(), 4))
 
+# saveRDS(fit, "stan_sir_daily_inc_NB_fit.rds")
+```
+
+Trace plot
+```{r}
+library(rstan)
+fit = readRDS("stan_sir_daily_inc_NB_fit.rds")
 traceplot(fit, c("beta","gamma"))
 ```
 
 
 #### Plot the results
 
-```{r eval=FALSE}
+```{r}
 library(ggplot2)
 extrafont::loadfonts("win", quiet=TRUE)
 theme_set(hrbrthemes::theme_ipsum_rc(base_size=14, subtitle_size=16, axis_title_size=12))
-ggplot(df, aes(x = t)) +
-  geom_ribbon(aes(ymin = x_lb, ymax = x_ub, fill="95% CrI"), alpha=0.5) +
-  geom_line(aes(y=x_mean, color="Posterior mean")) +
-  geom_line(aes(y=x_true, color="True")) +
-  geom_point(aes(y=x_mean, color="Posterior mean")) +
-  geom_point(aes(y=x_true, color="True")) +
-  labs(y="values", x="index") + 
-  scale_colour_manual("", values=c("Posterior mean"="firebrick",
-                                   "True"="darkgrey")) +
-  scale_fill_manual("", values="firebrick")+
-  theme(legend.position = "bottom")
 
-# ggsave("particle_filter.png", gg, units="in", width=3.4*2, height=2.7*2)
+df = as.data.frame(fit)
+d <- df[, c("beta","gamma")]
+dlong <- tidyr::pivot_longer(d, cols=c("beta","gamma"),
+                             names_to="param")        
+# dlong$param <- as.factor(dlong$param)
+library(dplyr)
+ggplot(dlong)+ 
+  geom_histogram(aes(x=value))+
+  facet_wrap(~param, nrow=1, scales = "free_x")+
+  geom_vline(data=filter(dlong, param =="beta"), aes(xintercept=0.3), color="firebrick", linewidth=1.2) +
+  geom_vline(data=filter(dlong, param =="gamma"), aes(xintercept=0.2), color="firebrick", linewidth=1.2)
+
+
+# ggsave("sir_euler_stan_param.png", gg, units="in", width=3.4*2, height=2.7*2)
 
 ```
