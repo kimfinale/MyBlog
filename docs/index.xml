@@ -949,7 +949,7 @@ font-style: inherit;"># ggsave("sir_euler_stan_param.png", gg, units="in", width
   <category>SIR model</category>
   <guid>https://kimfinale.github.io/myblog/posts/stan_sir_transformed_parameters/index.html</guid>
   <pubDate>Mon, 27 Nov 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/stan_sir_transformed_parameters/sir_euler_stan_param.png" medium="image" type="image/png"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/stan_sir_transformed_parameters/sir_euler_stan_param.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Estimating a time-to-event distribution in Stan</title>

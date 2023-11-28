@@ -136,7 +136,7 @@ plot(1:N, as.numeric(y_sim[1,]))
 
 Note that there are two parameters in the parameters block
 
-```{r}
+```{r eval=FALSE}
 stan_code_est <- "
 data {
   int<lower=0> N;
