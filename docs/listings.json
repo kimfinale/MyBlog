@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Idiosyncrasy_generality/index.html",
       "/posts/stan_sir_transformed_parameters/index.html",
       "/posts/truncation-in-stan/index.html",
       "/posts/right-truncation2/index.html",

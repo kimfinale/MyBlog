@@ -10,7 +10,41 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Jong-Hoon Kim&#39;s Blog</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Mon, 27 Nov 2023 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 03 Dec 2023 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Idiosyncrasies and generalities</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/Idiosyncrasy_generality/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="idiosyncrasies-and-generalities" class="level3">
+<h3 class="anchored" data-anchor-id="idiosyncrasies-and-generalities">Idiosyncrasies and generalities</h3>
+<p>Debates in the population ecology <a href="https://www.science.org/doi/10.1126/science.1062226">Bjørnstad and Grenfell</a>.</p>
+<ol type="1">
+<li><p>Relative importance of “noise” (small-scale, high-frequency stochastic influences) versus climatic forcing (larger scale, often lower-frequency signals) versus nonlinear interactions between individuals of the same or different species.</p></li>
+<li><p>The impact of intrinsic (i.e., intraspecific) processes, as opposed to extrinsic or community-level interactions</p></li>
+<li><p>Nested within 2, “dimensionality” of population fluctuations; given that most populations are embedded in rich communities and affected by numerous interspecific interactions, can simple (low-dimensional) models involving one or a few species capture the patterns of fluctuations?</p></li>
+</ol>
+<p>“… To understand any system, we need to appreciate its idiosyncrasies; to encompass broad patterns, we need to extract generalities…”</p>
+<p>Viewing infectious disease epidemiology as a subset of ecology can be highly beneficial. By doing so, we can apply all the components that influence the dynamics of animal species to infectious disease dynamics, to varying degrees.</p>
+<p>In the context of COVID-19, the modeling of confirmed cases has primarily focused on the variation in transmission rates. Often, the variation within reasonable limits in the transmission rate alone is sufficient to produce the daily number of cases. However, there is a potential risk of overlooking other influential factors, which could lead to biased estimates for transmission.</p>
+<p>By considering infectious disease dynamics from an ecological perspective, we can broaden our understanding and ensure that relevant factors beyond transmission rates are taken into account. This approach can enhance the accuracy of our modeling and contribute to more effective public health interventions in combating diseases like COVID-19.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>ecology</category>
+  <category>idiosyncransy</category>
+  <category>generality</category>
+  <category>COVID19</category>
+  <guid>https://kimfinale.github.io/myblog/posts/Idiosyncrasy_generality/index.html</guid>
+  <pubDate>Sun, 03 Dec 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/Idiosyncrasy_generality/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
 <item>
   <title>SIR model in Stan: Euler method</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -11643,347 +11677,6 @@ font-style: inherit;">add=</span>T)</span></code></pre></div>
   <guid>https://kimfinale.github.io/myblog/posts/crop-raster-polygon/index.html</guid>
   <pubDate>Fri, 22 Sep 2023 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/crop-raster-polygon/thumbnail.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>odin package</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/odin/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>이번 <a href="https://www.vaccineimpact.org/">Vaccine Impact Modeling Consoritum (VIMC)</a> 연례회의에서 <code>odin</code>이라는 패키지에 대해 알게 되었다. <code>deSolve</code>의 업그레이드 버전이라고 보면 될까? R 코드를 C언어로 컴파일하기 때문에 최종 모형의 구동속도가 빠르다. 따라서 모형을 여러번 돌려야 하는 경우 (예를 들어 MCMC) 에 유리하다. <code>pomp</code> 보다도 훨씬 더 빠르다고 했는데 정확한 비교 수치는 잘 기억이 안남. 종종 C++로 모형을 만들었는데 <code>odin</code> 패키지를 사용하면 훨씬 쉬워질 것 같다. 좀 더 살펴보아야 할 텐데 일단 잊지 않기 위해 간단히 SIR 모형만 만들어 보았다.</p>
-<section id="deterministic-sir-model" class="level3">
-<h3 class="anchored" data-anchor-id="deterministic-sir-model">Deterministic SIR model</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">path_sir_model <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/odin/sir.R"</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">writeLines</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">readLines</span>(path_sir_model))</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>## Core equations for transitions between compartments:
-update(S) &lt;- S - beta * S * I / N
-update(I) &lt;- I + beta * S * I / N - gamma * I
-update(R) &lt;- R + gamma * I
-
-## Total population size (odin will recompute this at each timestep:
-## automatically)
-N &lt;- S + I + R
-
-## Initial states:
-initial(S) &lt;- S_ini # will be user-defined
-initial(I) &lt;- I_ini # will be user-defined
-initial(R) &lt;- 0
-
-## User defined parameters - default in parentheses:
-S_ini &lt;- user(1000)
-I_ini &lt;- user(1)
-beta &lt;- user(0.2)
-gamma &lt;- user(0.1)</code></pre>
-</div>
-</div>
-<p>Run the model and plot the results</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(odin)</span>
-<span id="cb3-2">sir_generator <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> odin<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">odin</span>(path_sir_model)</span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">x <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> sir_generator<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">new</span>()</span>
-<span id="cb4-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># see what the object is like</span></span>
-<span id="cb4-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># x</span></span>
-<span id="cb4-4">sir_col <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#8c8cd9"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#cc0044"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#999966"</span>)</span>
-<span id="cb4-5">x_res <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> x<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">run</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">200</span>)</span>
-<span id="cb4-6"></span>
-<span id="cb4-7"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">par</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mar =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4.1</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5.1</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">las =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb4-8"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">matplot</span>(x_res[, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>], x_res[, <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Time"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Number of individuals"</span>,</span>
-<span id="cb4-9">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> sir_col, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lty =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb4-10"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"topright"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lwd =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> sir_col, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"S"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"I"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"R"</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"n"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/odin/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="stochastic-sir-model" class="level3">
-<h3 class="anchored" data-anchor-id="stochastic-sir-model">Stochastic SIR model</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">path_sir_stoch_model <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/odin/sir_stoch.R"</span></span>
-<span id="cb5-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">writeLines</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">readLines</span>(path_sir_stoch_model))</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>## Core equations for transitions between compartments:
-update(S) &lt;- S - n_SI
-update(I) &lt;- I + n_SI - n_IR
-update(R) &lt;- R + n_IR
-
-## Individual probabilities of transition:
-p_SI &lt;- 1 - exp(-beta * I / N) # S to I
-p_IR &lt;- 1 - exp(-gamma) # I to R
-
-## Draws from binomial distributions for numbers changing between
-## compartments:
-n_SI &lt;- rbinom(S, p_SI)
-n_IR &lt;- rbinom(I, p_IR)
-
-## Total population size
-N &lt;- S + I + R
-
-## Initial states:
-initial(S) &lt;- S_ini
-initial(I) &lt;- I_ini
-initial(R) &lt;- 0
-
-## User defined parameters - default in parentheses:
-S_ini &lt;- user(1000)
-I_ini &lt;- user(1)
-beta &lt;- user(0.2)
-gamma &lt;- user(0.1)</code></pre>
-</div>
-</div>
-<p>Run the model and plot the results</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">sir_generator <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> odin<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">odin</span>(path_sir_stoch_model)</span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">42</span>)</span>
-<span id="cb8-2">x <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> sir_generator<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">new</span>()</span>
-<span id="cb8-3">x_res <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> x<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">run</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">200</span>)</span>
-<span id="cb8-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">par</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mar =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4.1</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5.1</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">las =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb8-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">matplot</span>(x_res[, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>], x_res[, <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Time"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Number of individuals"</span>,</span>
-<span id="cb8-6">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> sir_col, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lty =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb8-7"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"topright"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lwd =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> sir_col, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"S"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"I"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"R"</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"n"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/odin/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>ODE</category>
-  <category>R</category>
-  <category>odin</category>
-  <guid>https://kimfinale.github.io/myblog/posts/odin/index.html</guid>
-  <pubDate>Thu, 14 Sep 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/odin/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>
