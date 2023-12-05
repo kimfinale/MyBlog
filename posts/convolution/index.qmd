@@ -3,7 +3,7 @@ title: "Convolution"
 author: "Jong-Hoon Kim"
 date: "2023-12-05"
 categories: [particle filter]
-image: "particle_filter.png"
+image: "sample_figuer.png"
 editor_options: 
   chunk_output_type: console
 ---

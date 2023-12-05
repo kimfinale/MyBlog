@@ -1,7 +1,7 @@
 ---
 title: "Template"
 author: "Jong-Hoon Kim"
-date: "2023-12-31"
+date: "2020-12-31"
 categories: [particle filter]
 image: "sample_figure.png"
 editor_options: 

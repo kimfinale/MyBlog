@@ -18,8 +18,7 @@ The following content was adapted from the [Wikipedia article](https://en.wikipe
 
 The Euler-Lotka equation is a fundamental concept in demographic analysis and population ecology, offering critical insights into the age structure and growth rate of populations. At its core, the equation connects the reproductive rates across different ages to the overall population growth rate.
 
-Let $B(t)dt$ be the number of births during the time interval from $t$ to $t+dt$. Also define the survival function $l(a)$, the fraction of individuals surviving to age $a$. Finally define $b(a)$ to be the birth rate for mothers of age $a$. The product $B(t-a) l(a)$ therefore denotes the number density of individuals born at $t-a$ and still alive at $t$, while $B(t-a)l(a)b(a)$ denotes the number of births in this cohort, which suggest the following Volterra integral equation for $B$:
-$$
+Let $B(t)dt$ be the number of births during the time interval from $t$ to $t+dt$. Also define the survival function $l(a)$, the fraction of individuals surviving to age $a$. Finally define $b(a)$ to be the birth rate for mothers of age $a$. The product $B(t-a) l(a)$ therefore denotes the number density of individuals born at $t-a$ and still alive at $t$, while $B(t-a)l(a)b(a)$ denotes the number of births in this cohort, which suggest the following Volterra integral equation for $B$: $$
 \begin{align}
 B(t) &= \int_{a=0}^t B(t-a) l(a) b(a)\\
 \end{align}
@@ -39,7 +38,6 @@ $$
 \end{align}
 $$
 
-
 In R, we can simulate the Euler-Lotka equation to understand population dynamics better. The following code snippet provides a basic framework for this simulation:
 
 ```{r}
@@ -56,6 +54,163 @@ euler_lotka <- function(r) {
 # Finding the intrinsic rate of natural increase
 library(rootSolve)
 r_estimated <- uniroot(euler_lotka, lower = 0, upper = 1)$root
+
+# Output the estimated intrinsic rate of natural increase
+print(paste("Estimated r:", r_estimated))
+```
+
+Now let's apply this concept to the SEIR model
+
+```{r}
+seir_euler <- function (y0, params, delta, ndays) {
+  S = vector("numeric", ndays)
+  E = vector("numeric", ndays)
+  I = vector("numeric", ndays)
+  R = vector("numeric", ndays)
+  CI = vector("numeric", ndays)
+  
+  beta <- params[["beta"]]
+  epsilon <- params[["epsilon"]]
+  gamma <- params[["gamma"]] 
+
+  S[1] <- y0["S"]; 
+  E[1] <- y0["E"]; 
+  I[1] <- y0["I"]; 
+  R[1] <- y0["R"];
+  
+  stepsperday = round(1/delta)
+  St = S[1]
+  Et = E[1]  
+  It = I[1]                       
+  Rt = R[1]                                             
+  CIt = CI[1]  
+  
+  for (day in 2:ndays) {
+    for (step in 1:stepsperday) {#
+      Nt <- St + Et + It + Rt
+    
+      rSE <- beta * It / Nt
+      rEI <- epsilon
+      rIR <- gamma
+      
+      nSE <- St * rSE * delta
+      nEI <- Et * rEI * delta
+      nIR <- It * rIR * delta
+  
+      dSdt <- - nSE
+      dEdt <- nSE - nEI
+      dIdt <- nEI - nIR
+      dRdt <- nIR
+      dCIdt <- nEI
+      
+      # Update next timestep
+      St = St + dSdt
+      Et = Et + dEdt
+      It = It + dIdt
+      Rt = Rt + dRdt
+      CIt = CIt + dCIdt
+    } 
+      # // Update next timestep
+    S[day] = St
+    E[day] = Et
+    I[day] = It
+    R[day] = Rt
+    CI[day] = CIt
+  }
+ return (data.frame(S=S,E=E,I=I,R=R,CI=CI))
+}
+
+sir_euler <- function (y0, params, delta, ndays) {
+  S = vector("numeric", ndays)
+  I = vector("numeric", ndays)
+  R = vector("numeric", ndays)
+  CI = vector("numeric", ndays)
+  
+  beta <- params[["beta"]]
+  gamma <- params[["gamma"]] 
+
+  S[1] <- y0["S"]; 
+  I[1] <- y0["I"]; 
+  R[1] <- y0["R"];
+  
+  stepsperday = round(1/delta)
+  St = S[1]
+  It = I[1]                       
+  Rt = R[1]                                             
+  CIt = CI[1]  
+  
+  for (day in 2:ndays) {
+    for (step in 1:stepsperday) {#
+      Nt <- St + It + Rt
+    
+      rSI <- beta * It / Nt
+      rIR <- gamma
+      
+      nSI <- St * rSI * delta
+      nIR <- It * rIR * delta
+  
+      dSdt <- - nSI
+      dIdt <- nSI - nIR
+      dRdt <- nIR
+      dCIdt <- nSI
+      
+      # Update next timestep
+      St = St + dSdt
+      It = It + dIdt
+      Rt = Rt + dRdt
+      CIt = CIt + dCIdt
+    } 
+      # // Update next timestep
+    S[day] = St
+    I[day] = It
+    R[day] = Rt
+    CI[day] = CIt
+  }
+ return (data.frame(S=S,I=I,R=R,CI=CI))
+}
+
+y0 = c(S=999,E=0,I=1,R=0)
+ndays = 100L
+delta = 0.5
+params = list(beta=0.4, epsilon=0.2, gamma=0.2) 
+
+out = seir_euler(y0=y0, params=params, delta=delta, ndays=ndays)
+
+y0 = c(S=999,I=1,R=0)
+ndays = 100L
+delta = 0.5
+params = list(beta=0.4, gamma=0.2) 
+
+out_sir = sir_euler(y0=y0, params=params, delta=delta, ndays=ndays)
+```
+
+
+```{r}
+I = out_sir$I[1:10]
+CI = out_sir$CI[1:10]
+# explan this in terms of a exponential growth
+#I=exp(r*t)
+r = 0.2
+exp_growth <- function(r, I){
+  sapply(1:length(I), function(t) {(I[t]-exp(r*t))/(exp(r*t))})
+  sapply(1:length(I), function(t) {(CI[t]-exp(r*t))/(exp(r*t))})
+}
+
+# Define age-specific fertility and survival rates
+ages <- seq(from=1, to=10, by=0.1) # Age range
+R0 = 2
+r = 0.15
+survival_rates(a) <- function(a) {
+  exp(-r*a)
+}
+# Euler-Lotka Equation Function
+euler_lotka <- function(r) {
+  sum(sapply(1:length(ages),  survival_rates[ages[a]] * R0/10 * exp(-r * ages[a])))
+}
+
+# Finding the intrinsic rate of natural increase
+library(rootSolve)
+r_estim <- uniroot(euler_lotka, lower = 0, upper = 1)$root
 
 # Output the estimated intrinsic rate of natural increase
 print(paste("Estimated r:", r_estimated))
