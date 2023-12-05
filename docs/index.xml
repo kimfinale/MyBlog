@@ -10,7 +10,1347 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Jong-Hoon Kim&#39;s Blog</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Sun, 03 Dec 2023 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 30 Dec 2023 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Template</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/0_template/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="a-simple-particle-filter-in-r" class="level3">
+<h3 class="anchored" data-anchor-id="a-simple-particle-filter-in-r">A simple particle filter in R</h3>
+<p>The following example was adapted from the post in <a href="https://rpubs.com/awellis/180442">RPubs</a>.</p>
+<section id="simulate-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="simulate-the-data">Simulate the data</h4>
+<p>Generate <img src="https://latex.codecogs.com/png.latex?y_%7B1:T%7D"> as a sequence of noisy observations of a latent variable <img src="https://latex.codecogs.com/png.latex?x_%7B1:T%7D">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0A%5Cmathrm%7Bd%7DS/%5Cmathrm%7Bd%7Dt%20&amp;=%20-%5Cbeta%20I%20S%20%5C%5C%0A%5Cmathrm%7Bd%7DI/%5Cmathrm%7Bd%7Dt%20&amp;=%20%5Cbeta%20I%20S%20-%20%5Cgamma%20I%5C%5C%0A%5Cend%7Balign%7D%0A"> The first part is simply to compute <img src="https://latex.codecogs.com/png.latex?dI/dS">.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sympy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span></span>
+<span id="cb1-2"></span>
+<span id="cb1-3">R_0, b, g, dIdt, dSdt, S, I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> symbols(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'R_0 b g dIdt dSdt S I'</span>)</span>
+<span id="cb1-4"></span>
+<span id="cb1-5">dSdt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> b<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>S<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>I</span>
+<span id="cb1-6">dIdt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>S<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> g<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>I</span>
+<span id="cb1-7">dSdI <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dIdt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> dSdt <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#-(I*S*b - I*g)/(I*S*b)</span></span>
+<span id="cb1-8"></span>
+<span id="cb1-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># b &lt;- R0*g</span></span>
+<span id="cb1-10">simplify(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>(I<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>S<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>R_0<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>g <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> I<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>g)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(I<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>S<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>R_0<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>g)) </span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-1 + 1/(R_0*S)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># create a data set: x (latent variable) and y (observation)</span></span>
+<span id="cb3-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to make it reproducible  (lots of random numbers follow)</span></span>
+<span id="cb3-3">T <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># number of observations</span></span>
+<span id="cb3-4">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>, T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># latent variable</span></span>
+<span id="cb3-5">y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>, T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># observed values</span></span>
+<span id="cb3-6">sx <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.2</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># standard deviation for x</span></span>
+<span id="cb3-7">sy <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># standard deviation for y</span></span>
+<span id="cb3-8">x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb3-9">y[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], sy)</span>
+<span id="cb3-10"></span>
+<span id="cb3-11"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (t <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, T)) {</span>
+<span id="cb3-12">  x[t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, x[t<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">-1</span>], sx)</span>
+<span id="cb3-13">  y[t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, x[t], sy)</span>
+<span id="cb3-14">}</span>
+<span id="cb3-15">x_true <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> x</span>
+<span id="cb3-16">obs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> y</span></code></pre></div>
+</div>
+</section>
+<section id="implement-a-particle-filter-sequential-monte-carlo" class="level4">
+<h4 class="anchored" data-anchor-id="implement-a-particle-filter-sequential-monte-carlo">Implement a particle filter (sequential Monte Carlo)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># particle filter -----------------------------------------------------------</span></span>
+<span id="cb4-2">T <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(y) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># number of observations</span></span>
+<span id="cb4-3">N <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># number of particles</span></span>
+<span id="cb4-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to store prior distributions for variables correspond to latent variable x</span></span>
+<span id="cb4-5">x_prior <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow=</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T) </span>
+<span id="cb4-6">x_post <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow=</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># posterior distributions</span></span>
+<span id="cb4-7">weights <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow=</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># weights used to draw posterior sample</span></span>
+<span id="cb4-8">W <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow =</span>  N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># normalized weights</span></span>
+<span id="cb4-9">A <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow =</span>  N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># indices based on the normalized weights</span></span>
+<span id="cb4-10">x_prior[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(N, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, sx)<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># initial X from a normal distribution</span></span>
+<span id="cb4-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># calculate weights, normal likelihood</span></span>
+<span id="cb4-12">weights[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dnorm</span>(obs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], x_prior[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], sy)</span>
+<span id="cb4-13">W[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> weights[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(weights[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>])<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># normalise weights</span></span>
+<span id="cb4-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># indices based on the weighted resampling with replacement </span></span>
+<span id="cb4-15">A[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prob =</span> W[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>N, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> T) </span>
+<span id="cb4-16">x_post[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> x_prior[A[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># posterior distribution using the indices</span></span>
+<span id="cb4-17"></span>
+<span id="cb4-18"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (t <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, T)) {</span>
+<span id="cb4-19">  x_prior[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(N, x_post[, t<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">-1</span>], sx) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># prior x_{t} based on x_{t-1}</span></span>
+<span id="cb4-20">  weights[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dnorm</span>(obs[t], x_prior[, t], sy) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># calculate weights </span></span>
+<span id="cb4-21">  W[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> weights[, t]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(weights[, t]) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># normalise weights</span></span>
+<span id="cb4-22">  A[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prob =</span> W[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>N, t], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># indices</span></span>
+<span id="cb4-23">  x_post[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> x_prior[A[, t], t] <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># posterior samples</span></span>
+<span id="cb4-24">}</span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="summarize-results" class="level3">
+<h3 class="anchored" data-anchor-id="summarize-results">Summarize results</h3>
+<p>Calculate the mean and 2.5<img src="https://latex.codecogs.com/png.latex?%5E%5Ctextrm%7Bth%7D"> and 97.<img src="https://latex.codecogs.com/png.latex?%5E%5Ctextrm%7Bth%7D"> percentile of the posterior sample as a means to get 95% credible interval.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">x_means <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">apply</span>(x_post, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, mean) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># posterior mean</span></span>
+<span id="cb5-2">x_quantiles <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">apply</span>(x_post, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">quantile</span>(x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">probs =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.025</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.975</span>))) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 95% credible interval</span></span>
+<span id="cb5-3">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">t =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, T),</span>
+<span id="cb5-4">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x_mean =</span> x_means,</span>
+<span id="cb5-5">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x_lb =</span> x_quantiles[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, ],</span>
+<span id="cb5-6">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x_ub =</span> x_quantiles[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, ],</span>
+<span id="cb5-7">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x_true =</span> x_true, <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># latent variables</span></span>
+<span id="cb5-8">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> y) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># observed values</span></span></code></pre></div>
+</div>
+<section id="plot-the-results" class="level4">
+<h4 class="anchored" data-anchor-id="plot-the-results">Plot the results</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb6-2">extrafont<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">loadfonts</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"win"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">quiet=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb6-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>))</span>
+<span id="cb6-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_ribbon</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymin =</span> x_lb, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymax =</span> x_ub, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"95% CrI"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>x_mean, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Posterior mean"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>x_true, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"True"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>x_mean, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Posterior mean"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>x_true, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"True"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"values"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"index"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb6-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_colour_manual</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Posterior mean"</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"firebrick"</span>,</span>
+<span id="cb6-12">                                   <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"True"</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkgrey"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"firebrick"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottom"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/0_template/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ggsave("particle_filter.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code></pre></div>
+</div>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>particle filter</category>
+  <guid>https://kimfinale.github.io/myblog/posts/0_template/index.html</guid>
+  <pubDate>Sat, 30 Dec 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/0_template/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
+<item>
+  <title>Convolution</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/convolution/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="a-simple-particle-filter-in-r" class="level3">
+<h3 class="anchored" data-anchor-id="a-simple-particle-filter-in-r">A simple particle filter in R</h3>
+<p>The following example was adapted from the post in Grant Sanderson’s <a href="https://www.youtube.com/watch?v=IaSGqQa5O-M&amp;t=567s">YouTube video</a>.</p>
+<section id="simulate-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="simulate-the-data">Simulate the data</h4>
+<p>Generate <img src="https://latex.codecogs.com/png.latex?y_%7B1:T%7D"> as a sequence of noisy observations of a latent variable <img src="https://latex.codecogs.com/png.latex?x_%7B1:T%7D">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0A%5Cmathrm%7Bd%7DS/%5Cmathrm%7Bd%7Dt%20&amp;=%20-%5Cbeta%20I%20S%20%5C%5C%0A%5Cmathrm%7Bd%7DI/%5Cmathrm%7Bd%7Dt%20&amp;=%20%5Cbeta%20I%20S%20-%20%5Cgamma%20I%5C%5C%0A%5Cend%7Balign%7D%0A"> The first part is simply to compute <img src="https://latex.codecogs.com/png.latex?dI/dS">.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> sympy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span></span>
+<span id="cb1-2"></span>
+<span id="cb1-3">R_0, b, g, dIdt, dSdt, S, I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> symbols(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'R_0 b g dIdt dSdt S I'</span>)</span>
+<span id="cb1-4"></span>
+<span id="cb1-5">dSdt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> b<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>S<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>I</span>
+<span id="cb1-6">dIdt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>S<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> g<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>I</span>
+<span id="cb1-7">dSdI <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dIdt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> dSdt <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#-(I*S*b - I*g)/(I*S*b)</span></span>
+<span id="cb1-8"></span>
+<span id="cb1-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># b &lt;- R0*g</span></span>
+<span id="cb1-10">simplify(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>(I<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>S<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>R_0<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>g <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> I<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>g)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(I<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>S<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>R_0<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>g)) </span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-1 + 1/(R_0*S)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># create a data set: x (latent variable) and y (observation)</span></span>
+<span id="cb3-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to make it reproducible  (lots of random numbers follow)</span></span>
+<span id="cb3-3">T <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># number of observations</span></span>
+<span id="cb3-4">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>, T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># latent variable</span></span>
+<span id="cb3-5">y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>, T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># observed values</span></span>
+<span id="cb3-6">sx <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.2</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># standard deviation for x</span></span>
+<span id="cb3-7">sy <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># standard deviation for y</span></span>
+<span id="cb3-8">x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb3-9">y[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], sy)</span>
+<span id="cb3-10"></span>
+<span id="cb3-11"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (t <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, T)) {</span>
+<span id="cb3-12">  x[t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, x[t<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">-1</span>], sx)</span>
+<span id="cb3-13">  y[t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, x[t], sy)</span>
+<span id="cb3-14">}</span>
+<span id="cb3-15">x_true <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> x</span>
+<span id="cb3-16">obs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> y</span></code></pre></div>
+</div>
+</section>
+<section id="implement-a-particle-filter-sequential-monte-carlo" class="level4">
+<h4 class="anchored" data-anchor-id="implement-a-particle-filter-sequential-monte-carlo">Implement a particle filter (sequential Monte Carlo)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># particle filter -----------------------------------------------------------</span></span>
+<span id="cb4-2">T <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(y) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># number of observations</span></span>
+<span id="cb4-3">N <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># number of particles</span></span>
+<span id="cb4-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to store prior distributions for variables correspond to latent variable x</span></span>
+<span id="cb4-5">x_prior <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow=</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T) </span>
+<span id="cb4-6">x_post <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow=</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># posterior distributions</span></span>
+<span id="cb4-7">weights <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow=</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># weights used to draw posterior sample</span></span>
+<span id="cb4-8">W <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow =</span>  N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># normalized weights</span></span>
+<span id="cb4-9">A <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matrix</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow =</span>  N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># indices based on the normalized weights</span></span>
+<span id="cb4-10">x_prior[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(N, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, sx)<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># initial X from a normal distribution</span></span>
+<span id="cb4-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># calculate weights, normal likelihood</span></span>
+<span id="cb4-12">weights[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dnorm</span>(obs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], x_prior[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], sy)</span>
+<span id="cb4-13">W[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> weights[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(weights[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>])<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># normalise weights</span></span>
+<span id="cb4-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># indices based on the weighted resampling with replacement </span></span>
+<span id="cb4-15">A[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prob =</span> W[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>N, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> T) </span>
+<span id="cb4-16">x_post[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> x_prior[A[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># posterior distribution using the indices</span></span>
+<span id="cb4-17"></span>
+<span id="cb4-18"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (t <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, T)) {</span>
+<span id="cb4-19">  x_prior[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(N, x_post[, t<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">-1</span>], sx) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># prior x_{t} based on x_{t-1}</span></span>
+<span id="cb4-20">  weights[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dnorm</span>(obs[t], x_prior[, t], sy) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># calculate weights </span></span>
+<span id="cb4-21">  W[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> weights[, t]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(weights[, t]) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># normalise weights</span></span>
+<span id="cb4-22">  A[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>N, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prob =</span> W[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>N, t], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> T) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># indices</span></span>
+<span id="cb4-23">  x_post[, t] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> x_prior[A[, t], t] <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># posterior samples</span></span>
+<span id="cb4-24">}</span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="summarize-results" class="level3">
+<h3 class="anchored" data-anchor-id="summarize-results">Summarize results</h3>
+<p>Calculate the mean and 2.5<img src="https://latex.codecogs.com/png.latex?%5E%5Ctextrm%7Bth%7D"> and 97.<img src="https://latex.codecogs.com/png.latex?%5E%5Ctextrm%7Bth%7D"> percentile of the posterior sample as a means to get 95% credible interval.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">x_means <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">apply</span>(x_post, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, mean) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># posterior mean</span></span>
+<span id="cb5-2">x_quantiles <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">apply</span>(x_post, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">quantile</span>(x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">probs =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.025</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.975</span>))) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 95% credible interval</span></span>
+<span id="cb5-3">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">t =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, T),</span>
+<span id="cb5-4">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x_mean =</span> x_means,</span>
+<span id="cb5-5">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x_lb =</span> x_quantiles[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, ],</span>
+<span id="cb5-6">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x_ub =</span> x_quantiles[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, ],</span>
+<span id="cb5-7">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x_true =</span> x_true, <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># latent variables</span></span>
+<span id="cb5-8">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> y) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># observed values</span></span></code></pre></div>
+</div>
+<section id="plot-the-results" class="level4">
+<h4 class="anchored" data-anchor-id="plot-the-results">Plot the results</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb6-2">extrafont<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">loadfonts</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"win"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">quiet=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb6-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>))</span>
+<span id="cb6-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_ribbon</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymin =</span> x_lb, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymax =</span> x_ub, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"95% CrI"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>x_mean, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Posterior mean"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>x_true, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"True"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>x_mean, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Posterior mean"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>x_true, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"True"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"values"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"index"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb6-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_colour_manual</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Posterior mean"</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"firebrick"</span>,</span>
+<span id="cb6-12">                                   <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"True"</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkgrey"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"firebrick"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottom"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/convolution/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ggsave("particle_filter.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code></pre></div>
+</div>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>particle filter</category>
+  <guid>https://kimfinale.github.io/myblog/posts/convolution/index.html</guid>
+  <pubDate>Mon, 04 Dec 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/convolution/particle_filter.png" medium="image" type="image/png"/>
+</item>
 <item>
   <title>Idiosyncrasies and generalities</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -40,10 +1380,162 @@
   <category>ecology</category>
   <category>idiosyncransy</category>
   <category>generality</category>
-  <category>COVID19</category>
+  <category>COVID-19</category>
   <guid>https://kimfinale.github.io/myblog/posts/Idiosyncrasy_generality/index.html</guid>
   <pubDate>Sun, 03 Dec 2023 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/Idiosyncrasy_generality/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
+<item>
+  <title>Euler-Lotka equation</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/Euler-Lotka/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="euler-lotka-equation" class="level3">
+<h3 class="anchored" data-anchor-id="euler-lotka-equation">Euler-Lotka equation</h3>
+<p>The following content was adapted from the <a href="https://en.wikipedia.org/wiki/Euler%E2%80%93Lotka_equation">Wikipedia article</a>.</p>
+<p>The Euler-Lotka equation is a fundamental concept in demographic analysis and population ecology, offering critical insights into the age structure and growth rate of populations. At its core, the equation connects the reproductive rates across different ages to the overall population growth rate.</p>
+<p>Let <img src="https://latex.codecogs.com/png.latex?B(t)dt"> be the number of births during the time interval from <img src="https://latex.codecogs.com/png.latex?t"> to <img src="https://latex.codecogs.com/png.latex?t+dt">. Also define the survival function <img src="https://latex.codecogs.com/png.latex?l(a)">, the fraction of individuals surviving to age <img src="https://latex.codecogs.com/png.latex?a">. Finally define <img src="https://latex.codecogs.com/png.latex?b(a)"> to be the birth rate for mothers of age <img src="https://latex.codecogs.com/png.latex?a">. The product <img src="https://latex.codecogs.com/png.latex?B(t-a)%20l(a)"> therefore denotes the number density of individuals born at <img src="https://latex.codecogs.com/png.latex?t-a"> and still alive at <img src="https://latex.codecogs.com/png.latex?t">, while <img src="https://latex.codecogs.com/png.latex?B(t-a)l(a)b(a)"> denotes the number of births in this cohort, which suggest the following Volterra integral equation for <img src="https://latex.codecogs.com/png.latex?B">: <img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0AB(t)%20&amp;=%20%5Cint_%7Ba=0%7D%5Et%20B(t-a)%20l(a)%20b(a)%5C%5C%0A%5Cend%7Balign%7D%0A"></p>
+<p>If we assume an exponential solution <img src="https://latex.codecogs.com/png.latex?B(t)=Q%20e%5E%7Brt%7D">, the equation becomes</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0AQe%5E%7Brt%7D%20&amp;=%20%5Cint_%7Ba=0%7D%5Et%20Qe%5E%7Br(t-a)%7D%20l(a)%20b(a)%5C%5C%0A%5Cend%7Balign%7D%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0A1%20=%20%5Cint_%7Ba=0%7D%5Et%20e%5E%7B-ra%7D%20l(a)%20b(a)%5C%5C%0A%5Cend%7Balign%7D%0A"></p>
+<p>In R, we can simulate the Euler-Lotka equation to understand population dynamics better. The following code snippet provides a basic framework for this simulation:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define age-specific fertility and survival rates</span></span>
+<span id="cb1-2">ages <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">from =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">to =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Age range</span></span>
+<span id="cb1-3">fertility_rates <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">runif</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(ages), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">min =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">max =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Random fertility rates</span></span>
+<span id="cb1-4">survival_rates <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">runif</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(ages), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">min =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">max =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Random survival rates</span></span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Euler-Lotka Equation Function</span></span>
+<span id="cb1-7">euler_lotka <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(r) {</span>
+<span id="cb1-8">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(survival_rates <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> fertility_rates <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>r <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> ages)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb1-9">}</span>
+<span id="cb1-10"></span>
+<span id="cb1-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Finding the intrinsic rate of natural increase</span></span>
+<span id="cb1-12"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(rootSolve)</span>
+<span id="cb1-13">r_estimated <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">uniroot</span>(euler_lotka, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lower =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">upper =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>root</span>
+<span id="cb1-14"></span>
+<span id="cb1-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Output the estimated intrinsic rate of natural increase</span></span>
+<span id="cb1-16"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">print</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Estimated r:"</span>, r_estimated))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Estimated r: 0.140031822598998"</code></pre>
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>Euler-Lotka</category>
+  <category>demography</category>
+  <category>survival</category>
+  <category>exponential</category>
+  <guid>https://kimfinale.github.io/myblog/posts/Euler-Lotka/index.html</guid>
+  <pubDate>Sat, 02 Dec 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/Euler-Lotka/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>SIR model in Stan: Euler method</title>
@@ -10297,1386 +11789,6 @@ font-style: inherit;">$</span>par)</span></code></pre></div>
   <guid>https://kimfinale.github.io/myblog/posts/censored-regression-optim/index.html</guid>
   <pubDate>Sat, 14 Oct 2023 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/censored-regression-optim/apt_censored.png" medium="image" type="image/png" height="103" width="144"/>
-</item>
-<item>
-  <title>Mulitple regression: POLYMOD data</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/POLYMOD-multiple-regression/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>This post describes my attempt to reproduce Table 1 of the paper, <a href="https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0050074">Social Contacts and Mixing Patterns Relevant to the Spread of Infectious Diseases</a>. Data were downloaded from <a href="http://www.socialcontactdata.org/">Social Contact Data</a>, which was hosted in <a href="https://zenodo.org/record/3746312#.Xo85CcgzZPY">zenodo</a>. I used the version 1.1. In summary, I wasn’t successful at reproducing the table exatly but still wanted to document the processes that I went through.</p>
-<section id="data-preparation" class="level3">
-<h3 class="anchored" data-anchor-id="data-preparation">Data preparation</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(data.table)</span>
-<span id="cb1-2"></span>
-<span id="cb1-3">d1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fread</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"2008_Mossong_POLYMOD_participant_common.csv"</span>)</span>
-<span id="cb1-4">d2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fread</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"2008_Mossong_POLYMOD_contact_common.csv"</span>)</span>
-<span id="cb1-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)</span>
-<span id="cb1-6"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># count the number of contacts for each participant using part_id variable</span></span>
-<span id="cb1-7">d2 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(part_id) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb1-8">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summarize</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">contacts =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">n</span>()) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">-&gt;</span> d2_contacts</span>
-<span id="cb1-9">d12 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">left_join</span>(d1, d2_contacts, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">by=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"part_id"</span>)</span>
-<span id="cb1-10"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># add household information</span></span>
-<span id="cb1-11">d3 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fread</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"2008_Mossong_POLYMOD_hh_common.csv"</span>)</span>
-<span id="cb1-12">d123 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">left_join</span>(d12, d3, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">by=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"hh_id"</span>)</span>
-<span id="cb1-13"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># add day of week information</span></span>
-<span id="cb1-14">d4 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fread</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"2008_Mossong_POLYMOD_sday.csv"</span>)</span>
-<span id="cb1-15">dat <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">left_join</span>(d123, d4, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">by=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"part_id"</span>)</span></code></pre></div>
-</div>
-</section>
-<section id="data-manipulation" class="level3">
-<h3 class="anchored" data-anchor-id="data-manipulation">Data manipulation</h3>
-<p>Categorize the age group into different 10 age groups: 0-4, 5-9, 10-14, 15-19, and 20 to 70 by 10 years and 70 and above</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">classify_age <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(d){</span>
-<span id="cb2-2">  d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>age_grp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">99</span></span>
-<span id="cb2-3">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">nrow</span>(d)) {</span>
-<span id="cb2-4">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">is.na</span>(d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i])){</span>
-<span id="cb2-5">      <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span>(d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>){</span>
-<span id="cb2-6">        d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>age_grp[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb2-7">      }</span>
-<span id="cb2-8">      <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">else</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> (d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;&amp;</span> d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span>){</span>
-<span id="cb2-9">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span>(j <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>){</span>
-<span id="cb2-10">          <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span>(d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>j <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;&amp;</span> d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> (<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>j<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>)){</span>
-<span id="cb2-11">            d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>age_grp[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> j</span>
-<span id="cb2-12">          }</span>
-<span id="cb2-13">        }</span>
-<span id="cb2-14">      }</span>
-<span id="cb2-15">      <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">else</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> (d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;&amp;</span> d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">70</span>){</span>
-<span id="cb2-16">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> (k <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>){</span>
-<span id="cb2-17">          <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">if</span> (d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> (<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>k) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;&amp;</span> d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_age[i] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> (<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>k)){</span>
-<span id="cb2-18">            d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>age_grp[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> k<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span></span>
-<span id="cb2-19">          }</span>
-<span id="cb2-20">        }</span>
-<span id="cb2-21">      } </span>
-<span id="cb2-22">      <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">else</span> {</span>
-<span id="cb2-23">        d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>age_grp[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9</span></span>
-<span id="cb2-24">      }</span>
-<span id="cb2-25">    } </span>
-<span id="cb2-26">  }</span>
-<span id="cb2-27">  d</span>
-<span id="cb2-28">}</span>
-<span id="cb2-29"></span>
-<span id="cb2-30">dat <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">classify_age</span>(dat)</span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb3-2">dat <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x=</span>contacts)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb3-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_histogram</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">binwidth=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/POLYMOD-multiple-regression/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Compare the number of participants by age group (the third column)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">dat <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-2">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">group_by</span>(age_grp) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summarize</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">npart=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">n</span>(),</span>
-<span id="cb4-4">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">avg_contacts =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(contacts, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">na.rm=</span>T) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> npart, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">-&gt;</span> dat_ag</span>
-<span id="cb4-5"></span>
-<span id="cb4-6">dat_ag<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>npart_true <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">660</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">661</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">713</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">685</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">879</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">815</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">908</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">906</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">728</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">270</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">65</span>)</span>
-<span id="cb4-7">dat_ag<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>avg_contacts_true <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10.21</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14.81</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">18.22</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">17.58</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">13.57</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14.14</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">13.83</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">12.30</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9.21</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">6.89</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9.63</span>)</span>
-<span id="cb4-8">dat_ag</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 11 × 5
-   age_grp npart avg_contacts npart_true avg_contacts_true
-     &lt;dbl&gt; &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;             &lt;dbl&gt;
- 1       0   660        10.2         660             10.2 
- 2       1   661        14.8         661             14.8 
- 3       2   713        18.2         713             18.2 
- 4       3   685        17.6         685             17.6 
- 5       4   879        13.6         879             13.6 
- 6       5   815        14.1         815             14.1 
- 7       6   908        13.8         908             13.8 
- 8       7   906        12.3         906             12.3 
- 9       8   728         9.21        728              9.21
-10       9   270         6.89        270              6.89
-11      99    65         9.63         65              9.63</code></pre>
-</div>
-</div>
-<p>Categorize the household size</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">classify_hh <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(d){</span>
-<span id="cb6-2">  d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>hh_size_grp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>hh_size <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">is.na</span>(d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>hh_size), d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>hh_size, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">99</span>))</span>
-<span id="cb6-3">  d</span>
-<span id="cb6-4">}</span>
-<span id="cb6-5">dat <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">classify_hh</span>(dat)</span></code></pre></div>
-</div>
-<p>Make categorical variables factor for regression</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># set the categorical variables as factor for regression</span></span>
-<span id="cb7-2">dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>age_grp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.factor</span>(dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>age_grp)</span>
-<span id="cb7-3">dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>hh_size_grp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.factor</span>(dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>hh_size_grp)</span>
-<span id="cb7-4">dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>gender <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.factor</span>(dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>part_gender)</span>
-<span id="cb7-5">dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>dayofweek <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.factor</span>(dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>dayofweek)</span>
-<span id="cb7-6">data.table<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fwrite</span>(dat, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"POLYMOD_2017.csv"</span>)</span></code></pre></div>
-</div>
-</section>
-<section id="data-for-fitting-only-complete-cases" class="level3">
-<h3 class="anchored" data-anchor-id="data-for-fitting-only-complete-cases">data for fitting only complete cases</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">dat_ <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> dat</span>
-<span id="cb8-2">dat <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> dat[<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">complete.cases</span>(dat),]</span>
-<span id="cb8-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># set the maximum number of contacts 29</span></span>
-<span id="cb8-4">dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>contacts <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>contacts <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">29</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">29</span>, dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>contacts)</span></code></pre></div>
-</div>
-</section>
-<section id="negbin-regression" class="level3">
-<h3 class="anchored" data-anchor-id="negbin-regression">NegBin regression</h3>
-<p>Negative binomial regression was modeled using <code>MASS::glm.nb</code> function</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(MASS)</span>
-<span id="cb9-2">m1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glm.nb</span>(contacts <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> age_grp, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dat)</span>
-<span id="cb9-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summary</span>(m1)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm.nb(formula = contacts ~ age_grp, data = dat, init.theta = 2.895747992, 
-    link = log)
-
-Coefficients:
-            Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)  2.30861    0.02626  87.919  &lt; 2e-16 ***
-age_grp1     0.32714    0.03648   8.967  &lt; 2e-16 ***
-age_grp2     0.49578    0.03556  13.943  &lt; 2e-16 ***
-age_grp3     0.46119    0.03600  12.812  &lt; 2e-16 ***
-age_grp4     0.24010    0.03442   6.975 3.05e-12 ***
-age_grp5     0.28582    0.03483   8.206 2.29e-16 ***
-age_grp6     0.24679    0.03418   7.220 5.21e-13 ***
-age_grp7     0.14499    0.03429   4.228 2.35e-05 ***
-age_grp8    -0.09882    0.03656  -2.703  0.00687 ** 
-age_grp9    -0.36270    0.05032  -7.208 5.66e-13 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for Negative Binomial(2.8957) family taken to be 1)
-
-    Null deviance: 8055.6  on 7068  degrees of freedom
-Residual deviance: 7390.5  on 7059  degrees of freedom
-AIC: 47802
-
-Number of Fisher Scoring iterations: 1
-
-              Theta:  2.8957 
-          Std. Err.:  0.0597 
-
- 2 x log-likelihood:  -47780.1930 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">exp</span>(m1<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>coefficients)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)    age_grp1    age_grp2    age_grp3    age_grp4    age_grp5 
- 10.0604651   1.3869981   1.6417727   1.5859529   1.2713769   1.3308557 
-   age_grp6    age_grp7    age_grp8    age_grp9 
-  1.2799167   1.1560315   0.9059023   0.6957929 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">m5 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">glm.nb</span>(contacts <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> age_grp <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> gender <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> hh_size_grp <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> country <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> dayofweek, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dat)</span>
-<span id="cb13-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summary</span>(m5)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm.nb(formula = contacts ~ age_grp + gender + hh_size_grp + 
-    country + dayofweek, data = dat, init.theta = 3.763576898, 
-    link = log)
-
-Coefficients:
-             Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)   1.75583    0.19669   8.927  &lt; 2e-16 ***
-age_grp1      0.30090    0.03321   9.060  &lt; 2e-16 ***
-age_grp2      0.45196    0.03238  13.956  &lt; 2e-16 ***
-age_grp3      0.44934    0.03271  13.738  &lt; 2e-16 ***
-age_grp4      0.31340    0.03190   9.824  &lt; 2e-16 ***
-age_grp5      0.31068    0.03213   9.668  &lt; 2e-16 ***
-age_grp6      0.27568    0.03146   8.763  &lt; 2e-16 ***
-age_grp7      0.21717    0.03260   6.661 2.72e-11 ***
-age_grp8      0.03470    0.03617   0.959 0.337387    
-age_grp9     -0.19923    0.04890  -4.074 4.62e-05 ***
-genderF      -0.01755    0.19240  -0.091 0.927340    
-genderM      -0.02768    0.19241  -0.144 0.885592    
-hh_size_grp2  0.09645    0.02827   3.412 0.000646 ***
-hh_size_grp3  0.11854    0.02964   3.999 6.36e-05 ***
-hh_size_grp4  0.22913    0.02979   7.692 1.45e-14 ***
-hh_size_grp5  0.30497    0.03213   9.492  &lt; 2e-16 ***
-countryDE    -0.31802    0.02839 -11.202  &lt; 2e-16 ***
-countryFI    -0.01234    0.02921  -0.423 0.672627    
-countryGB     0.02936    0.02918   1.006 0.314328    
-countryIT     0.43331    0.02960  14.637  &lt; 2e-16 ***
-countryLU     0.28600    0.02862   9.994  &lt; 2e-16 ***
-countryNL     0.20892    0.04306   4.851 1.23e-06 ***
-countryPL     0.25610    0.02860   8.956  &lt; 2e-16 ***
-dayofweek1    0.27813    0.02810   9.898  &lt; 2e-16 ***
-dayofweek2    0.32401    0.02758  11.747  &lt; 2e-16 ***
-dayofweek3    0.31329    0.02812  11.140  &lt; 2e-16 ***
-dayofweek4    0.31717    0.02774  11.434  &lt; 2e-16 ***
-dayofweek5    0.34216    0.02745  12.465  &lt; 2e-16 ***
-dayofweek6    0.14626    0.02887   5.066 4.07e-07 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for Negative Binomial(3.7636) family taken to be 1)
-
-    Null deviance: 9794.6  on 7068  degrees of freedom
-Residual deviance: 7372.6  on 7040  degrees of freedom
-AIC: 46396
-
-Number of Fisher Scoring iterations: 1
-
-              Theta:  3.7636 
-          Std. Err.:  0.0843 
-
- 2 x log-likelihood:  -46336.2000 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">exp</span>(m5<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>coefficients)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> (Intercept)     age_grp1     age_grp2     age_grp3     age_grp4     age_grp5 
-   5.7882277    1.3510687    1.5713835    1.5672725    1.3680647    1.3643573 
-    age_grp6     age_grp7     age_grp8     age_grp9      genderF      genderM 
-   1.3174272    1.2425566    1.0353045    0.8193574    0.9826079    0.9726948 
-hh_size_grp2 hh_size_grp3 hh_size_grp4 hh_size_grp5    countryDE    countryFI 
-   1.1012549    1.1258570    1.2575100    1.3565872    0.7275872    0.9877342 
-   countryGB    countryIT    countryLU    countryNL    countryPL   dayofweek1 
-   1.0297905    1.5423491    1.3310865    1.2323420    1.2918884    1.3206527 
-  dayofweek2   dayofweek3   dayofweek4   dayofweek5   dayofweek6 
-   1.3826643    1.3679193    1.3732405    1.4079890    1.1575004 </code></pre>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>regression</category>
-  <category>contact</category>
-  <guid>https://kimfinale.github.io/myblog/posts/POLYMOD-multiple-regression/index.html</guid>
-  <pubDate>Wed, 11 Oct 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/POLYMOD-multiple-regression/polymod-age-contact.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>Regression using optim</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/nb-regression-optim/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="data" class="level3">
-<h3 class="anchored" data-anchor-id="data">Data</h3>
-<p>I will use the <code>cars</code> data with give the speed of cars and the distances taken to stop.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">d <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> datasets<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span>cars</span>
-<span id="cb1-2">m <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lm</span>(dist <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> speed, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data=</span>d)</span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summary</span>(m)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = dist ~ speed, data = d)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--29.069  -9.525  -2.272   9.215  43.201 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) -17.5791     6.7584  -2.601   0.0123 *  
-speed         3.9324     0.4155   9.464 1.49e-12 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 15.38 on 48 degrees of freedom
-Multiple R-squared:  0.6511,    Adjusted R-squared:  0.6438 
-F-statistic: 89.57 on 1 and 48 DF,  p-value: 1.49e-12</code></pre>
-</div>
-</div>
-</section>
-<section id="plot" class="level3">
-<h3 class="anchored" data-anchor-id="plot">Plot</h3>
-<p>Plot estimates with confidence and prediction intervals</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">pred <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">predict</span>(m, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">interval=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"prediction"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">level=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.95</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># prediction interval</span></span>
-<span id="cb3-2">conf <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">predict</span>(m, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">interval=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"confidence"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">level=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.95</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># confidence interval</span></span>
-<span id="cb3-3"></span>
-<span id="cb3-4">mdat <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> m<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>model</span>
-<span id="cb3-5">mdat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>pred_estimate <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> pred[,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]</span>
-<span id="cb3-6">mdat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>pred_lb <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> pred[,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]</span>
-<span id="cb3-7">mdat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>pred_ub <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> pred[,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>]</span>
-<span id="cb3-8">mdat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>conf_estimate <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> conf[,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]</span>
-<span id="cb3-9">mdat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>conf_lb <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> conf[,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]</span>
-<span id="cb3-10">mdat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>conf_ub <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> conf[,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>]</span>
-<span id="cb3-11"></span>
-<span id="cb3-12">mdat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>residuals <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">residuals</span>(m)</span>
-<span id="cb3-13"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb3-14"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)</span>
-<span id="cb3-15"></span>
-<span id="cb3-16"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">12</span>))</span>
-<span id="cb3-17"></span>
-<span id="cb3-18">pltcar <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> mdat <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%&gt;%</span> </span>
-<span id="cb3-19">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(speed, dist))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb3-20">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># geom_point(aes(size = abs(m$residuals)))+</span></span>
-<span id="cb3-21">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_point</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Data"</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb3-22">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>pred_estimate, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Model"</span>))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb3-23">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_ribbon</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ymax=</span>pred_ub, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ymin=</span>pred_lb, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Model"</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.2</span>)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb3-24">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># geom_line(aes(y=conf_estimate), color="steelblue")+</span></span>
-<span id="cb3-25">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_ribbon</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ymax=</span>conf_ub, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ymin=</span>conf_lb, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Model"</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb3-26">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_color_manual</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">values=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Data"</span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"firebrick"</span>))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb3-27">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_fill_manual</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">values=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Model"</span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"steelblue"</span>))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb3-28">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Speed"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Distance"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">title=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Speed and Stopping Distances of Cars"</span>)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb3-29">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend.position=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"bottom"</span>)</span>
-<span id="cb3-30"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggsave</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"plot_car.png"</span>, pltcar)</span>
-<span id="cb3-31">pltcar</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/nb-regression-optim/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="optim-function" class="level3">
-<h3 class="anchored" data-anchor-id="optim-function">optim function</h3>
-<p>Now let’s take an alternative approach to write down the likelihood function and maximize it using the <code>optim</code> function</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># define our likelihood function we like to optimize</span></span>
-<span id="cb4-2">negloglik <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(par, y, X){</span>
-<span id="cb4-3">  sigma <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> par[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]</span>
-<span id="cb4-4">  beta <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> par[<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(par)]</span>
-<span id="cb4-5">  mu <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> X <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%*%</span> beta </span>
-<span id="cb4-6">  <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(y, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mean=</span>mu, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sd=</span>sigma, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">log=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">na.rm=</span>T)</span>
-<span id="cb4-7">}</span>
-<span id="cb4-8"></span>
-<span id="cb4-9">X <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">model.matrix</span>(m)</span>
-<span id="cb4-10">init <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">coef</span>(m), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sigma=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summary</span>(m)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>sigma)</span>
-<span id="cb4-11"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># check</span></span>
-<span id="cb4-12"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># negloglik(par=init, y=d$y, X=X)</span></span>
-<span id="cb4-13">fit <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">optim</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">par=</span>init, </span>
-<span id="cb4-14">             <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fn=</span>negloglik, </span>
-<span id="cb4-15">             <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>d<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>dist, </span>
-<span id="cb4-16">             <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">X=</span>X, </span>
-<span id="cb4-17">             <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">control=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">reltol=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1e-6</span>))</span></code></pre></div>
-</div>
-<p>Let’s compare the results.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">fit<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>par</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)       speed       sigma 
- -17.579095    3.932409   15.379587 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">coef</span>(m)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)       speed 
- -17.579095    3.932409 </code></pre>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>optim</category>
-  <category>regression</category>
-  <guid>https://kimfinale.github.io/myblog/posts/nb-regression-optim/index.html</guid>
-  <pubDate>Tue, 10 Oct 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/nb-regression-optim/plot_car.png" medium="image" type="image/png" height="103" width="144"/>
-</item>
-<item>
-  <title>Extract raster based on a polygon</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/crop-raster-polygon/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>raster 이미지의 일부를 추출해보자. 특히, <code>shapefile</code>에 담겨져 있는 polygon에 해당하는 raster 를 추출해보자. <code>raster</code> 패키지의 <code>crop</code> 과 <code>mask</code> 함수를 이용할 수 있다.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Create some data using meuse </span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(raster)</span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data</span>(meuse)</span>
-<span id="cb1-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">coordinates</span>(meuse) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">~</span>x<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span>y</span>
-<span id="cb1-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">proj4string</span>(meuse) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">CRS</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"+init=epsg:28992"</span>)</span>
-<span id="cb1-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data</span>(meuse.grid)</span>
-<span id="cb1-7"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">coordinates</span>(meuse.grid) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">~</span>x<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span>y</span>
-<span id="cb1-8"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">proj4string</span>(meuse.grid) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">CRS</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"+init=epsg:28992"</span>)</span>
-<span id="cb1-9"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">gridded</span>(meuse.grid) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>    </span>
-<span id="cb1-10">r <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">raster</span>(meuse.grid) </span>
-<span id="cb1-11">r[] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">runif</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ncell</span>(r))</span>
-<span id="cb1-12"></span>
-<span id="cb1-13"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Create a polygon</span></span>
-<span id="cb1-14">f <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> rgeos<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">gBuffer</span>(meuse[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>,], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">byid=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">id=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">width=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">250</span>, </span>
-<span id="cb1-15">                         <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">joinStyle=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ROUND"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">quadsegs=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>)   </span>
-<span id="cb1-16"></span>
-<span id="cb1-17"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Plot full raster and polygon                       </span></span>
-<span id="cb1-18"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(r)</span>
-<span id="cb1-19"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(f,<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">add=</span>T)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/crop-raster-polygon/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Crop using extent, rasterize polygon and finally, create poly-raster</span></span>
-<span id="cb2-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#          **** This is the code that you are after ****  </span></span>
-<span id="cb2-3">cr <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">crop</span>(r, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">extent</span>(f), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">snap=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"out"</span>)                    </span>
-<span id="cb2-4">fr <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rasterize</span>(f, cr)   </span>
-<span id="cb2-5">lr <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mask</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x=</span>cr, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mask=</span>fr)</span>
-<span id="cb2-6"></span>
-<span id="cb2-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Plot results</span></span>
-<span id="cb2-8"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(lr)</span>
-<span id="cb2-9"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(f,<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">add=</span>T)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/crop-raster-polygon/index_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-
-
-
- ]]></description>
-  <category>R</category>
-  <category>raster</category>
-  <category>shapefile</category>
-  <category>crop</category>
-  <category>mask</category>
-  <category>sf</category>
-  <guid>https://kimfinale.github.io/myblog/posts/crop-raster-polygon/index.html</guid>
-  <pubDate>Fri, 22 Sep 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/crop-raster-polygon/thumbnail.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>

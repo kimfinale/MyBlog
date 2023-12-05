@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2023-12-04T01:38:57.868Z</lastmod>
+    <lastmod>2023-12-05T00:20:01.510Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -166,6 +166,14 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/Idiosyncrasy_generality/index.html</loc>
-    <lastmod>2023-12-04T01:38:44.767Z</lastmod>
+    <lastmod>2023-12-05T00:17:14.337Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/Euler-Lotka/index.html</loc>
+    <lastmod>2023-12-05T00:20:07.131Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/convolution/index.html</loc>
+    <lastmod>2023-12-05T00:17:13.091Z</lastmod>
   </url>
 </urlset>

@@ -2,7 +2,7 @@
 title: "Idiosyncrasies and generalities"
 author: "Jong-Hoon Kim"
 date: "2023-12-04"
-categories: [ecology, idiosyncransy, generality, COVID19]
+categories: [ecology, idiosyncransy, generality, COVID-19]
 image: "sample_figure.png"
 editor_options: 
   chunk_output_type: console

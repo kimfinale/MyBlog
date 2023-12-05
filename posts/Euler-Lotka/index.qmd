@@ -1,0 +1,62 @@
+---
+title: "Euler-Lotka equation"
+author: "Jong-Hoon Kim"
+date: "2023-12-03"
+categories: [Euler-Lotka, demography, survival, exponential]
+image: "sample_figure.png"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+### Euler-Lotka equation
+
+The following content was adapted from the [Wikipedia article](https://en.wikipedia.org/wiki/Euler%E2%80%93Lotka_equation).
+
+The Euler-Lotka equation is a fundamental concept in demographic analysis and population ecology, offering critical insights into the age structure and growth rate of populations. At its core, the equation connects the reproductive rates across different ages to the overall population growth rate.
+
+Let $B(t)dt$ be the number of births during the time interval from $t$ to $t+dt$. Also define the survival function $l(a)$, the fraction of individuals surviving to age $a$. Finally define $b(a)$ to be the birth rate for mothers of age $a$. The product $B(t-a) l(a)$ therefore denotes the number density of individuals born at $t-a$ and still alive at $t$, while $B(t-a)l(a)b(a)$ denotes the number of births in this cohort, which suggest the following Volterra integral equation for $B$:
+$$
+\begin{align}
+B(t) &= \int_{a=0}^t B(t-a) l(a) b(a)\\
+\end{align}
+$$
+
+If we assume an exponential solution $B(t)=Q e^{rt}$, the equation becomes
+
+$$
+\begin{align}
+Qe^{rt} &= \int_{a=0}^t Qe^{r(t-a)} l(a) b(a)\\
+\end{align}
+$$
+
+$$
+\begin{align}
+1 = \int_{a=0}^t e^{-ra} l(a) b(a)\\
+\end{align}
+$$
+
+
+In R, we can simulate the Euler-Lotka equation to understand population dynamics better. The following code snippet provides a basic framework for this simulation:
+
+```{r}
+# Define age-specific fertility and survival rates
+ages <- seq(from = 15, to = 50, by = 1) # Age range
+fertility_rates <- runif(length(ages), min = 0, max = 5) # Random fertility rates
+survival_rates <- runif(length(ages), min = 0, max = 1) # Random survival rates
+
+# Euler-Lotka Equation Function
+euler_lotka <- function(r) {
+    sum(survival_rates * fertility_rates * exp(-r * ages)) - 1
+}
+
+# Finding the intrinsic rate of natural increase
+library(rootSolve)
+r_estimated <- uniroot(euler_lotka, lower = 0, upper = 1)$root
+
+# Output the estimated intrinsic rate of natural increase
+print(paste("Estimated r:", r_estimated))
+```

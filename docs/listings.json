@@ -2,7 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/0_template/index.html",
+      "/posts/convolution/index.html",
       "/posts/Idiosyncrasy_generality/index.html",
+      "/posts/Euler-Lotka/index.html",
       "/posts/stan_sir_transformed_parameters/index.html",
       "/posts/truncation-in-stan/index.html",
       "/posts/right-truncation2/index.html",
@@ -40,7 +43,6 @@
       "/posts/sub-exponential-growth/index.html",
       "/posts/ode-in-stan/index.html",
       "/posts/reproduction-number/index.html",
-      "/posts/0_template/index.html",
       "/posts/particle-filter/index.html",
       "/posts/euler_multinomial/index.html",
       "/posts/nimble/index.html"

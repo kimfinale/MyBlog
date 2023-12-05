@@ -1,9 +1,9 @@
 ---
-title: "Template"
+title: "Convolution"
 author: "Jong-Hoon Kim"
-date: "2023-12-31"
+date: "2023-12-05"
 categories: [particle filter]
-image: "sample_figure.png"
+image: "particle_filter.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 ### A simple particle filter in R
 
-The following example was adapted from the post in [RPubs](https://rpubs.com/awellis/180442).
+The following example was adapted from the post in Grant Sanderson's [YouTube video](https://www.youtube.com/watch?v=IaSGqQa5O-M&t=567s).
 
 #### Simulate the data
 
