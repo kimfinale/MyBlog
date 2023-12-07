@@ -14,7 +14,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 ### Convolution
 
-The following content was adapted from the post in Grant Sanderson's [YouTube video](https://www.youtube.com/watch?v=IaSGqQa5O-M&t=567s) and the [Wikipedia article](https://en.wikipedia.org/wiki/Convolution).
+The following content was adapted from Grant Sanderson's [YouTube video](https://www.youtube.com/watch?v=IaSGqQa5O-M&t=567s) and the [Wikipedia article](https://en.wikipedia.org/wiki/Convolution).
 
 Convolution is a fundamental concept in mathematics and statistics, playing a crucial role in various applications ranging from signal processing to probability theory. In this blog post, we'll explore what convolution is, its significance, and how it's used in mathematics and statistics. Additionally, I'll include a practical example using R.
 
