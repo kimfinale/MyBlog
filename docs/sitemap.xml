@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2023-12-05T02:06:56.609Z</lastmod>
+    <lastmod>2023-12-07T02:52:02.507Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -175,5 +175,9 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/convolution/index.html</loc>
     <lastmod>2023-12-05T02:06:51.835Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/generation_interval/index.html</loc>
+    <lastmod>2023-12-07T02:52:43.190Z</lastmod>
   </url>
 </urlset>
