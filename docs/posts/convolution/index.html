@@ -182,120 +182,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="a-simple-particle-filter-in-r" class="level3">
-<h3 class="anchored" data-anchor-id="a-simple-particle-filter-in-r">A simple particle filter in R</h3>
-<p>The following example was adapted from the post in Grant Sanderson’s <a href="https://www.youtube.com/watch?v=IaSGqQa5O-M&amp;t=567s">YouTube video</a>.</p>
-<section id="simulate-the-data" class="level4">
-<h4 class="anchored" data-anchor-id="simulate-the-data">Simulate the data</h4>
-<p>Generate <span class="math inline">\(y_{1:T}\)</span> as a sequence of noisy observations of a latent variable <span class="math inline">\(x_{1:T}\)</span>.</p>
+<section id="convolution" class="level3">
+<h3 class="anchored" data-anchor-id="convolution">Convolution</h3>
+<p>The following content was adapted from the post in Grant Sanderson’s <a href="https://www.youtube.com/watch?v=IaSGqQa5O-M&amp;t=567s">YouTube video</a> and the <a href="https://en.wikipedia.org/wiki/Convolution">Wikipedia article</a>.</p>
+<p>Convolution is a fundamental concept in mathematics and statistics, playing a crucial role in various applications ranging from signal processing to probability theory. In this blog post, we’ll explore what convolution is, its significance, and how it’s used in mathematics and statistics. Additionally, I’ll include a practical example using R.</p>
+<p>Convolution is a mathematical operation that combines two functions to produce a third function. It’s a way of ‘mixing’ two functions, often used to understand the way a system modifies a signal. In mathematical terms, the convolution of two functions, <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span>, is defined as:</p>
 <p><span class="math display">\[
-\begin{align}
-\mathrm{d}S/\mathrm{d}t &amp;= -\beta I S \\
-\mathrm{d}I/\mathrm{d}t &amp;= \beta I S - \gamma I\\
-\end{align}
-\]</span> The first part is simply to compute <span class="math inline">\(dI/dS\)</span>.</p>
+(f*g)(t) = \int_0^{\infty} f(\tau)g(t-\tau) \textrm{d}\tau
+\]</span> Let’s consider a simple example of convolution in R. We’ll convolve two functions, a sine wave and a cosine wave, to see how they interact.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sympy <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>R_0, b, g, dIdt, dSdt, S, I <span class="op">=</span> symbols(<span class="st">'R_0 b g dIdt dSdt S I'</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the two functions</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">sin</span>(x)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">cos</span>(x)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>dSdt <span class="op">=</span> <span class="op">-</span> b<span class="op">*</span>S<span class="op">*</span>I</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>dIdt <span class="op">=</span> <span class="op">+</span> b<span class="op">*</span>S<span class="op">*</span>I <span class="op">-</span> g<span class="op">*</span>I</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>dSdI <span class="op">=</span> dIdt <span class="op">/</span> dSdt <span class="co">#-(I*S*b - I*g)/(I*S*b)</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># b &lt;- R0*g</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>simplify(<span class="op">-</span>(I<span class="op">*</span>S<span class="op">*</span>R_0<span class="op">*</span>g <span class="op">-</span> I<span class="op">*</span>g)<span class="op">/</span>(I<span class="op">*</span>S<span class="op">*</span>R_0<span class="op">*</span>g)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>-1 + 1/(R_0*S)</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a data set: x (latent variable) and y (observation)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co"># to make it reproducible  (lots of random numbers follow)</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="dv">50</span> <span class="co"># number of observations</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, T) <span class="co"># latent variable</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, T) <span class="co"># observed values</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>sx <span class="ot">&lt;-</span> <span class="fl">2.2</span> <span class="co"># standard deviation for x</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fl">0.3</span> <span class="co"># standard deviation for y</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>y[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, x[<span class="dv">1</span>], sy)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">2</span>, T)) {</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  x[t] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, x[t<span class="dv">-1</span>], sx)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  y[t] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, x[t], sy)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>x_true <span class="ot">&lt;-</span> x</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="implement-a-particle-filter-sequential-monte-carlo" class="level4">
-<h4 class="anchored" data-anchor-id="implement-a-particle-filter-sequential-monte-carlo">Implement a particle filter (sequential Monte Carlo)</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># particle filter -----------------------------------------------------------</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="fu">length</span>(y) <span class="co"># number of observations</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># number of particles</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># to store prior distributions for variables correspond to latent variable x</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>x_prior <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>N, <span class="at">ncol =</span> T) </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>x_post <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>N, <span class="at">ncol =</span> T)  <span class="co"># posterior distributions</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>weights <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>N, <span class="at">ncol =</span> T) <span class="co"># weights used to draw posterior sample</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span>  N, <span class="at">ncol =</span> T) <span class="co"># normalized weights</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span>  N, <span class="at">ncol =</span> T) <span class="co"># indices based on the normalized weights</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>x_prior[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="dv">0</span>, sx)<span class="co"># initial X from a normal distribution</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate weights, normal likelihood</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>weights[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(obs[<span class="dv">1</span>], x_prior[, <span class="dv">1</span>], sy)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>W[, <span class="dv">1</span>] <span class="ot">&lt;-</span> weights[, <span class="dv">1</span>]<span class="sc">/</span><span class="fu">sum</span>(weights[, <span class="dv">1</span>])<span class="co"># normalise weights</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># indices based on the weighted resampling with replacement </span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>A[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">prob =</span> W[<span class="dv">1</span><span class="sc">:</span>N, <span class="dv">1</span>], <span class="at">replace =</span> T) </span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>x_post[, <span class="dv">1</span>] <span class="ot">&lt;-</span> x_prior[A[, <span class="dv">1</span>], <span class="dv">1</span>] <span class="co"># posterior distribution using the indices</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">2</span>, T)) {</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  x_prior[, t] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, x_post[, t<span class="dv">-1</span>], sx) <span class="co"># prior x_{t} based on x_{t-1}</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  weights[, t] <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(obs[t], x_prior[, t], sy) <span class="co"># calculate weights </span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  W[, t] <span class="ot">&lt;-</span> weights[, t]<span class="sc">/</span><span class="fu">sum</span>(weights[, t]) <span class="co"># normalise weights</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  A[, t] <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">prob =</span> W[<span class="dv">1</span><span class="sc">:</span>N, t], <span class="at">replace =</span> T) <span class="co"># indices</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  x_post[, t] <span class="ot">&lt;-</span> x_prior[A[, t], t] <span class="co"># posterior samples</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-</section>
-<section id="summarize-results" class="level3">
-<h3 class="anchored" data-anchor-id="summarize-results">Summarize results</h3>
-<p>Calculate the mean and 2.5<span class="math inline">\(^\textrm{th}\)</span> and 97.<span class="math inline">\(^\textrm{th}\)</span> percentile of the posterior sample as a means to get 95% credible interval.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x_means <span class="ot">&lt;-</span> <span class="fu">apply</span>(x_post, <span class="dv">2</span>, mean) <span class="co"># posterior mean</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>x_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(x_post, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))) <span class="co"># 95% credible interval</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">t =</span> <span class="fu">seq</span>(<span class="dv">1</span>, T),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">x_mean =</span> x_means,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">x_lb =</span> x_quantiles[<span class="dv">1</span>, ],</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">x_ub =</span> x_quantiles[<span class="dv">2</span>, ],</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">x_true =</span> x_true, <span class="co"># latent variables</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">y =</span> y) <span class="co"># observed values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="plot-the-results" class="level4">
-<h4 class="anchored" data-anchor-id="plot-the-results">Plot the results</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>extrafont<span class="sc">::</span><span class="fu">loadfonts</span>(<span class="st">"win"</span>, <span class="at">quiet=</span><span class="cn">TRUE</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(hrbrthemes<span class="sc">::</span><span class="fu">theme_ipsum_rc</span>(<span class="at">base_size=</span><span class="dv">14</span>, <span class="at">subtitle_size=</span><span class="dv">16</span>, <span class="at">axis_title_size=</span><span class="dv">12</span>))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> t)) <span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> x_lb, <span class="at">ymax =</span> x_ub, <span class="at">fill=</span><span class="st">"95% CrI"</span>), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>x_mean, <span class="at">color=</span><span class="st">"Posterior mean"</span>)) <span class="sc">+</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>x_true, <span class="at">color=</span><span class="st">"True"</span>)) <span class="sc">+</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>x_mean, <span class="at">color=</span><span class="st">"Posterior mean"</span>)) <span class="sc">+</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>x_true, <span class="at">color=</span><span class="st">"True"</span>)) <span class="sc">+</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"values"</span>, <span class="at">x=</span><span class="st">"index"</span>) <span class="sc">+</span> </span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="st">""</span>, <span class="at">values=</span><span class="fu">c</span>(<span class="st">"Posterior mean"</span><span class="ot">=</span><span class="st">"firebrick"</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">"True"</span><span class="ot">=</span><span class="st">"darkgrey"</span>)) <span class="sc">+</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="st">""</span>, <span class="at">values=</span><span class="st">"firebrick"</span>)<span class="sc">+</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a sequence of points</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span>pi, pi, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform the convolution</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>convolved <span class="ot">&lt;-</span> <span class="fu">convolve</span>(<span class="fu">f</span>(x), <span class="fu">g</span>(x), <span class="at">type =</span> <span class="st">"open"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the original functions and their convolution</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, <span class="fu">f</span>(x), <span class="at">type=</span><span class="st">'l'</span>, <span class="at">col=</span><span class="st">'blue'</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">50</span>, <span class="dv">50</span>))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x, <span class="fu">g</span>(x), <span class="at">col=</span><span class="st">'red'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x, convolved[<span class="fu">seq</span>(<span class="dv">1</span>,<span class="dv">199</span>, <span class="at">length.out=</span><span class="dv">100</span>)], <span class="at">col=</span><span class="st">'green'</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"f(x) = sin(x)"</span>, <span class="st">"g(x) = cos(x)"</span>, <span class="st">"Convolved"</span>), <span class="at">col=</span><span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"red"</span>, <span class="st">"green"</span>), <span class="at">lty=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("particle_filter.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>In compartmental modeling, it can be used to explore the distribution and features of the consecutive compartments. For example, in the SEIR model, the the length of a generation interval is given by the convolution of E and I compartments.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

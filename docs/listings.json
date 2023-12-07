@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/generation_interval/index.html",
       "/posts/convolution/index.html",
       "/posts/Idiosyncrasy_generality/index.html",
       "/posts/Euler-Lotka/index.html",
@@ -45,8 +46,7 @@
       "/posts/particle-filter/index.html",
       "/posts/euler_multinomial/index.html",
       "/posts/nimble/index.html",
-      "/posts/0_template/index.html",
-      "/posts/generation_interval/index.html"
+      "/posts/0_template/index.html"
     ]
   }
 ]

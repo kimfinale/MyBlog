@@ -1,7 +1,7 @@
 ---
 title: "Generation interval, growth rate, reproduction number"
 author: "Jong-Hoon Kim"
-date: "2020-12-31"
+date: "2023-12-06"
 categories: [generation interval, growth rate, reproduction number]
 image: "sample_figure.png"
 editor_options: 
