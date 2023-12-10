@@ -10,7 +10,96 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Jong-Hoon Kim&#39;s Blog</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Tue, 05 Dec 2023 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 06 Dec 2023 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Generation interval</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/generation_interval1/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="generation-interval-incubation-period-infectious-period" class="level3">
+<h3 class="anchored" data-anchor-id="generation-interval-incubation-period-infectious-period">Generation interval = incubation period + infectious period?</h3>
+<p>Although not published, I wrote a correspondence to Lancet to commenting the <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(20)30260-9/fulltext">article</a>. In the article, the authors stated that the generation interval is the sum of the incubation period and the infectious period. I argued that this statement holds only for a constant rate of transmission during the exponentially distributed infectious period (i.e., only a very limited case). Then, I showed that the generation interval varies if the infectious period distribution is different from the exponential distribution even with the constant rate of transmission. Following is the whole message. I now think I am glad that it was not published because I realized that <a href="https://www.sciencedirect.com/science/article/abs/pii/S0025556406002094?via%3Dihub">Svensson</a> wrote an article in 2007 to show a similar message in a more rigorous and general way. At least the message and arguments I presented were correct.</p>
+</section>
+<section id="the-main-text" class="level3">
+<h3 class="anchored" data-anchor-id="the-main-text">The main text</h3>
+<p>When confronted with a novel disease like the coronavirus disease 2019 (COVID-19), the incubation period and the serial interval are two critical epidemiological variables that are measured during the early stages of an outbreak. A transmission model can be constructed based on these variables to project potential scenarios of outbreak expansion or resolution and, importantly, define the basic reproduction number (<img src="https://latex.codecogs.com/png.latex?R_0">) for the disease. The recent article by <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(20)30260-9/fulltext">Wu et al.</a>, published in The Lancet on January 31 of this year, one month after the first case was reported in Wuhan, China, uses a transmission model parameterized by data available at the time. This study provided important and timely insights into the spread of COVID-19 in China and elsewhere, concluding that, in addition to Wuhan, other major cities in China and well-connected cities outside China were likely to already have sustained localized outbreaks. The model utilized by Wu et al.&nbsp;makes a key statement, which has limited applications and may lead to unjustified assumptions in subsequent model iterations. The dynamic model requires an input on the length of the infectious period, which Wu et al.&nbsp;derived by assuming that the serial interval is equal to the sum of the infectious period and the latent period (on page 4 of the article by Wu et al.). Neither Wu et al.&nbsp;nor the <a href="https://www.science.org/doi/10.1126/science.1086616">study</a> to which they refer provides a clear rationale for this statement. The serial interval represents the time between the clinical onset of successive cases [3] and it is naturally expressed as the sum of the incubation period and disease age at transmission* <a href="https://link.springer.com/book/10.1007/978-90-481-2313-1">4</a>. Here we treat the incubation period (the time between infection and the onset of symptoms) as the same as latent period (the time between infection and the onset of infectiousness), for simplicity. The disease age at transmission represents the time between the onset of symptoms of a primary case and the time of infection of the associated secondary cases. Therefore, for the mean serial interval to be the same as the sum of mean incubation period and mean infectious period, the mean disease age at transmission must be equal to the mean infectious period. The mean disease age at transmission is indeed as long as the mean of the exponentially-distributed infectious period, which is often used for convenience in building a differential equation-based model (Table 1). However, for other distributions we explored, the mean disease age at transmission is shorter than mean infectious period, and it is only half of the mean infectious period† when the infectious period is constant. The gamma-distributed infectious period can also be easily adopted in a differential-equation based model to represent a more realistic representation of infectious period and in this case, following Wu et al.’s recipe will lead to a shorter serial interval than is intended. Moreover, each of the aforementioned arguments holds when transmission occurs at a constant rate over the infectious period, and violating this assumption of a constant rate (such as when viral load is high during the initial part of the infectious period and tapers off over time <a href="https://pubmed.ncbi.nlm.nih.gov/32080991/">5</a><a href="https://pubmed.ncbi.nlm.nih.gov/32074444/">6</a> will likely induce an even shorter disease age at transmission.</p>
+<p>The assumption that the serial interval is the sum of incubation (or latent) period and infectious period seems to hold only when the infectious period is exponentially distributed for a constant transmission rate. For a wider application, one has to calculate the disease age at transmission that leads to a correct serial interval for a given distribution of the infectious period. We believe this is an important point and potentially unjustified assumptions in subsequent model iterations may result in providing outbreak responders with inaccurate projections on the characteristics of disease transmission.</p>
+<p>Table 1. Time to infection since symptom onset under infectious period with different distributions.</p>
+<table class="table">
+<caption>Table 1. Time to infection since symptom onset under infectious period with different distributions.</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 14%">
+<col style="width: 41%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th colspan="2">Infectious period</th>
+<th colspan="2">Time to transmission (disease age)</th>
+</tr>
+<tr class="odd">
+<th>Distribution</th>
+<th>Expectation</th>
+<th>Sample mean‡ [<img src="https://latex.codecogs.com/png.latex?2.5%5E%7Bth%7D">, <img src="https://latex.codecogs.com/png.latex?97.5%5E%7Bth%7D"> percentile]</th>
+<th>Expectation§</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Exponential</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>Gamma(2,5/2)¶</td>
+<td>5</td>
+<td>3.73 [3.75, 3.71]</td>
+<td>3.75</td>
+</tr>
+<tr class="odd">
+<td>Uniform(0,10)</td>
+<td>5</td>
+<td>3.34 [3.32, 3.35]</td>
+<td>3.33</td>
+</tr>
+<tr class="even">
+<td>Weibull(2,5/2)</td>
+<td>5</td>
+<td>3.17 [3.16, 3.19]</td>
+<td>3.18</td>
+</tr>
+<tr class="odd">
+<td>Lognormal(2,5/2)</td>
+<td>5</td>
+<td>2.90 [2.89, 2.91]</td>
+<td>2.90</td>
+</tr>
+<tr class="even">
+<td>Constant at 5</td>
+<td>5</td>
+<td>2.51 [2.49, 2.52]</td>
+<td>2.50</td>
+</tr>
+</tbody>
+</table>
+<p>Footnotes *Taking statistical distribution into account, we can write the serial interval at time <img src="https://latex.codecogs.com/png.latex?t"> as the convolution of the distributions of disease age, <img src="https://latex.codecogs.com/png.latex?g">, and incubation period, <img src="https://latex.codecogs.com/png.latex?f">: <img src="https://latex.codecogs.com/png.latex?s(t)=%20%5Cint_0%5Et%20g(t-%5Ctau)f(%5Ctau)%5Ctextrm%7Bd%7D%5Ctau">. † Interestingly, the <a href="https://en.wikipedia.org/wiki/Serial_interval">Wikipedia article</a> says that the length of a serial interval is equal to the sum of incubation period and the half of the infectious period <a href="https://en.wikipedia.org/wiki/Serial_interval">7</a>. ‡To simulate disease age, we drew a random infectious period from each distribution and let transmission occur at a constant probability with R0 of 2.2 over the infectious period. We repeated the process 100000 times to calculate a mean and a <img src="https://latex.codecogs.com/png.latex?2.5%5E%7Bth%7D"> and <img src="https://latex.codecogs.com/png.latex?95%5E%7Bth%7D"> percentiles. §The probability density function for the disease age at transmission at time <img src="https://latex.codecogs.com/png.latex?t"> may be obtained by <img src="https://latex.codecogs.com/png.latex?g(t)%20=%20%5Cfrac%7BP(X%3Et)%7D%7B%E2%88%AB_0%5E%E2%88%9E%20P(X%3Et)dt%7D%20~%5Ctextrm%7Bfor%7D~%20t%E2%88%88(0,+%E2%88%9E)"> for infectious period <img src="https://latex.codecogs.com/png.latex?X">. The expected value can then be calculated as <img src="https://latex.codecogs.com/png.latex?%5Cint_0%5E%7B%5Cinfty%7D%20t%20g(t)%5Ctextrm%7Bd%7Dt">. ¶Gamma(shape, rate). This distribution can be produced by assuming two successive compartments with the exit rate of 2/5.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>generation interval</category>
+  <category>reproduction number</category>
+  <guid>https://kimfinale.github.io/myblog/posts/generation_interval1/index.html</guid>
+  <pubDate>Wed, 06 Dec 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/generation_interval1/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
 <item>
   <title>Generation interval, growth rate, reproduction number</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -10713,441 +10802,6 @@ font-style: inherit;">*</span>S(t).diff(t))</span>
   <guid>https://kimfinale.github.io/myblog/posts/SIR-sympy/index.html</guid>
   <pubDate>Sun, 15 Oct 2023 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/SIR-sympy/SimPy_logo.svg.png" medium="image" type="image/png" height="55" width="144"/>
-</item>
-<item>
-  <title>Regression with censored data: AER::tobit and optim</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/censored-regression-optim/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>The following example was adapted from the Tobit model in <a href="https://m-clark.github.io/models-by-example/tobit.html">Model Estimation by Example</a>. The dataset contains 200 observations. The academic aptitude variable is <code>apt</code>, the reading and math test scores are <code>read</code> and <code>math</code>, respectively. The variable <code>prog</code> is the type of program the student is in, it is a categorical (nominal) variable that takes on three values, academic (prog = 1), general (prog = 2), and vocational (prog = 3). The variable <code>id</code> is an identification variable. More details of the dataset available at https://stats.oarc.ucla.edu/r/dae/tobit-models/.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(data.table)</span>
-<span id="cb1-2">dat <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fread</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"https://stats.idre.ucla.edu/stat/data/tobit.csv"</span>)</span>
-<span id="cb1-3">dat[, prog <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.factor</span>(prog)]</span>
-<span id="cb1-4">dat</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      id read math       prog apt
-  1:   1   34   40 vocational 352
-  2:   2   39   33 vocational 449
-  3:   3   63   48    general 648
-  4:   4   44   41    general 501
-  5:   5   47   43    general 762
- ---                             
-196: 196   44   49    general 539
-197: 197   50   50    general 594
-198: 198   47   51    general 616
-199: 199   52   50    general 558
-200: 200   68   75    general 800</code></pre>
-</div>
-</div>
-<p>Following codes were borrowed from the <a href="https://stats.oarc.ucla.edu/r/dae/tobit-models/">UCLA Advanced Research Computing</a></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># function that gives the density of normal distribution</span></span>
-<span id="cb3-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># for given mean and sd, scaled to be on a count metric</span></span>
-<span id="cb3-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># for the histogram: count = density * sample size * bin width</span></span>
-<span id="cb3-4">f <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(x, var, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">bw =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15</span>) {</span>
-<span id="cb3-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(x, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mean =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mean</span>(var), <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sd</span>(var)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(var) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> bw</span>
-<span id="cb3-6">}</span>
-<span id="cb3-7"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb3-8"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># setup base plot</span></span>
-<span id="cb3-9">p <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(dat, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> apt, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill=</span>prog))</span>
-<span id="cb3-10"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># histogram, coloured by proportion in different programs</span></span>
-<span id="cb3-11"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># with a normal distribution overlayed</span></span>
-<span id="cb3-12">p <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> p <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">stat_bin</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">binwidth=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> </span>
-<span id="cb3-13">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">stat_function</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fun =</span> f, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,</span>
-<span id="cb3-14">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">args =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">var =</span> dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>apt))</span>
-<span id="cb3-15"></span>
-<span id="cb3-16"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggsave</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"apt_censored.png"</span>, p)</span></code></pre></div>
-</div>
-<p>Looking at the above histogram, we can see the censoring in the values of <code>apt</code>, that is, there are far more cases with scores of 750 to 800 than one would expect looking at the rest of the distribution. Below is an alternative histogram that further highlights the excess of cases where <code>apt=800</code>.</p>
-<p><strong>Note on the difference between truncation and censoring</strong>: With censored variables, all of the observations are in the dataset, but we don’t know the “true” values of some of them. With truncation some of the observations are not included in the analysis because of the value of the variable.</p>
-<p>The Tobit model can be used for such a case. It is a class of regression models in which the observed range of the dependent variable is censored in some way, according to the [Wikipedia article] (https://en.wikipedia.org/wiki/Tobit_model). The possible maximum score 800, which</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">tobit <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> AER<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">tobit</span>(</span>
-<span id="cb4-2">  apt <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> read <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> math <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> prog,</span>
-<span id="cb4-3">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dat,</span>
-<span id="cb4-4">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">left =</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">Inf</span>,</span>
-<span id="cb4-5">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">right =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">800</span></span>
-<span id="cb4-6">)</span></code></pre></div>
-</div>
-<p>To account for censoring, likelihood function is modified to so that it reflects the unequal sampling probability for each observation depending on whether the latent dependent variable fell above or below the determined threshold. It appears that this approach was first proposed by <a href="https://en.wikipedia.org/wiki/James_Tobin">James Tobin</a>. For a sample that, as in Tobin’s original case, was censored from below at zero, the sampling probability for each non-limit observation is simply the height of the appropriate density function. For any limit observation, it is the cumulative distribution, i.e.&nbsp;the integral below zero of the appropriate density function. The likelihood function is thus a mixture of densities and cumulative distribution functions, according to the <a href="https://en.wikipedia.org/wiki/Tobit_model">Wikipedia article</a>.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7Blog%20%7DL%20=%20%5Csum_%7Bi=1%7D%5En%20w_i%5Cleft(%5Cdelta_i~%5Ctext%7Blog%7D%20%5Cleft(P%5Cleft(Y=y_i%7CX%5Cright)%5Cright)%20+%20%5Cleft(1-%5Cdelta_i%5Cright)~%5Ctext%7Blog%7D%20%5Cleft(1-%5Csum_%7Bi=1%7D%5E%7Bl_U%7DP(Y=y_i%7CX)%5Cright)%0A%5Cright)%0A"> , where <img src="https://latex.codecogs.com/png.latex?l_U"> represents the upper limit and</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Bequation%7D%0A%20%20%5Cdelta_i=%5Cbegin%7Bcases%7D%0A%20%20%20%201,%20&amp;%20%5Ctext%7Bif%20%7Dy_i%20%3C%20l_U.%5C%5C%0A%20%20%20%200,%20&amp;%20%5Ctext%7Botherwise%7D.%0A%20%20%5Cend%7Bcases%7D%0A%5Cend%7Bequation%7D%0A"></p>
-<section id="log-likelihood-accounting-for-censoring" class="level3">
-<h3 class="anchored" data-anchor-id="log-likelihood-accounting-for-censoring">Log likelihood accounting for censoring</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">negloglik <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(par, y, X, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ul=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>) {</span>
-<span id="cb5-2">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># parameters</span></span>
-<span id="cb5-3">  sd <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> par[<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(par)]</span>
-<span id="cb5-4">  beta <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> par[<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(par)]</span>
-<span id="cb5-5">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># create indicator depending on chosen limit</span></span>
-<span id="cb5-6">  indicator <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> y <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> ul</span>
-<span id="cb5-7">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># linear predictor</span></span>
-<span id="cb5-8">  mu <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> X <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%*%</span> beta</span>
-<span id="cb5-9">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># log likelihood</span></span>
-<span id="cb5-10">  loglik <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> indicator <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(y, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mean=</span>mu, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sd=</span>sd, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">log=</span>T) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-11">             (<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span>indicator) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">pnorm</span>(ul, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">mean=</span>mu, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sd=</span>sd))</span>
-<span id="cb5-12"></span>
-<span id="cb5-13">  sumloglik <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(loglik, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">na.rm=</span>T)</span>
-<span id="cb5-14">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">return</span>(<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span>sumloglik)</span>
-<span id="cb5-15">}</span></code></pre></div>
-</div>
-</section>
-<section id="optim" class="level3">
-<h3 class="anchored" data-anchor-id="optim">optim</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Setup data and initial values.</span></span>
-<span id="cb6-2">mod <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lm</span>(apt <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> read <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> math <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> prog, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">data =</span> dat)</span>
-<span id="cb6-3">X <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">model.matrix</span>(mod)</span>
-<span id="cb6-4">init <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">coef</span>(mod), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sigma=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">summary</span>(mod)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>sigma)</span>
-<span id="cb6-5"></span>
-<span id="cb6-6"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># negloglik(par=init, y=acad_apt$apt, X=X, ul=800)</span></span>
-<span id="cb6-7"></span>
-<span id="cb6-8">fit <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">optim</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">par =</span> init,</span>
-<span id="cb6-9">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fn =</span> negloglik,</span>
-<span id="cb6-10">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>apt,</span>
-<span id="cb6-11">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">X =</span> X,</span>
-<span id="cb6-12">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ul =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">800</span>)</span>
-<span id="cb6-13"></span>
-<span id="cb6-14"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">coef</span>(tobit)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   (Intercept)           read           math    proggeneral progvocational 
-    209.565971       2.697939       5.914485     -12.714763     -46.143904 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">(fit<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>par)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   (Intercept)           read           math    proggeneral progvocational 
-    211.054867       2.813491       5.763177     -12.354492     -45.847701 
-         sigma 
-     65.652919 </code></pre>
-</div>
-</div>
-</section>
-<section id="optim-control-parameters" class="level3">
-<h3 class="anchored" data-anchor-id="optim-control-parameters"><code>optim</code> control parameters</h3>
-<p>By adjusting control parameters of the <code>optim</code> function, results can match more closely. Below is such an example.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">fit <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">optim</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">par =</span> init,</span>
-<span id="cb10-2">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fn =</span> negloglik,</span>
-<span id="cb10-3">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> dat<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>apt,</span>
-<span id="cb10-4">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">X =</span> X,</span>
-<span id="cb10-5">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ul =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">800</span>,</span>
-<span id="cb10-6">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Nelder-Mead"</span>,</span>
-<span id="cb10-7">            <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">control =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">maxit=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2e4</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">reltol=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1e-15</span>))</span>
-<span id="cb10-8"></span>
-<span id="cb10-9"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">coef</span>(tobit)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   (Intercept)           read           math    proggeneral progvocational 
-    209.565971       2.697939       5.914485     -12.714763     -46.143904 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">(fit<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>par)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   (Intercept)           read           math    proggeneral progvocational 
-    209.565967       2.697937       5.914486     -12.714777     -46.143838 
-         sigma 
-     65.676724 </code></pre>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>R</category>
-  <category>regression</category>
-  <category>censor</category>
-  <category>tobit</category>
-  <guid>https://kimfinale.github.io/myblog/posts/censored-regression-optim/index.html</guid>
-  <pubDate>Sat, 14 Oct 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/censored-regression-optim/apt_censored.png" medium="image" type="image/png" height="103" width="144"/>
 </item>
 </channel>
 </rss>

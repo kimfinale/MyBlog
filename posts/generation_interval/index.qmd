@@ -14,7 +14,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 ### Growth rate, generation interval, and reproduction number
 
-[Wallinga and Lipsitch](https://royalsocietypublishing.org/doi/10.1098/rspb.2006.3754?url_ver=Z39.88-2003&rfr_id=ori%3Arid%3Acrossref.org&rfr_dat=cr_pub++0pubmed) wrote a highly cited paper about the reproduction number. It discusses how to derive reproduction number, $R$, given the growth rate, $r$, and the generation interval, $T_c$.  
+[Wallinga and Lipsitch](https://royalsocietypublishing.org/doi/10.1098/rspb.2006.3754?url_ver=Z39.88-2003&rfr_id=ori%3Arid%3Acrossref.org&rfr_dat=cr_pub++0pubmed) wrote a highly cited paper about the reproduction number. It discusses how to derive reproduction number, $R$, given the growth rate, $r$, and the generation interval, $T_c$.
 
 $$
 \begin{align}
@@ -24,12 +24,10 @@ R &= \frac{(1 + r/b_1)^x}{\sum_{i=1}^y(1 + r/b_2)^{-i}}\\
 \end{align}
 $$
 
-I can seem to use the third equation to reproduce the answer to the example the authors provided.  On page 603, the authors gave the example of Influenza A where the generation interval has a mean of 2.85 days with the standard deviation of 0.93 days. The epidemic growth rate $r = 0.2$. "The $R=1.57$ for the SIR epidemic
-model, a value of $R=1.65$ for the SEIR
-epidemic model and a value of $R=1.66$ the more complicated epidemic model with one latent stage
-and two infectious stages (equation (3.3), with $x=1, y=2$)" 
+I can seem to use the third equation to reproduce the answer to the example the authors provided. On page 603, the authors gave the example of Influenza A where the generation interval has a mean of 2.85 days with the standard deviation of 0.93 days. The epidemic growth rate $r = 0.2$. "The $R=1.57$ for the SIR epidemic model, a value of $R=1.65$ for the SEIR epidemic model and a value of $R=1.66$ the more complicated epidemic model with one latent stage and two infectious stages (equation (3.3), with $x=1, y=2$)"
 
 I tried to reproduce the results.
+
 ```{r}
 Tc = 2.85
 sigma = 0.93
@@ -42,8 +40,8 @@ b1 = b2 = 2/Tc
 (R = (1 + r/b1)*(1 + r/b2))
 ```
 
-For the model with $x=1, y=2$, the $R$ is not the same as provided. 
-$R$ can vary depending on how we set $b_1$ and $b_2$, but it is smaller than one.
+For the model with $x=1, y=2$, the $R$ is not the same as provided. $R$ can vary depending on how we set $b_1$ and $b_2$, but it is smaller than one.
+
 ```{r}
 # for the SEIR model with x=1, y=2 (i.e., two consecutive . assume that b1 and b2 are the same
 x = 1
@@ -57,7 +55,8 @@ denom = function(y) sum(sapply(1:y, function(i) (1+r/b2)^(-i)))
 (R = numer(x=x)/denom(y=y))
 ```
 
-The study also refers to [Wearing et al. (2005)](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020174) study and the result is below.  Again, it is not  $R=1.66$
+The study also refers to [Wearing et al. (2005)](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020174) study and the result is below. Again, it is not $R=1.66$
+
 ```{r}
 # as presented in Wearing et al.(2005)
 
@@ -71,7 +70,7 @@ denom = b2*(1-(r/(b2*n)+1)^(-n))
 (R = numer / denom)
 ```
 
-I implemented moment generating function to see if I can reproduce the results this way. One important aspect is that how we should set the rate to get the generation interval we want. 
+I implemented moment generating function to see if I can reproduce the results this way. One important aspect is that how we should set the rate to get the generation interval we want.
 
 ```{r}
 mgf = function(b, r) b / (b + r)
@@ -108,4 +107,3 @@ R0_recursion(c=c(0,1), b=c(2,2)/Tc, r=0.2)
 # rate = b = (1+alpha)/Tc
 R0_recursion(c=c(0,1/2,1/2), b=c(2,3,3)/Tc, r=0.2)
 ```
-
