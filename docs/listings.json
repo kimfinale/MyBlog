@@ -3,9 +3,6 @@
     "listing": "/index.html",
     "items": [
       "/posts/critical_vacc_threshold/index.html",
-      "/posts/implementing_vaccination_single_dose/index.html",
-      "/posts/Poisson-process/index.html",
-      "/posts/counterfactual_stochastic/index.html",
       "/posts/generation_interval1/index.html",
       "/posts/generation_interval/index.html",
       "/posts/convolution/index.html",
