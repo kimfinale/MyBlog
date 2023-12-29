@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/cholera_seir_eqn/index.html",
       "/posts/critical_vacc_threshold/index.html",
       "/posts/generation_interval1/index.html",
       "/posts/generation_interval/index.html",
