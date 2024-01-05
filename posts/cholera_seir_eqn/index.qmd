@@ -79,5 +79,5 @@ $$
 \mathrm{d}TP_2/\mathrm{d}t &= 2 \sigma_v TP1 
   - \rho_2(\lambda_p+\lambda_w)T_1 - 2 \sigma_v TP2\\  
   
-\end{align}
+\end{align} 
 $$

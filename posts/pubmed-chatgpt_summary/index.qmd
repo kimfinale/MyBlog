@@ -13,7 +13,8 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo=TRUE)
 ```
 
 ```{r eval=FALSE, include=FALSE}
-email_creds <- creds(user="kimfinale", provider="gamil", host="smtp.gmail.com", port=587, use_ssl = TRUE)
+library(blastula)
+email_creds <- creds(user="kimfinale", provider="gmail", host="smtp.gmail.com", port=587, use_ssl = TRUE)
 
 create_smtp_creds_key(
   id = "gmail",
@@ -251,14 +252,15 @@ pubmed_search_chatgpt_summary_email(
   reldate = 365*30,
   email_recipient = "jonghoon.kim@ivi.int")
 
-email <- pubmed_search_chatgpt_summary(
-  query = "implementation AND science",
-  reldate = 7)
+# email <- pubmed_search_chatgpt_summary(
+#   query = "implementation AND science",
+#   reldate = 7)
 # email <- pubmed_search_chatgpt_summary(
 #   query = "implementation AND infectious AND disease", 
 #   reldate = 7)
 
-email_recipient <- "jenny.joh@ivi.int"
+# email_recipient <- "jenny.joh@ivi.int"
+email_recipient <- "jonghoon.kim@ivi.int"
 smtp_send(
   email = email_inf_dis,
   to = email_recipient,
