@@ -101,12 +101,12 @@ font-style: inherit;">linear_model</span>.(x_train), <span class="fu" style="col
 background-color: null;
 font-style: inherit;">linear_model</span>.(x_test)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>([1.7828834631830948 7.6707276313877495 … 16.596404515261376 22.769173356810423], [25.648213894452883 28.76169245336068 … 37.51205708709456 42.29216411142622])</code></pre>
+<pre><code>([1.552234290757838 5.997621972031162 … 17.799006293669162 21.987462504032138], [26.82759499486528 28.113859596390927 … 38.71844108675521 43.89937704938766])</code></pre>
 </div>
 </div>
 </section>
-<section id="create-a-neural-network-model" class="level3">
-<h3 class="anchored" data-anchor-id="create-a-neural-network-model">Create a neural network model</h3>
+<section id="create-a-neural-network-model-with-a-single-layer" class="level3">
+<h3 class="anchored" data-anchor-id="create-a-neural-network-model-with-a-single-layer">Create a neural network model with a single layer</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -135,7 +135,7 @@ background-color: null;
 font-style: inherit;">model</span>(x_train)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1×6 Matrix{Float32}:
- 0.0  0.858578  1.71716  2.57573  3.43431  4.29289</code></pre>
+ 0.0  -0.230685  -0.461369  -0.692054  -0.922739  -1.15342</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"></span>
 <span id="cb11-2"><span class="co" style="color: #5E5E5E;
@@ -161,7 +161,7 @@ font-style: inherit;">.-</span> y))</span></code></pre></div>
 background-color: null;
 font-style: inherit;">loss</span>(model, x_train, y_train)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>130.13406664995526</code></pre>
+<pre><code>214.52561035758617</code></pre>
 </div>
 </div>
 </section>
@@ -199,7 +199,7 @@ background-color: null;
 font-style: inherit;">=</span> [(x_train, y_train)]</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1-element Vector{Tuple{Matrix{Int64}, Matrix{Float64}}}:
- ([0 1 … 4 5], [1.7828834631830948 7.6707276313877495 … 16.596404515261376 22.769173356810423])</code></pre>
+ ([0 1 … 4 5], [1.552234290757838 5.997621972031162 … 17.799006293669162 21.987462504032138])</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"></span>
 <span id="cb21-2"><span class="fu" style="color: #4758AB;
@@ -209,7 +209,7 @@ font-style: inherit;">train!</span>(loss, model, data, opt)</span>
 background-color: null;
 font-style: inherit;">loss</span>(model, x_train, y_train)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>123.53145432386016</code></pre>
+<pre><code>203.61293290763626</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"></span>
 <span id="cb23-2"><span class="co" style="color: #5E5E5E;
@@ -217,7 +217,7 @@ background-color: null;
 font-style: inherit;"># check model parameters after going through the data once</span></span>
 <span id="cb23-3">model.weight, model.bias</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(Float32[7.6872797;;], Float32[2.0151947])</code></pre>
+<pre><code>(Float32[8.607251;;], Float32[2.5395057])</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"></span>
 <span id="cb25-2"><span class="co" style="color: #5E5E5E;
@@ -252,14 +252,14 @@ font-style: inherit;"># check the loss</span></span>
 background-color: null;
 font-style: inherit;">loss</span>(model, x_train, y_train)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.1267171092415622</code></pre>
+<pre><code>0.19602860021782811</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># check the model parameters</span></span>
 <span id="cb28-2">model.weight, model.bias</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(Float32[3.9466662;;], Float32[2.4066234])</code></pre>
+<pre><code>(Float32[4.0600896;;], Float32[2.0363088])</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -269,12 +269,12 @@ background-color: null;
 font-style: inherit;">model</span>(x_test)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1×5 Matrix{Float32}:
- 26.0866  30.0333  33.98  37.9266  41.8733</code></pre>
+ 26.3968  30.4569  34.517  38.5771  42.6372</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1">y_test</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1×5 Matrix{Float64}:
- 25.6482  28.7617  34.3661  37.5121  42.2922</code></pre>
+ 26.8276  28.1139  33.7393  38.7184  43.8994</code></pre>
 </div>
 </div>
 
@@ -287,7 +287,7 @@ font-style: inherit;">model</span>(x_test)</span></code></pre></div>
   <category>linear model</category>
   <guid>https://kimfinale.github.io/myblog/posts/fit_a_straight_line_julia/index.html</guid>
   <pubDate>Wed, 03 Jan 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/fit_a_straight_line_julia/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/fit_a_straight_line_julia/flux_logo.png" medium="image" type="image/png" height="49" width="144"/>
 </item>
 <item>
   <title>Universal differential equation</title>

@@ -3,7 +3,7 @@ title: "Fitting a straight line in Julia: Flux machine learning"
 author: "Jong-Hoon Kim"
 date: "2024-01-04"
 categories: [julia, Flux, linear model]
-image: "sample_figure.png"
+image: "flux_logo.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -28,7 +28,7 @@ x_train, x_test = hcat(0:5...), hcat(6:10...)
 y_train, y_test = linear_model.(x_train), linear_model.(x_test)
 ```
 
-### Create a neural network model
+### Create a neural network model with a single layer
 
 ```{julia}
 # y = σ.(W * x .+ bias) 
