@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2024-01-05T13:00:17.402Z</lastmod>
+    <lastmod>2024-01-15T03:49:30.216Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -206,10 +206,18 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/universal_differential_eqn_julia/index.html</loc>
-    <lastmod>2024-01-05T00:35:11.342Z</lastmod>
+    <lastmod>2024-01-15T00:48:36.521Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/fit_a_straight_line_julia/index.html</loc>
     <lastmod>2024-01-05T13:00:30.550Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/diffeqr/index.html</loc>
+    <lastmod>2024-01-15T03:49:32.158Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/oral_cholera_vacc_cov/index.html</loc>
+    <lastmod>2024-01-15T03:47:06.887Z</lastmod>
   </url>
 </urlset>

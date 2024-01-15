@@ -2,8 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/fit_a_straight_line_julia/index.html",
+      "/posts/diffeqr/index.html",
       "/posts/universal_differential_eqn_julia/index.html",
+      "/posts/oral_cholera_vacc_cov/index.html",
+      "/posts/fit_a_straight_line_julia/index.html",
       "/posts/cholera_seir_eqn/index.html",
       "/posts/universal_differential_eqn/index.html",
       "/posts/critical_vacc_threshold/index.html",
