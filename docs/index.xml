@@ -20,10 +20,10 @@
 
 
 
-<p>Julia <a href="https://docs.sciml.ai/DiffEqDocs/stable/">DifferentialEquations.jl</a> provides a collection of impressive differential equation solvers. It’s now possible to use the those solvers in R. The solvers available in the package is reliable and a lot faster. The tools are available through the <code>diffeqr</code> package.</p>
+<p>Julia <a href="https://docs.sciml.ai/DiffEqDocs/stable/">DifferentialEquations.jl</a> provides an impressive collection of differential equation solvers. The DE solvers available in the package are reliable and a lot faster than what’s avaiable in R. It’s now possible to access the solvers in R thanks to the <code>diffeqr</code> package. The following codes were adapted from the <code>diffeqr</code> GitHub <a href="https://github.com/SciML/diffeqr">page</a>.</p>
 <section id="desolve-package" class="level3">
 <h3 class="anchored" data-anchor-id="desolve-package">deSolve package</h3>
-<p>For comparison, let’s first solve equations using <code>deSolve</code> package</p>
+<p>I am using the SIR model as an example and for speed comparison, first solving equations using the <a href="https://desolve.r-forge.r-project.org/">deSolve</a> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">sir_deSolve <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -98,7 +98,7 @@ background-color: null;
 font-style: inherit;">c</span>(du1, du2, du3))) </span>
 <span id="cb1-8">}</span></code></pre></div>
 </div>
-<p>Solve using <a href="https://desolve.r-forge.r-project.org/"><code>deSolve</code></a></p>
+<p>Let’s sovel the model using the <code>deSolve::ode</code> function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -307,9 +307,9 @@ font-style: inherit;">""</span>)</span></code></pre></div>
 </div>
 </div>
 </section>
-<section id="diffeqr" class="level3">
-<h3 class="anchored" data-anchor-id="diffeqr">diffeqr</h3>
-<p>Now let’s use the <code>diffeqr</code> package</p>
+<section id="diffeqr-package" class="level3">
+<h3 class="anchored" data-anchor-id="diffeqr-package">diffeqr package</h3>
+<p>Now let’s use the <code>diffeqr</code> package. Once the <code>de &lt;- diffeqr::diffeq_setup</code> is executed, the functions for DifferentialEquations.jl are available through <code>de$</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -471,7 +471,7 @@ font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">t=</span>sol<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>t),udf)</span>
+font-style: inherit;">$</span>t), udf)</span>
 <span id="cb4-19"></span>
 <span id="cb4-20">tudflong <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -495,7 +495,7 @@ background-color: null;
 font-style: inherit;">"var"</span>, </span>
 <span id="cb4-22">                               <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">values_to =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">values_to=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"count"</span>)</span>
 <span id="cb4-23"></span>
@@ -596,9 +596,7 @@ font-style: inherit;">""</span>)</span></code></pre></div>
 <p><img src="https://kimfinale.github.io/myblog/posts/diffeqr/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section>
-<section id="speed-up-the-solve-using-the-jit-compiler" class="level3">
-<h3 class="anchored" data-anchor-id="speed-up-the-solve-using-the-jit-compiler">Speed up the solve using the JIT compiler</h3>
+<p>The ODE model can be sped up after compiling usng the just-in-time (JIT) compiler.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">prob_jit <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -611,10 +609,7 @@ font-style: inherit;">jitoptimize_ode</span>(de, prob)</span>
 background-color: null;
 font-style: inherit;"># sol &lt;- de$solve(prob_jit, de$Tsit5(), saveat=1);</span></span></code></pre></div>
 </div>
-</section>
-<section id="speep-up-further" class="level3">
-<h3 class="anchored" data-anchor-id="speep-up-further">Speep up further</h3>
-<p>Speed up further using the GPU, which is <code>EnsembleProblem</code></p>
+<p>The ODE model can be sped up even further by running it on the GPU. The <a href="https://github.com/SciML/diffeqr">GitHub page</a> is more geared toward the case in which runing the model multiple times over different initial conditions, which is called ensemble solve. This is why the term ensemble is used below. However, we use the same initial conditions as our sole purpose is to run the model multiple times and compare the elapsed time.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">prob_func <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -647,7 +642,10 @@ font-style: inherit;">FALSE</span>)</span>
 <span id="cb6-5"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># sol &lt;- de$solve(prob_ens, de$Tsit5(), de$EnsembleSerial(), trajectories=1, saveat=1);</span></span>
-<span id="cb6-6">degpu <span class="ot" style="color: #003B4F;
+<span id="cb6-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to take the full advantage we need the following.</span></span>
+<span id="cb6-7">degpu <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> diffeqr<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -656,11 +654,11 @@ background-color: null;
 font-style: inherit;">diffeqgpu_setup</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"CUDA"</span>)</span>
-<span id="cb6-7"><span class="co" style="color: #5E5E5E;
+<span id="cb6-8"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># de$solve(prob_ens, degpu$GPUTsit5(), degpu$EnsembleGPUKernel(degpu$CUDABackend()), trajectories=niter, saveat=1);</span></span></code></pre></div>
 </div>
-<p>I stop here but there are further performance enhancements you can try if your problem can make use of parallel computing.</p>
+<p>I stop here but further performance enhancements are possible if your problem can make use of parallel computing.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -766,33 +764,16 @@ font-style: inherit;">times=</span>niter</span>
 <span id="cb7-12">benchmark</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-        expr   min      lq     mean median      uq       max neval cld
-     deSolve 592.3  980.85 1066.545 1008.4 1062.55    5237.5  1000   a
-     diffeqr 719.3 1469.25 1726.751 1522.8 1644.55   35552.2  1000   a
- diffeqr_jit  98.6  172.50 2702.642  195.2  228.10 2492755.3  1000   a
- diffeqr_ens 196.8  379.95 1130.649  424.0  472.10  684429.6  1000   a</code></pre>
+        expr     min       lq      mean   median       uq       max neval cld
+     deSolve 604.601 660.6515  735.1354 682.3505 707.7515    3790.8  1000   a
+     diffeqr 769.601 799.1505  903.3603 831.7010 871.6505    5971.4  1000   a
+ diffeqr_jit  84.501  99.2010  177.8533 112.8010 136.6005   46489.0  1000   a
+ diffeqr_ens 185.601 216.7010 2667.6595 242.2505 277.0510 2389143.8  1000   a</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># GPU version requires a different framework to test the speed</span></span>
-<span id="cb9-2">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">routine=</span>benchmark<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>expr, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">time=</span>benchmark<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>time)</span>
-<span id="cb9-3"></span>
-<span id="cb9-4"></span>
-<span id="cb9-5">  </span>
-<span id="cb9-6"></span>
-<span id="cb9-7">telapsed <span class="ot" style="color: #003B4F;
+<span id="cb9-2">telapsed <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -819,13 +800,26 @@ background-color: null;
 font-style: inherit;">saveat=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>))</span>
-<span id="cb9-8"></span>
-<span id="cb9-9"><span class="fu" style="color: #4758AB;
+<span id="cb9-3"></span>
+<span id="cb9-4">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">routine=</span>benchmark<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>expr, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">time=</span>benchmark<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>time)</span>
+<span id="cb9-5"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>(df) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> </span>
-<span id="cb9-10">  <span class="fu" style="color: #4758AB;
+<span id="cb9-6">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_violin</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -836,7 +830,7 @@ background-color: null;
 font-style: inherit;">y=</span>time))<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb9-11">  <span class="fu" style="color: #4758AB;
+<span id="cb9-7">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">scale_y_log10</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -849,7 +843,7 @@ background-color: null;
 font-style: inherit;">1e8</span>))<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb9-12">  <span class="fu" style="color: #4758AB;
+<span id="cb9-8">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_hline</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -864,12 +858,12 @@ background-color: null;
 font-style: inherit;">"firebrick"</span>)<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb9-13">  <span class="fu" style="color: #4758AB;
+<span id="cb9-9">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">coord_flip</span>()<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb9-14">  <span class="fu" style="color: #4758AB;
+<span id="cb9-10">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -882,12 +876,12 @@ background-color: null;
 font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span>, </span>
-<span id="cb9-15">           <span class="at" style="color: #657422;
+<span id="cb9-11">           <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">x=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"diffeqr"</span>,</span>
-<span id="cb9-16">           <span class="at" style="color: #657422;
+<span id="cb9-12">           <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">label=</span><span class="st" style="color: #20794D;
 background-color: null;

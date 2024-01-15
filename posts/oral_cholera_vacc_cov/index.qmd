@@ -1,0 +1,106 @@
+---
+title: "Template"
+author: "Jong-Hoon Kim"
+date: "2024-01-09"
+categories: [oral cholera vaccine, all-or-nothing, vaccine efficacy]
+image: "sample_figure.png"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+### Oral cholera vaccine
+
+Assumption
+ - Vaccination is implemented in a all-or-nothing fashion
+ - Two-dose efficacy is $VE$
+ - The first-dose efficacy is $ve_1$
+ 
+What the efficacy of the second vaccine dose, $ve_2$, has to be if the want the same number of people is averted,
+
+```{r}
+set.seed(42) # to make it reproducible
+N = 1000
+VE = 0.8 # vaccine efficacy under two dose regimen
+vacc_cov = 0.6 # vaccine coverage
+ve1 = 0.4 # efficacy of the first dose
+
+vacc_protected_VE = VE*vacc_cov*N
+vacc_protected_ve1 = ve1*vacc_cov*N
+vacc_protected_ve_ve2 = vacc_protected_ve1 + (VE-ve1)*vacc_cov*N
+```
+
+### Implementing the first and the seocond dose separately
+
+Suppose that a population size is $N$ and the vaccine coverage, $0<=v<=1$. We introduce a parameter, $\pi$, to represent the proportion of the first-dose recipients who receive the second dose. If $\pi=1$, the number of vaccine recipients is $Nv$ and the number of two-dose recipients is also $Nv$ and the number of vaccinees who only received a single dose is zero. More generally, however, if $\pi < 1$, the number of complete two-dose recipients is $Nv\pi$ and those who have only received one dose is $2Nv(1-\pi)$.
+
+
+
+```{r}
+set.seed(42) # to make it reproducible
+N = 1000
+ve2 = 0.8 # vaccine efficacy under two dose regimen
+ve1 = 0.4 # efficacy of the first dose
+vacc_cov = 0.6 # vaccine coverage
+pi = 0.95 # proportion of the first-dose recipients who again received the second dose
+vacc_protected_ve2 = ve2*vacc_cov*N
+vacc_protected_ve1 = ve1*vacc_cov*N
+vacc_protected_ve1_ve2 = 
+  pi*(vacc_protected_ve1 + (ve2-ve1)*vacc_cov*N) + 2*(1-pi)*ve1*vacc_cov*N
+
+vacc_protected_ve1
+vacc_protected_ve1_ve2
+```
+
+These are estimates and algebraic relationship wouldn't hold.
+$$
+\begin{align}
+c_2 &= v_1 \pi \\
+c_{1+} &= v_1 \pi + v_1(1-\pi) + v_2(1-\pi v_1/v_2) 
+
+\end{align}
+$$
+$c_2$ and $c_{1+}$ represent coverage for complete two-dose regiment and at least one dose, respectively. $\pi$ represents the proportion of the vaccinees who received the first dose and went on to receive the second dose. 
+
+Estimates from Pezzolli et al. (2020)
+
+```{r}
+cov_first = 90.3 # v_1
+cov_second = 88.2# v_2
+cov_two <- 69.9 #c_2
+cov_one_plus <- 84.6 #c_1+
+```
+
+
+
+
+Boundary conditions for the pi for the vr1plus must not be bigger than 1
+```{r}
+# create a function that calculates 
+ocv_round_cov_calc = function(vc1=0.95, vc2=0.95, vr1plus=NULL, vr2=NULL, pi=0.7){
+  
+  if (pi < (vc1+vc2-1)/vc1) {
+    stop(paste0("pi must be larger than (vc1+vc2-1)/vc1, ", (vc1+vc2-1)/vc1))
+  } else if (pi > (vc2/vc1)) {
+    stop(paste0("pi must be smaller than vc2/vc1, ", vc2/vc1))
+  }
+  vr2 = vc1*pi  
+  # vr1plus = vc1*pi + vc1*(1-pi) + vc2*(1-pi*vc1/vc2)
+  vr1plus = vr2 + vc1*(1-pi) + vc2*(1-pi*vc1/vc2) 
+  vr1 = vr1plus - vr2
+  # TODO there are several limiting conditions
+  # vaccine coverage is 
+  return (list(vr1plus=vr1plus, vr2=vr2, vr1=vr1))
+}
+ocv_round_cov_calc(vc1=0.56, vc2=0.46, vr1plus=NULL, vr2=NULL, pi=0.80)
+```
+
+When the first dose is distributed, apply the 
+When the second dose is distributed, identify the number of two-dose and one-dose recipients and compare that number with the previous round
+
+
+
+### Summarize results
