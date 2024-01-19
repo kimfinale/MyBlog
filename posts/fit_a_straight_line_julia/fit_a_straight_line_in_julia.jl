@@ -1,4 +1,5 @@
-using Flux, Distributions, Random
+# using Flux, Distributions, Random
+using Lux, Distributions, Random
 # create the data
 # true parameter values are 4 and 2
 linear_model(x) = rand(Normal(4x+2,1))[1]
@@ -8,7 +9,8 @@ y_train, y_test = linear_model.(x_train), linear_model.(x_test)
 
 ### Build a model to make predictions
 
-model = Flux.Dense(1 => 1) # 2 parameters
+# model = Flux.Dense(1 => 1) # 2 parameters
+model = Lux.Dense(1 => 1) # 2 parameters
 # let's see the prediction based on the untrained baseline model 
 model(x_train)
 

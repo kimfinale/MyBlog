@@ -88,7 +88,7 @@ adtype = Optimization.AutoZygote()
 optf = Optimization.OptimizationFunction((x, p) -> loss(x), adtype)
 optprob = Optimization.OptimizationProblem(optf, ComponentVector{Float64}(p))
 
-res1 = Optimization.solve(optprob, ADAM(), callback = callback, maxiters = 5000)
+res1 = Optimization.solve(optprob, ADAM(), callback = callback, maxiters = 2000)
 println("Training loss after $(length(losses)) iterations: $(losses[end])")
 
 optprob2 = Optimization.OptimizationProblem(optf, res1.u)
@@ -99,21 +99,24 @@ println("Final training loss after $(length(losses)) iterations: $(losses[end])"
 p_trained = res2.u
 
 # Plot the losses
-pl_losses = plot(1:5000, losses[1:5000], yaxis = :log10, xaxis = :log10,
+pl_losses = plot(1:2000, losses[1:2000], yaxis = :log10, xaxis = :log10,
                  xlabel = "Iterations", ylabel = "Loss", label = "ADAM", color = :blue)
-plot!(5001:length(losses), losses[5001:end], yaxis = :log10, xaxis = :log10,
+plot!(2001:length(losses), losses[2001:end], yaxis = :log10, xaxis = :log10,
       xlabel = "Iterations", ylabel = "Loss", label = "BFGS", color = :red)
 
 
 ## Analysis of the trained network
 # Plot the data and the approximation
 ts = first(solution.t):(mean(diff(solution.t)) / 2):last(solution.t)
-Xhat = predict(p_trained, Xn[:, 1], ts)
+Xhat = predict(p_trained, Xn[:,1], ts)
 # Trained on noisy data vs real solution
 pl_trajectory = plot(ts, transpose(Xhat), xlabel = "t", ylabel = "S(t), I(t), R(t)", color = :red,
                      label = ["UDE Approximation" nothing])
 scatter!(solution.t, transpose(Xn), color = :black, label = ["Measurements" nothing])
 
+# pl_trajectory = plot(ts, transpose(Xhat)[:,2], xlabel = "t", ylabel = "I(t)", color = :red,
+#                      label = ["UDE Approximation" nothing])
+# scatter!(solution.t, transpose(Xn)[:,2], color = :black, label = ["Measurements" nothing])
 
 # Ideal unknown interactions of the predictor
 # Ybar = [-p_[2] * (Xhat[1, :] .* Xhat[2, :])'; p_[3] * (Xhat[1, :] .* Xhat[2, :])']

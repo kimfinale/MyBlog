@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2024-01-15T06:59:33.693Z</lastmod>
+    <lastmod>2024-01-19T00:56:56.679Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -219,5 +219,33 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/oral_cholera_vacc_cov/index.html</loc>
     <lastmod>2024-01-15T03:47:06.887Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/sir_cpp_julia_odin/index.html</loc>
+    <lastmod>2024-01-18T23:46:11.065Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/python_neural_network_from_scratch/index.html</loc>
+    <lastmod>2024-01-19T00:11:53.199Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/sir_deSolve_odin_diffeqr/index.html</loc>
+    <lastmod>2024-01-19T01:02:05.086Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/baking/typhoid_outbreak_timeseries/index.html</loc>
+    <lastmod>2024-01-19T01:01:09.385Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/baking/python_neural_network_from_scratch/index.html</loc>
+    <lastmod>2024-01-19T00:59:29.628Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/baking/lux_julia/index.html</loc>
+    <lastmod>2024-01-19T00:59:16.611Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/baking/python_tensorflow_basics/index.html</loc>
+    <lastmod>2024-01-19T01:01:06.478Z</lastmod>
   </url>
 </urlset>

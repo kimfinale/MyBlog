@@ -14,8 +14,6 @@ sol = solve(prob)
 using Plots
 plot(sol)
 
-
-
 u0_f(p,t0) = [p[2],p[4]]
 tspan_f(p) = (0.0,10*p[4])
 p = [1.5,1.0,3.0,1.0]
@@ -53,26 +51,27 @@ cb()
 
 Flux.train!(loss_rd, params, data, opt, cb = cb)
 
-m = Chain(
-  Dense(28^2, 32, relu),
-  Dense(32, 10),
+m = Flux.Chain(
+  Flux.Dense(28^2, 32, relu),
+  Flux.Dense(32, 10),
   softmax)
 
-m = Chain(
-  Dense(28^2, 32, relu),
+m = Flux.Chain(
+    Flux.Dense(28^2, 32, relu),
   # this would require an ODE of 32 parameters
   p -> solve(prob,Tsit5(),p=p,saveat=0.1)[1,:],
-  Dense(32, 10),
+  Flux.Dense(32, 10),
   softmax)
 
-m = Chain(
-  Conv((2,2), 1=>16, relu),
+m = Flux.Chain(
+    Flux.Conv((2,2), 1=>16, relu),
   x -> maxpool(x, (2,2)),
-  Conv((2,2), 16=>8, relu),
+  Flux.Conv((2,2), 16=>8, relu),
   x -> maxpool(x, (2,2)),
   x -> reshape(x, :, size(x, 4)),
   x -> solve(prob,Tsit5(),u0=x,saveat=0.1)[1,:],
-  Dense(288, 10), softmax) |> gpu
+  Flux.Dense(288, 10), softmax) |> Flux.gpu
+
 
 using ParameterizedFunctions # required for the `@ode_def` macro
 using Sundials
@@ -135,7 +134,7 @@ cb()
 
 Flux.train!(loss_rd_sde, params, data, opt, cb = cb)
 
-dudt = Chain(Dense(2,50,tanh),Dense(50,2))
+dudt = Flux.Chain(Flux.Dense(2,50,tanh),Flux.Dense(50,2))
 
 tspan = (0.0f0,25.0f0)
 node = NeuralODE(dudt,tspan,Tsit5(),saveat=0.1)
@@ -152,9 +151,9 @@ t = range(tspan[1],tspan[2],length=datasize)
 prob = ODEProblem(trueODEfunc,u0,tspan)
 ode_data = Array(solve(prob,Tsit5(),saveat=t))
 
-dudt = Chain(x -> x.^3,
-             Dense(2,50,tanh),
-             Dense(50,2))
+dudt = Flux.Chain(x -> x.^3,
+Flux.Dense(2,50,tanh),
+Flux.Dense(50,2))
 n_ode = NeuralODE(dudt,tspan,Tsit5(),saveat=t,reltol=1e-7,abstol=1e-9)
 ps = Flux.params(n_ode)
 
