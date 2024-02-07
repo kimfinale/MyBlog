@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/julia_labelledarrays_namedtupletools/index.html",
       "/posts/sir_deSolve_odin_diffeqr/index.html",
       "/posts/diffeqr/index.html",
       "/posts/universal_differential_eqn_julia/index.html",

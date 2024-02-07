@@ -3,7 +3,7 @@ title: "Universal differential equation using Julia"
 author: "Jong-Hoon Kim"
 date: "2024-01-12"
 categories: [universal differential equation, julia, sub-exponential growth]
-image: "sample_figure.png"
+image: "ude_obs.png"
 editor_options: 
   chunk_output_type: console
 ---
