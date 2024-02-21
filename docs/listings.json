@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/density_frequency/index.html",
       "/posts/julia_labelledarrays_namedtupletools/index.html",
       "/posts/sir_deSolve_odin_diffeqr/index.html",
       "/posts/diffeqr/index.html",
@@ -54,8 +55,7 @@
       "/posts/reproduction-number/index.html",
       "/posts/particle-filter/index.html",
       "/posts/euler_multinomial/index.html",
-      "/posts/nimble/index.html",
-      "/posts/0_template/index.html"
+      "/posts/nimble/index.html"
     ]
   }
 ]
