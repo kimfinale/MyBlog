@@ -415,12 +415,12 @@ font-style: inherit;">2</span>)</span></code></pre></div>
 <section id="frequency-dependent-formulation" class="level4">
 <h4 class="anchored" data-anchor-id="frequency-dependent-formulation">Frequency-dependent formulation</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">sir_den <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">sir_freq <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">function</span>(t, u, p){</span>
-<span id="cb6-2">  new_Istar <span class="ot" style="color: #003B4F;
+<span id="cb6-2">  new_I <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> p[[<span class="st" style="color: #20794D;
 background-color: null;
@@ -441,12 +441,12 @@ font-style: inherit;">sum</span>(u)</span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">-</span> new_Istar</span>
+font-style: inherit;">-</span> new_I</span>
 <span id="cb6-4">  du2 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">+</span> new_Istar <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">+</span> new_I <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span> p[[<span class="st" style="color: #20794D;
 background-color: null;
@@ -537,7 +537,7 @@ font-style: inherit;">y=</span>u0, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">times=</span>tspan, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">func=</span>sir_den, <span class="at" style="color: #657422;
+font-style: inherit;">func=</span>sir_freq, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">parms=</span>p))</span>
 <span id="cb6-18"></span>

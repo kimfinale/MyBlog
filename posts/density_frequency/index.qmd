@@ -82,10 +82,10 @@ round(tail(outdf, 1)$`3`, digits=2)
 #### Frequency-dependent formulation
 
 ```{r sir_freq}
-sir_den <- function(t, u, p){
-  new_Istar = p[["beta"]]*u[1]*u[2]/sum(u)
-  du1 <- - new_Istar
-  du2 <- + new_Istar - p[["gamma"]]*u[2]
+sir_freq <- function(t, u, p){
+  new_I = p[["beta"]]*u[1]*u[2]/sum(u)
+  du1 <- - new_I
+  du2 <- + new_I - p[["gamma"]]*u[2]
   du3 <- + p[["gamma"]]*u[2]
     
   return(list(c(du1,du2,du3))) 
@@ -98,7 +98,7 @@ u0 <- c(pop - I0, I0, 0)
 tspan <- seq(from=0, to=50)
 p <- c(beta=0.6, gamma=0.2)
 
-outdf <- as.data.frame(ode(y=u0, times=tspan, func=sir_den, parms=p))
+outdf <- as.data.frame(ode(y=u0, times=tspan, func=sir_freq, parms=p))
 
 ggplot(outdf,aes(x=time))+
   geom_line(aes(y=`1`, color="S")) +
