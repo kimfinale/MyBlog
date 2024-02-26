@@ -12,6 +12,89 @@
 <generator>quarto-1.3.450</generator>
 <lastBuildDate>Sat, 24 Feb 2024 15:00:00 GMT</lastBuildDate>
 <item>
+  <title>Incremental Cost-Effectiveness Ratio (ICER)</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/ICER/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="understanding-the-incremental-cost-effectiveness-ratio-icer-through-cholera-vaccination" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-incremental-cost-effectiveness-ratio-icer-through-cholera-vaccination">Understanding the Incremental Cost-Effectiveness Ratio (ICER) Through Cholera Vaccination</h3>
+<p>The Incremental Cost-Effectiveness Ratio (ICER) is a crucial metric in health economics, offering insights into the value of medical interventions by comparing their costs and effectiveness. Essentially, ICER is used to evaluate the cost-effectiveness of a new healthcare intervention compared to an existing standard of care. It is calculated as the difference in costs between two options divided by the difference in their effectiveness, typically measured in quality-adjusted life years (QALYs). This ratio helps policymakers and healthcare providers make informed decisions on allocating limited resources to maximize health benefits.</p>
+<p>Consider the example of cholera, a severe diarrhoeal disease caused by the _/<em>Vibrio cholerae</em> bacterium, and the use of the oral cholera vaccine (OCV). In regions where cholera is endemic, introducing or expanding the use of OCV can significantly reduce the incidence of the disease. To assess the cost-effectiveness of OCV, we can compare the ICER of vaccinating a population against cholera to the standard of care, which might include treatments like rehydration solutions or antibiotics for those already infected.</p>
+<p>Let’s explore how to calculate the ICER for introducing OCV in a hypothetical scenario using R. Assume we have data on the cost of vaccinating individuals and the effectiveness of the vaccine in preventing cholera, as well as the cost and effectiveness of the current standard cholera treatment.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the costs and effectiveness of the oral cholera vaccine (OCV) and standard treatment</span></span>
+<span id="cb1-2">cost_OCV <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10000</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Total cost of vaccinating a population</span></span>
+<span id="cb1-3">effectiveness_OCV <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Reduction in cholera incidence due to vaccination</span></span>
+<span id="cb1-4">cost_standard <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Total cost of treating cholera without vaccination</span></span>
+<span id="cb1-5">effectiveness_standard <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Reduction in cholera incidence with standard treatment</span></span>
+<span id="cb1-6"></span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Calculate the incremental cost and effectiveness</span></span>
+<span id="cb1-8">incremental_cost <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> cost_OCV <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> cost_standard</span>
+<span id="cb1-9">incremental_effectiveness <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> effectiveness_OCV <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> effectiveness_standard</span>
+<span id="cb1-10"></span>
+<span id="cb1-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Calculate the ICER</span></span>
+<span id="cb1-12">ICER <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> incremental_cost <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> incremental_effectiveness</span></code></pre></div>
+</div>
+<p>This R code snippet outlines the basic calculation for ICER, where cost_OCV and effectiveness_OCV represent the cost and effectiveness of the OCV intervention, respectively, and cost_standard and effectiveness_standard represent these metrics for the standard treatment. By comparing these values, the ICER provides a dollar amount per percentage point increase in effectiveness, offering a straightforward metric for evaluating the cost-effectiveness of implementing the oral cholera vaccine in a specific population.</p>
+<p>In summary, the ICER is a valuable tool in health economics, helping to guide decisions on the allocation of resources for interventions like the oral cholera vaccine. By quantifying the trade-offs between cost and effectiveness, ICER facilitates more informed, evidence-based choices in healthcare policy and practice.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>cholera</category>
+  <category>sub-Saharan Africa</category>
+  <guid>https://kimfinale.github.io/myblog/posts/ICER/index.html</guid>
+  <pubDate>Sat, 24 Feb 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/ICER/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
+<item>
   <title>Implementing incubation period of cholera in the ODE model</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
   <link>https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/index.html</link>
@@ -22,7 +105,7 @@
 
 <section id="modeling-incubation-period-in-the-ode-model" class="level3">
 <h3 class="anchored" data-anchor-id="modeling-incubation-period-in-the-ode-model">Modeling incubation period in the ODE model</h3>
-<p>In the realm of infectious disease modeling, accurately simulating the incubation period–the time between exposure to a pathogen and the onset of symptoms–is crucial for understanding and predicting the spread of diseases. Classic ordinary differential equation (ODE) models often employ the exponential distribution to represent this incubation period mostly for the sake of convenience. However, the exponential distribution is not an optimal distribution to model the waiting time for the incubation period, which is often modeled as a log-normal distribution as shown in the <a href="https://pubmed.ncbi.nlm.nih.gov/19393959/">study Lessler <em>et al</em>.</a>. In this post, I show that waiting time may be modeled more realistically by adding an extra compartment (e.g., <img src="https://latex.codecogs.com/png.latex?SE_1E_2IR"> rather than <img src="https://latex.codecogs.com/png.latex?SEIR">) and thus making the waiting time Erlang-distributed.</p>
+<p>In the realm of infectious disease modeling, accurately simulating the incubation period–the time between exposure to a pathogen and the onset of symptoms–is crucial for understanding and predicting the spread of diseases. Classic ordinary differential equation (ODE) models often employ the exponential distribution to represent this incubation period mostly for the sake of convenience. However, the exponential distribution is not an optimal distribution to model the waiting time for the incubation period, which is often modeled as a log-normal distribution as shown in the <a href="https://pubmed.ncbi.nlm.nih.gov/19393959/">study by Lessler <em>et al</em>.</a>. In this post, I show that waiting time may be modeled more realistically by adding an extra compartment (e.g., <img src="https://latex.codecogs.com/png.latex?SE_1E_2IR"> rather than <img src="https://latex.codecogs.com/png.latex?SEIR">) and thus making the waiting time Erlang-distributed.</p>
 <p>In particular, in the following R codes, I explored the incubation period of cholera from the <a href="https://www.sciencedirect.com/science/article/abs/pii/S0163445312003477#:~:text=We%20estimate%20the%20median%20incubation,CI%2C%201.3%E2%80%931.6">study by Azman <em>et al</em>.</a>. Azman writes: We estimate the median incubation period of toxigenic cholera to be 1.4 days (95% Credible Interval (CI), 1.3-1.6) with a dispersion of 1.98 (95% CI 1.87-2.11). Five percent of cholera cases will develop symptoms by 0.5 days (95% CI 0.4-0.5), and 95% by 4.4 days (95% CI 3.9-5.0) after infection.</p>
 <p>Based on the description, I set the parameters for the log-normal distribution as follows.</p>
 <div class="cell">
@@ -67,8 +150,8 @@ font-style: inherit;">1</span>)</span></code></pre></div>
 <pre><code>[1] 0.5 4.3</code></pre>
 </div>
 </div>
-<p>There is a slight mismatch for the 95th percentile (4.3 vs 4.4 [reporeted]). This is, however, possible considering that the estimates are from Bayesian posterior samples and I can’t account for the possible correlation between the parameter estimates</p>
-<p>Using this log-normal distribution, I generate samples (<img src="https://latex.codecogs.com/png.latex?n=1000">), to which I fit exponential and Erlang distributions.</p>
+<p>There is a slight mismatch for the 95th percentile (4.3 vs 4.4 [reported]). This is, however, possible considering that the estimates are from Bayesian posterior samples and I can’t account for the correlation between the parameter estimates.</p>
+<p>Using this log-normal distribution, I generate samples (<img src="https://latex.codecogs.com/png.latex?n=1000">), to which exponential and Erlang distributions are fit.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">dat <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -131,7 +214,7 @@ font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1 5.4</code></pre>
+<pre><code>[1] 0.1 5.5</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -161,7 +244,7 @@ font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4 4.0</code></pre>
+<pre><code>[1] 0.4 4.2</code></pre>
 </div>
 </div>
 <p>By examining <img src="https://latex.codecogs.com/png.latex?5th"> and <img src="https://latex.codecogs.com/png.latex?95th"> percentiles, we realize that the best-fit exponential distribution is too wide compared with the log-normal distribution whereas the Gamma distribution looks better.</p>
@@ -224,7 +307,7 @@ background-color: null;
 font-style: inherit;">3</span>)</span></code></pre></div>
 </div>
 <p>Considering the negative log likelihood values, we realize that the Gamma distribution with shape of 2 provides a better fit than the one with shape of 3.</p>
-<p>We plot the results as a visual summary</p>
+<p>We plot the results as a visual summary.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">n <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -365,7 +448,9 @@ font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0
 background-color: null;
 font-style: inherit;">12</span>))</span>
 <span id="cb8-17"></span>
-<span id="cb8-18"><span class="fu" style="color: #4758AB;
+<span id="cb8-18">plt <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>(df)<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -406,10 +491,33 @@ font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"bottom"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
-</div>
+font-style: inherit;">"bottom"</span>)</span>
+<span id="cb8-22"></span>
+<span id="cb8-23"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggsave</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"lnorm_exp_erlang.png"</span>, plt, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">units=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"in"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.4</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">height=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.7</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span></code></pre></div>
 </div>
 <p>The above figure clearly shows that the Erlang distribution has a better representation of reality (in this case, the log-normal distributed incubation period) than the commonly used exponential distribution.</p>
 
@@ -417,94 +525,14 @@ font-style: inherit;">"bottom"</span>)</span></code></pre></div>
 </section>
 
  ]]></description>
+  <category>incubation period</category>
+  <category>ODE</category>
   <category>cholera</category>
-  <category>sub-Saharan Africa</category>
+  <category>exponential</category>
+  <category>Erlang</category>
   <guid>https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/index.html</guid>
-  <pubDate>Sat, 24 Feb 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
-</item>
-<item>
-  <title>Incremental Cost-Effectiveness Ratio (ICER)</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/ICER/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="understanding-the-incremental-cost-effectiveness-ratio-icer-through-cholera-vaccination" class="level3">
-<h3 class="anchored" data-anchor-id="understanding-the-incremental-cost-effectiveness-ratio-icer-through-cholera-vaccination">Understanding the Incremental Cost-Effectiveness Ratio (ICER) Through Cholera Vaccination</h3>
-<p>The Incremental Cost-Effectiveness Ratio (ICER) is a crucial metric in health economics, offering insights into the value of medical interventions by comparing their costs and effectiveness. Essentially, ICER is used to evaluate the cost-effectiveness of a new healthcare intervention compared to an existing standard of care. It is calculated as the difference in costs between two options divided by the difference in their effectiveness, typically measured in quality-adjusted life years (QALYs). This ratio helps policymakers and healthcare providers make informed decisions on allocating limited resources to maximize health benefits.</p>
-<p>Consider the example of cholera, a severe diarrhoeal disease caused by the _/<em>Vibrio cholerae</em> bacterium, and the use of the oral cholera vaccine (OCV). In regions where cholera is endemic, introducing or expanding the use of OCV can significantly reduce the incidence of the disease. To assess the cost-effectiveness of OCV, we can compare the ICER of vaccinating a population against cholera to the standard of care, which might include treatments like rehydration solutions or antibiotics for those already infected.</p>
-<p>Let’s explore how to calculate the ICER for introducing OCV in a hypothetical scenario using R. Assume we have data on the cost of vaccinating individuals and the effectiveness of the vaccine in preventing cholera, as well as the cost and effectiveness of the current standard cholera treatment.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Define the costs and effectiveness of the oral cholera vaccine (OCV) and standard treatment</span></span>
-<span id="cb1-2">cost_OCV <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10000</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Total cost of vaccinating a population</span></span>
-<span id="cb1-3">effectiveness_OCV <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Reduction in cholera incidence due to vaccination</span></span>
-<span id="cb1-4">cost_standard <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Total cost of treating cholera without vaccination</span></span>
-<span id="cb1-5">effectiveness_standard <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Reduction in cholera incidence with standard treatment</span></span>
-<span id="cb1-6"></span>
-<span id="cb1-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Calculate the incremental cost and effectiveness</span></span>
-<span id="cb1-8">incremental_cost <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> cost_OCV <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> cost_standard</span>
-<span id="cb1-9">incremental_effectiveness <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> effectiveness_OCV <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> effectiveness_standard</span>
-<span id="cb1-10"></span>
-<span id="cb1-11"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Calculate the ICER</span></span>
-<span id="cb1-12">ICER <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> incremental_cost <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> incremental_effectiveness</span></code></pre></div>
-</div>
-<p>This R code snippet outlines the basic calculation for ICER, where cost_OCV and effectiveness_OCV represent the cost and effectiveness of the OCV intervention, respectively, and cost_standard and effectiveness_standard represent these metrics for the standard treatment. By comparing these values, the ICER provides a dollar amount per percentage point increase in effectiveness, offering a straightforward metric for evaluating the cost-effectiveness of implementing the oral cholera vaccine in a specific population.</p>
-<p>In summary, the ICER is a valuable tool in health economics, helping to guide decisions on the allocation of resources for interventions like the oral cholera vaccine. By quantifying the trade-offs between cost and effectiveness, ICER facilitates more informed, evidence-based choices in healthcare policy and practice.</p>
-
-
-</section>
-
- ]]></description>
-  <category>cholera</category>
-  <category>sub-Saharan Africa</category>
-  <guid>https://kimfinale.github.io/myblog/posts/ICER/index.html</guid>
-  <pubDate>Sat, 24 Feb 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/ICER/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
+  <pubDate>Wed, 21 Feb 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/lnorm_exp_erlang.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Mass-action assumption: density- vs. frequency-dependent transmission</title>
