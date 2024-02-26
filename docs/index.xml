@@ -214,7 +214,7 @@ font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1 5.5</code></pre>
+<pre><code>[1] 0.1 5.1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -244,10 +244,10 @@ font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4 4.2</code></pre>
+<pre><code>[1] 0.4 3.9</code></pre>
 </div>
 </div>
-<p>By examining <img src="https://latex.codecogs.com/png.latex?5th"> and <img src="https://latex.codecogs.com/png.latex?95th"> percentiles, we realize that the best-fit exponential distribution is too wide compared with the log-normal distribution whereas the Gamma distribution looks better.</p>
+<p>By examining <img src="https://latex.codecogs.com/png.latex?5%5E%7Bth%7D"> and <img src="https://latex.codecogs.com/png.latex?95%5E%7Bth%7D"> percentiles, we realize that the best-fit exponential distribution is too wide compared with the log-normal distribution whereas the Gamma distribution looks better.</p>
 <p>However, in the context of ODE models, Gamma distribution is not easy to implement except for a subset in which the shape parameter is an integer (i.e., Erlang distribution). Therefore, I fit the rate parameter of the Gamma distribution while the shape parameter is set to an integer. Based on the previous fitting results (shape parameter = 2.348677), I only test the cases where the shape parameter is 2 or 3.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">erlang_nll <span class="ot" style="color: #003B4F;
@@ -448,9 +448,7 @@ font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0
 background-color: null;
 font-style: inherit;">12</span>))</span>
 <span id="cb8-17"></span>
-<span id="cb8-18">plt <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+<span id="cb8-18"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>(df)<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -491,33 +489,10 @@ font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"bottom"</span>)</span>
-<span id="cb8-22"></span>
-<span id="cb8-23"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggsave</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"lnorm_exp_erlang.png"</span>, plt, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">units=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"in"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">width=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3.4</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">height=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2.7</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)</span></code></pre></div>
+font-style: inherit;">"bottom"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
 </div>
 <p>The above figure clearly shows that the Erlang distribution has a better representation of reality (in this case, the log-normal distributed incubation period) than the commonly used exponential distribution.</p>
 

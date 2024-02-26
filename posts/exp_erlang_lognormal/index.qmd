@@ -41,7 +41,7 @@ round(qexp(c(0.05, 0.95), rate=fit_exp$estimate[[1]]), digits=1)
 round(qgamma(c(0.05, 0.95), shape=fit_gam$estimate[[1]], rate=fit_gam$estimate[[2]]), digits=1)
 ```
 
-By examining $5th$ and $95th$ percentiles, we realize that the best-fit exponential distribution is too wide compared with the log-normal distribution whereas the Gamma distribution looks better. 
+By examining $5^{th}$ and $95^{th}$ percentiles, we realize that the best-fit exponential distribution is too wide compared with the log-normal distribution whereas the Gamma distribution looks better. 
 
 However, in the context of ODE models, Gamma distribution is not easy to implement except for a subset in which the shape parameter is an integer (i.e., Erlang distribution). Therefore, I fit the rate parameter of the Gamma distribution while the shape parameter is set to an integer.  Based on the previous fitting results (shape parameter = 2.348677), I only test the cases where the shape parameter is 2 or 3.
 
@@ -74,12 +74,10 @@ library(ggplot2)
 extrafont::loadfonts("win", quiet=TRUE)
 theme_set(hrbrthemes::theme_ipsum_rc(base_size=14, subtitle_size=16, axis_title_size=12))
 
-plt = ggplot(df)+
+ggplot(df)+
   geom_line(aes(x=val, y=density, color=dist))+
   labs(y="Density", x="", color="")+
   theme(legend.position = "bottom")
-
-ggsave("lnorm_exp_erlang.png", plt, units="in", width=3.4*2, height=2.7*2)
 ```
 
 The above figure clearly shows that the Erlang distribution has a better representation of reality (in this case, the log-normal distributed incubation period) than the commonly used exponential distribution. 
