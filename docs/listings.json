@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/exp_erlang_lognormal/index.html",
+      "/posts/ICER/index.html",
       "/posts/density_frequency/index.html",
       "/posts/julia_labelledarrays_namedtupletools/index.html",
       "/posts/sir_deSolve_odin_diffeqr/index.html",

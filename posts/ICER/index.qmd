@@ -1,0 +1,42 @@
+---
+title: "Incremental Cost-Effectiveness Ratio (ICER)"
+author: "Jong-Hoon Kim"
+date: "2024-2-25"
+categories: [cholera, sub-Saharan Africa]
+image: "sample_figure.png"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+### Understanding the Incremental Cost-Effectiveness Ratio (ICER) Through Cholera Vaccination
+
+The Incremental Cost-Effectiveness Ratio (ICER) is a crucial metric in health economics, offering insights into the value of medical interventions by comparing their costs and effectiveness. Essentially, ICER is used to evaluate the cost-effectiveness of a new healthcare intervention compared to an existing standard of care. It is calculated as the difference in costs between two options divided by the difference in their effectiveness, typically measured in quality-adjusted life years (QALYs). This ratio helps policymakers and healthcare providers make informed decisions on allocating limited resources to maximize health benefits.
+
+Consider the example of cholera, a severe diarrhoeal disease caused by the _/_Vibrio cholerae_ bacterium, and the use of the oral cholera vaccine (OCV). In regions where cholera is endemic, introducing or expanding the use of OCV can significantly reduce the incidence of the disease. To assess the cost-effectiveness of OCV, we can compare the ICER of vaccinating a population against cholera to the standard of care, which might include treatments like rehydration solutions or antibiotics for those already infected.
+
+Let's explore how to calculate the ICER for introducing OCV in a hypothetical scenario using R. Assume we have data on the cost of vaccinating individuals and the effectiveness of the vaccine in preventing cholera, as well as the cost and effectiveness of the current standard cholera treatment.
+```{r}
+# Define the costs and effectiveness of the oral cholera vaccine (OCV) and standard treatment
+cost_OCV <- 10000 # Total cost of vaccinating a population
+effectiveness_OCV <- 0.5 # Reduction in cholera incidence due to vaccination
+cost_standard <- 0 # Total cost of treating cholera without vaccination
+effectiveness_standard <- 0 # Reduction in cholera incidence with standard treatment
+
+# Calculate the incremental cost and effectiveness
+incremental_cost <- cost_OCV - cost_standard
+incremental_effectiveness <- effectiveness_OCV - effectiveness_standard
+
+# Calculate the ICER
+ICER <- incremental_cost / incremental_effectiveness
+
+
+```
+
+This R code snippet outlines the basic calculation for ICER, where cost_OCV and effectiveness_OCV represent the cost and effectiveness of the OCV intervention, respectively, and cost_standard and effectiveness_standard represent these metrics for the standard treatment. By comparing these values, the ICER provides a dollar amount per percentage point increase in effectiveness, offering a straightforward metric for evaluating the cost-effectiveness of implementing the oral cholera vaccine in a specific population.
+
+In summary, the ICER is a valuable tool in health economics, helping to guide decisions on the allocation of resources for interventions like the oral cholera vaccine. By quantifying the trade-offs between cost and effectiveness, ICER facilitates more informed, evidence-based choices in healthcare policy and practice.
+

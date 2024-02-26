@@ -14,70 +14,41 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 ### Cholera SEIR equation
 
-$$
 \begin{align} 
-\lambda_p &= \frac{\beta(I_1+I_2+\psi  (OI_1+OI_2+TI_1+TI_2+OPI_1+OPI_2)}{N}\\ 
-
-
-\mathrm{d}S/\mathrm{d}t &= - (\lambda_p+\lambda_w)S +2 \sigma_v OP_2
-+ 2 \sigma R_2 + 2 \sigma_v(OP_2 + OPT_2 + OPT_2P + TP_2)\\
-
+\lambda_p &= \frac{\beta(I_1+I_2+ (1-\psi_1)  (I_1^O+I_2^O)+ (1-\psi_2) (I_1^T+I_2^T))}{N}\\ 
+\mathrm{d}S/\mathrm{d}t &= - (\lambda_p+\lambda_w)S + 2 \omega R_2 \\ 
 \mathrm{d}E_1/\mathrm{d}t &= (\lambda_p+\lambda_w)S - 2\epsilon E_1\\
-\mathrm{d}OE_1/\mathrm{d}t &= (\lambda_p+\lambda_w)(O_1+O_2) - 2\epsilon OE_1\\
-\mathrm{d}O_2E_1/\mathrm{d}t &= (\lambda_p+\lambda_w)(O_1+O_2) - 2\epsilon OE_1\\
-
 \mathrm{d}E_2/\mathrm{d}t &= 2\epsilon E_1 - 2\epsilon E_2 \\
-\mathrm{d}OE_2/\mathrm{d}t &= 2\epsilon OE_1 - 2\epsilon OE_2 \\
-
 \mathrm{d}I_1/\mathrm{d}t &= 2 (1-\theta) \epsilon E_2 - 2 \gamma I_1 \\
-\mathrm{d}OI_1/\mathrm{d}t &= 2 (1-\theta) \epsilon OE_2 - 2 \gamma OI_1 \\
 \mathrm{d}I_2/\mathrm{d}t &= 2 \gamma I_1 - 2 \gamma I_2 \\
-\mathrm{d}OI_2/\mathrm{d}t &= 2 \gamma OI_1 - 2 \gamma OI_2 \\
-
 \mathrm{d}A_1/\mathrm{d}t &= 2 \theta \epsilon E_2 - 2 \gamma A_1 \\
-\mathrm{d}OA_1/\mathrm{d}t &= 2 \theta \epsilon OE_2 - 2 \gamma OA_1 \\
-
 \mathrm{d}A_2/\mathrm{d}t &= 2 \gamma A_1 - 2 \gamma A_2 \\
-\mathrm{d}OA_2/\mathrm{d}t &= 2 \gamma OA_1 - 2 \gamma OA_2 \\
-\mathrm{d}R_1/\mathrm{d}t &= 2 \gamma (I_2 + A_2) - 2 \sigma R_1 \\
-\mathrm{d}OR_1/\mathrm{d}t &= 2 \gamma (OI_2 + OA_2) - 2 \sigma OR_1 \\
+\mathrm{d}R_1/\mathrm{d}t &= 2 \gamma (I_2 + A_2) - 2 \omega R_1 \\
+\mathrm{d}R_2/\mathrm{d}t &= 2 \omega (R_1 - R_2) \\
 
-\mathrm{d}R_2/\mathrm{d}t &= 2 \sigma (R_1 - R_2) \\
-\mathrm{d}OR_2/\mathrm{d}t &= 2 \sigma (OR_1 - OR_2) \\
+\mathrm{d}S^O/\mathrm{d}t &= - (\lambda_p+\lambda_w)S^O + 2 \omega R_2^O + 2 \omega_V O_2 \\ 
+\mathrm{d}O_1/\mathrm{d}t &= + v^O S - 2 \omega_V O_1 - (\lambda_p+\lambda_w)(1-\chi^O) O_1 \\
+\mathrm{d}O_2/\mathrm{d}t &= + 2 \omega_V O_1 - 2 \omega_V O_2 - (\lambda_p+\lambda_w)(1-\chi^O) O_2 \\
+\mathrm{d}E_1^O/\mathrm{d}t &= (\lambda_p+\lambda_w) ((1-\chi^O)(O_1+O_2) + S^O) + v^O E_1 - v^T E_1^O - 2\epsilon E_1^O\\
+\mathrm{d}E_2^O/\mathrm{d}t &= 2\epsilon E_1^O - 2\epsilon E_2^O + v^O E_2 - v^T E_2^O\\
+\mathrm{d}I_1^O/\mathrm{d}t &= 2 (1-\theta) \epsilon E_2^O - 2 \gamma I_1^O \\
+\mathrm{d}I_2^O/\mathrm{d}t &= 2 \gamma I_1^O - 2 \gamma I_2^O \\
+\mathrm{d}A_1^O/\mathrm{d}t &= 2 \theta \epsilon E_2^O - 2 \gamma A_1^O + v^O A_1 - v^T A_1^O\\
+\mathrm{d}A_2^O/\mathrm{d}t &= 2 \gamma A_1^O - 2 \gamma A_2^O + v^O A_2 - v^T A_2^O\\
+\mathrm{d}R_1^O/\mathrm{d}t &= 2 \gamma (I_2^O + A_2^O) - 2 \omega R_1^O + v^O R_1 - v^T R_1^O\\
+\mathrm{d}R_2^O/\mathrm{d}t &= 2 \omega (R_1^O - R_2^O) + v^O R_2 - v^T R_2^O\\
 
-\mathrm{d}O_1/\mathrm{d}t &= v S - (\lambda_p+\lambda_w)O_1 - 2\delta O1 - v O_1 \\
+\mathrm{d}S^T/\mathrm{d}t &= - (\lambda_p+\lambda_w)S^T + 2 \omega R_2^T + 2 \omega_V T_2 \\ 
+\mathrm{d}T_1/\mathrm{d}t &= + v S^O - 2 \omega_V T_1 - (\lambda_p+\lambda_w)(1-\chi^T) T_1\\
+\mathrm{d}T_2/\mathrm{d}t &= + 2 \omega_V T_1 - 2 \omega_V T_2 - (\lambda_p+\lambda_w)(1-\chi^T) T_2\\
+\mathrm{d}E_1^T/\mathrm{d}t &= (\lambda_p+\lambda_w)(S^T + (1-\chi^T)(T_1+T_2)) - 
+  2\epsilon E_1^T + v^T E_1^O\\
+\mathrm{d}E_2^T/\mathrm{d}t &= 2\epsilon E_1^T - 2\epsilon E_2^T + v^T E_2^O\\
+\mathrm{d}I_1^T/\mathrm{d}t &= 2 (1-\theta) \epsilon E_2^T - 2 \gamma I_1^T\\
+\mathrm{d}I_2^T/\mathrm{d}t &= 2 \gamma I_1^T - 2 \gamma I_2^T \\
+\mathrm{d}A_1^T/\mathrm{d}t &= 2 \theta \epsilon E_2^T - 2 \gamma A_1^T + v^T A_1^O \\
+\mathrm{d}A_2^T/\mathrm{d}t &= 2 \gamma A_1^T - 2 \gamma A_2^T + v^T A_2^O \\
+\mathrm{d}R_1^T/\mathrm{d}t &= 2 \gamma (I_2^T + A_2^T) - 2 \omega R_1^T + v^T R_1^O \\
+\mathrm{d}R_2^T/\mathrm{d}t &= 2 \omega (R_1^T - R_2^T) + v^T R_2^O \\
 
-\mathrm{d}O_2/\mathrm{d}t &= 2\delta O_1 - (\lambda_p+\lambda_w)O_2 - 2\delta O2  - v O_2 \\
-
-\mathrm{d}OP_1/\mathrm{d}t &= 2\delta O_2 - \rho_1(\lambda_p+\lambda_w)OP_1 - v OP_1 
-  - 2 \sigma_v OP_1\\
-\mathrm{d}OP_2/\mathrm{d}t &= 2\delta OP_1 - \rho_1(\lambda_p+\lambda_w)OP_2 - v OP_2 
-  - 2 \sigma_v OP_2\\
-
-\mathrm{d}OPT_1/\mathrm{d}t &= v (OP_1 + OP_2) -2\delta OPT_1
-  - \rho_1(\lambda_p+\lambda_w)OP_1 - 2 \sigma_v OPT_1\\
-
-\mathrm{d}OPT_2/\mathrm{d}t &= 2\delta OPT_1 - 2\delta OPT_2
-  - \rho_1(\lambda_p+\lambda_w)OPT_2 - 2 \sigma_v OPT_2\\
-
-\mathrm{d}OPT_1P/\mathrm{d}t &= 2\delta OPT_1 - 2\delta OPT_1P 
-  - \rho_1(\lambda_p+\lambda_w)OPT_2 - 2 \sigma_v OPT_1P\\
-
-\mathrm{d}OPT_2P/\mathrm{d}t &= 2\delta OPT_2 - 2\delta OPT_2P 
-  - \rho_1(\lambda_p+\lambda_w)OPT_2 - 2 \sigma_v OPT_2P\\
-
-  
-\mathrm{d}T_1/\mathrm{d}t &= v (O_1 + O_2) - 2\delta T_1 
-  - (\lambda_p+\lambda_w)T_1\\    
-  
-\mathrm{d}T_2/\mathrm{d}t &= 2\delta T_1 - 2\delta T_2 
-  - (\lambda_p+\lambda_w)T_2\\
-  
-\mathrm{d}TP_1/\mathrm{d}t &= 2\delta T_2 + 2\delta (OPT_1P + OPT_2P)
-  - \rho_2(\lambda_p+\lambda_w)T_1 - 2 \sigma_v TP1 \\   
-  
-\mathrm{d}TP_2/\mathrm{d}t &= 2 \sigma_v TP1 
-  - \rho_2(\lambda_p+\lambda_w)T_1 - 2 \sigma_v TP2\\  
-  
-\end{align} 
-$$
+\end{align}
