@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/vacc_waning_nls_erlang/index.html",
       "/posts/ICER/index.html",
       "/posts/exp_erlang_lognormal/index.html",
       "/posts/density_frequency/index.html",
