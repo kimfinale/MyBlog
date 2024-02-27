@@ -1518,7 +1518,9 @@ font-style: inherit;">"darkorange4"</span>, <span class="st" style="color: #2079
 background-color: null;
 font-style: inherit;">"brown"</span>)</span>
 <span id="cb15-20">                 </span>
-<span id="cb15-21"><span class="fu" style="color: #4758AB;
+<span id="cb15-21">plt <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1727,10 +1729,14 @@ font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"bottom"</span>)</span></code></pre></div>
+font-style: inherit;">"bottom"</span>)</span>
+<span id="cb15-41">plt</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ggsave("vacc_wane_exp_erlang.png", plt, width=3.4*2, height=2.7*2, units="in")</span></span></code></pre></div>
 </div>
 
 
@@ -1746,7 +1752,7 @@ font-style: inherit;">"bottom"</span>)</span></code></pre></div>
   <category>Gamma</category>
   <guid>https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/index.html</guid>
   <pubDate>Mon, 26 Feb 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/lnorm_exp_erlang.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/vacc_wane_exp_erlang.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Incremental Cost-Effectiveness Ratio (ICER)</title>

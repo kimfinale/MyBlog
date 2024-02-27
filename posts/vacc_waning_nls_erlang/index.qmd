@@ -3,7 +3,7 @@ title: "Modeling the waning of the vaccine-derived immunity in the ODE model"
 author: "Jong-Hoon Kim"
 date: "2024-2-27"
 categories: [vaccine-derived immunity, waning, cholera, ODE, exponential, Gamma]
-image: "lnorm_exp_erlang.png"
+image: "vacc_wane_exp_erlang.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -189,7 +189,7 @@ mycolors <- c("dodgerblue2", "#E31A1C", "green4", "#6A3D9A", "#FF7F00",
                 "gray70", "maroon", "orchid1", "darkturquoise",
                 "darkorange4", "brown")
                  
-ggplot() +
+plt = ggplot() +
   geom_point(data=filter(dat, age=="Adult", regimen=="two doses"), 
              aes(month, val, color="data"), shape=19, size=3, alpha=0.3)+
   geom_line(data=pred, aes(month, val, color=type)) +
@@ -209,5 +209,7 @@ ggplot() +
                           "Gamma w/ shape=3" = NA,
                           "Gamma w/ shape=4" = NA))))+ 
   theme(legend.position = "bottom")
+plt
+# ggsave("vacc_wane_exp_erlang.png", plt, width=3.4*2, height=2.7*2, units="in")
 ```
 
