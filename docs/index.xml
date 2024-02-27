@@ -1476,13 +1476,54 @@ background-color: null;
 font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">newdata =</span> newd)))</span>
-<span id="cb15-15">                 </span>
-<span id="cb15-16"><span class="fu" style="color: #4758AB;
+<span id="cb15-15"></span>
+<span id="cb15-16">mycolors <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dodgerblue2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#E31A1C"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"green4"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#6A3D9A"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#FF7F00"</span>,</span>
+<span id="cb15-17">                <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gold1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"skyblue2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"palegreen2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#FDBF6F"</span>,</span>
+<span id="cb15-18">                <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray70"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"maroon"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"orchid1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkturquoise"</span>,</span>
+<span id="cb15-19">                <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkorange4"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"brown"</span>)</span>
+<span id="cb15-20">                 </span>
+<span id="cb15-21"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb15-17">  <span class="fu" style="color: #4758AB;
+<span id="cb15-22">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -1497,16 +1538,28 @@ background-color: null;
 font-style: inherit;">==</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"two doses"</span>), </span>
-<span id="cb15-18">             <span class="fu" style="color: #4758AB;
+<span id="cb15-23">             <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">aes</span>(month, val), <span class="at" style="color: #657422;
+font-style: inherit;">aes</span>(month, val, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">color=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"black"</span>)<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">"data"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">19</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb15-19">  <span class="fu" style="color: #4758AB;
+<span id="cb15-24">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_line</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -1517,14 +1570,14 @@ background-color: null;
 font-style: inherit;">color=</span>type)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb15-20">  <span class="fu" style="color: #4758AB;
+<span id="cb15-25">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggtitle</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Two-dose vaccine efficacy for adults"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb15-21">  <span class="fu" style="color: #4758AB;
+<span id="cb15-26">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -1541,7 +1594,134 @@ background-color: null;
 font-style: inherit;">""</span>)<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb15-22">  <span class="fu" style="color: #4758AB;
+<span id="cb15-27">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_colour_manual</span>(</span>
+<span id="cb15-28">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>,  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Exponential"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"firebrick"</span>,</span>
+<span id="cb15-29">             <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gamma w/ shape=2"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"green4"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gamma w/ shape=3"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#6A3D9A"</span>,</span>
+<span id="cb15-30">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gamma w/ shape=4"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#FF7F00"</span>),</span>
+<span id="cb15-31">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">guide=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guide_legend</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">override.aes =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(</span>
+<span id="cb15-32">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linetype=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data"</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"blank"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Exponential"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"solid"</span>,</span>
+<span id="cb15-33">                          <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gamma w/ shape=2"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"solid"</span>,</span>
+<span id="cb15-34">                          <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gamma w/ shape=3"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"solid"</span>,</span>
+<span id="cb15-35">                          <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gamma w/ shape=4"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"solid"</span>),</span>
+<span id="cb15-36">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'data'</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">19</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Exponential"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>,</span>
+<span id="cb15-37">                          <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gamma w/ shape=2"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>,</span>
+<span id="cb15-38">                          <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gamma w/ shape=3"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>,</span>
+<span id="cb15-39">                          <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gamma w/ shape=4"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>))))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb15-40">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
 background-color: null;

@@ -183,13 +183,31 @@ pred = data.frame(month = rep(months, 4),
                           predict(fits_gamma_shape_2[[1]], newdata = newd),
                           predict(fits_gamma_shape_3[[1]], newdata = newd),
                           predict(fits_gamma_shape_4[[1]], newdata = newd)))
+
+mycolors <- c("dodgerblue2", "#E31A1C", "green4", "#6A3D9A", "#FF7F00",
+                "black", "gold1", "skyblue2", "palegreen2", "#FDBF6F",
+                "gray70", "maroon", "orchid1", "darkturquoise",
+                "darkorange4", "brown")
                  
 ggplot() +
   geom_point(data=filter(dat, age=="Adult", regimen=="two doses"), 
-             aes(month, val), color="black")+
+             aes(month, val, color="data"), shape=19, size=3, alpha=0.3)+
   geom_line(data=pred, aes(month, val, color=type)) +
   ggtitle("Two-dose vaccine efficacy for adults") +
   labs(y="Vaccine efficacy", x="Months", color="")+
+  scale_colour_manual(
+    values=c("data" = "black",  "Exponential" = "firebrick",
+             "Gamma w/ shape=2" = "green4","Gamma w/ shape=3" = "#6A3D9A",
+              "Gamma w/ shape=4" = "#FF7F00"),
+    guide=guide_legend(override.aes = list(
+      linetype=c("data"="blank","Exponential" = "solid",
+                          "Gamma w/ shape=2" = "solid",
+                          "Gamma w/ shape=3" = "solid",
+                          "Gamma w/ shape=4" = "solid"),
+      shape=c('data'=19,"Exponential" = NA,
+                          "Gamma w/ shape=2" = NA,
+                          "Gamma w/ shape=3" = NA,
+                          "Gamma w/ shape=4" = NA))))+ 
   theme(legend.position = "bottom")
 ```
 
