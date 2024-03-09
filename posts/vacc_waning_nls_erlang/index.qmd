@@ -184,12 +184,7 @@ pred = data.frame(month = rep(months, 4),
                           predict(fits_gamma_shape_3[[1]], newdata = newd),
                           predict(fits_gamma_shape_4[[1]], newdata = newd)))
 
-mycolors <- c("dodgerblue2", "#E31A1C", "green4", "#6A3D9A", "#FF7F00",
-                "black", "gold1", "skyblue2", "palegreen2", "#FDBF6F",
-                "gray70", "maroon", "orchid1", "darkturquoise",
-                "darkorange4", "brown")
-                 
-plt = ggplot() +
+ggplot() +
   geom_point(data=filter(dat, age=="Adult", regimen=="two doses"), 
              aes(month, val, color="data"), shape=19, size=3, alpha=0.3)+
   geom_line(data=pred, aes(month, val, color=type)) +
@@ -209,7 +204,6 @@ plt = ggplot() +
                           "Gamma w/ shape=3" = NA,
                           "Gamma w/ shape=4" = NA))))+ 
   theme(legend.position = "bottom")
-plt
-# ggsave("vacc_wane_exp_erlang.png", plt, width=3.4*2, height=2.7*2, units="in")
+
 ```
 
