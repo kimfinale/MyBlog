@@ -12,7 +12,7 @@
 <generator>quarto-1.3.450</generator>
 <lastBuildDate>Sun, 03 Mar 2024 15:00:00 GMT</lastBuildDate>
 <item>
-  <title>기초감염재생산지수와 대유행의 가능성</title>
+  <title>감염병 대유행 확률</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
   <link>https://kimfinale.github.io/myblog/posts/Probabily_outbreak/index.html</link>
   <description><![CDATA[ 
@@ -35,8 +35,8 @@
 <p>위에서 언급한 <img src="https://latex.codecogs.com/png.latex?%5Ctext%7B%EB%8C%80%EC%9C%A0%ED%96%89%EC%9D%98%20%EA%B0%80%EB%8A%A5%EC%84%B1%7D%20=%201%20-%20%5Cfrac%7B1%7D%7BR_0%7D">는 후속 감염자수의 분포가 기하분포 (geometric distribution)를 따를때 성립한다. 기하분포는 아래와 같이 표현되 <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BProb%7D(X=j)%20=%20(1-p)%5Ej%20p"></p>
 <p>평균과 성공확률의 관게, <img src="https://latex.codecogs.com/png.latex?R%20=%20%5Cfrac%7B1-p%7D%7Bp%7D">, 이용하여 다시 표현하면 아래와 같다.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BProb%7D(X=j)%20=%20(%5Cfrac%7BR_0%7D%7B1+R_0%7D)%5Ej%20%5Cfrac%7B1%7D%7B1+R_0%7D"> 위에서와 동일하게 계산하면 아래와 같다. <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bj=0%7D%5E%5Cinfty%20p_j%20%5Ctheta%5E%7Bj%7D%20=%20%5Cfrac%7B1%7D%7B1%20+%20R_0%20-%20R_0%20%5Ctheta%7D"> 따라서 아래의 식을 풀면 <img src="https://latex.codecogs.com/png.latex?%5Ctheta">를 구할 수 있다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cfrac%7B1%7D%7B1%20+%20R_0%20-%20R_0%20%5Ctheta%7D"></p>
-<p>이 경우에는 직접 해를 구할 수 있다. <img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cfrac%7B1%7D%7BR_0%7D">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cfrac%7B1%7D%7B1%20+%20R_0%20-%20R_0%20%5Ctheta%7D."></p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cfrac%7B1%7D%7BR_0%7D."></p>
 <p>따라서 <a href="https://www.yes24.com/Product/Goods/99051113?ReviewYn=Y">감염병 인류</a> 책에서 언급된 것처럼 <img src="https://latex.codecogs.com/png.latex?%5Ctext%7B%EB%8C%80%EC%9C%A0%ED%96%89%EC%9D%98%20%EA%B0%80%EB%8A%A5%EC%84%B1%7D%20=%201%20-%20%5Cfrac%7B1%7D%7BR_0%7D."> 마지막으로 후속 감염자수가 이항분포 (negative binomial distribution)을 따른다고 가정해보자. 최근 연구들에서 빈번하게 언급되고 가장 현실에 가까운 가정인 듯 하다. 이항분포를 다양한 모수를 사용하여 표현할 수 있고 평균 <img src="https://latex.codecogs.com/png.latex?R_0">과 확산(dispersion; <img src="https://latex.codecogs.com/png.latex?k">)를 이용하여 나타내면 아래와 같다.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BProb%7D(X=j)%20=%20%5Cfrac%7B%5CGamma(k+j)%7D%7Bj!%5CGamma(k)%7D%5Cleft(%5Cfrac%7Bk%7D%7Bk+R_0%7D%5Cright)%5Ek%5Cleft(%5Cfrac%7BR_0%7D%7Bk+R_0%7D%5Cright)%5Ej%20%5Ctext%7B%20for%20%7D%20k=0,1,2,..."> The probability of a minor outbreak, 위와 동일한 방법으로 계산하면 우변은 아래와 같다.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bj=0%7D%5E%5Cinfty%20p_j%20%5Ctheta%5E%7Bj%7D%20=%20%5Cleft(%5Cfrac%7Bk%7D%7Bk%20+%20R_0%20-%20R_0%20%5Ctheta%7D%5Cright)%5Ek"> 따라서 <img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cleft(%5Cfrac%7Bk%7D%7Bk%20+%20R_0%20-%20R_0%20%5Ctheta%7D%5Cright)%5Ek">를 계산하여 소규모감염의 확률을 계산하고 <img src="https://latex.codecogs.com/png.latex?1-%5Ctheta">를 계산하여 대규모유행 확률을 계산하면 된다.</p>
@@ -396,7 +396,6 @@ font-style: inherit;">""</span>)</span></code></pre></div>
  ]]></description>
   <category>probability of a large outbreak</category>
   <category>reproduction number</category>
-  <category>branching process</category>
   <guid>https://kimfinale.github.io/myblog/posts/Probabily_outbreak/index.html</guid>
   <pubDate>Sun, 03 Mar 2024 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/Probabily_outbreak/gates-climate-book.jpg" medium="image" type="image/jpeg"/>
