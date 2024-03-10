@@ -9,7 +9,7 @@
 <meta name="author" content="Jong-Hoon Kim">
 <meta name="dcterms.date" content="2024-03-04">
 
-<title>Jong-Hoon Kim’s Blog - 감염병 대유행 확률</title>
+<title>Jong-Hoon Kim’s Blog - 감염병의 대유행 가능성 계산하기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -144,7 +144,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">감염병 대유행 확률</h1>
+      <h1 class="title">감염병의 대유행 가능성 계산하기</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">probability of a large outbreak</div>
                 <div class="quarto-category">reproduction number</div>
@@ -202,7 +202,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><span class="math display">\[\text{Prob}(X=j) = (\frac{R_0}{1+R_0})^j \frac{1}{1+R_0}\]</span> 위에서와 동일하게 계산하면 아래와 같다. <span class="math display">\[\sum_{j=0}^\infty p_j \theta^{j} = \frac{1}{1 + R_0 - R_0 \theta}\]</span> 따라서 아래의 식을 풀면 <span class="math inline">\(\theta\)</span>를 구할 수 있다.</p>
 <p><span class="math display">\[\theta = \frac{1}{1 + R_0 - R_0 \theta}.\]</span></p>
 <p><span class="math display">\[\theta = \frac{1}{R_0}.\]</span></p>
-<p>따라서 <a href="https://www.yes24.com/Product/Goods/99051113?ReviewYn=Y">감염병 인류</a> 책에서 언급된 것처럼 <span class="math display">\[\text{대유행의 가능성} = 1 - \frac{1}{R_0}.\]</span> 마지막으로 후속 감염자수가 이항분포 (negative binomial distribution)을 따른다고 가정해보자. 최근 연구들에서 빈번하게 언급되고 가장 현실에 가까운 가정인 듯 하다. 이항분포를 다양한 모수를 사용하여 표현할 수 있고 평균 <span class="math inline">\(R_0\)</span>과 확산(dispersion; <span class="math inline">\(k\)</span>)를 이용하여 나타내면 아래와 같다.</p>
+<p>따라서 <a href="https://www.yes24.com/Product/Goods/99051113?ReviewYn=Y">감염병 인류</a> 책에서 언급된 것처럼 <span class="math display">\[\text{대유행의 가능성} = 1 - \frac{1}{R_0}.\]</span> 마지막으로 후속 감염자수가 이항분포 (negative binomial distribution)을 따른다고 가정해보자. 최근 연구들에서 빈번하게 언급되고 가장 현실에 가까운 가정인 듯 하다.</p>
+<p>다양한 모수를 사용하여 표현할 수 있고 평균 <span class="math inline">\(R_0\)</span>과 확산(dispersion; <span class="math inline">\(k\)</span>)를 이용하여 나타내면 아래와 같다. 이항 분포는 <span class="math inline">\(k=1\)</span>일 때는 기하분포와 동일하고 <span class="math inline">\(k=\infty\)</span> 일때는 푸아송분포와 동일하다. 코로나 19의 경우 <span class="math inline">\(k\)</span> 값이 약 <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9349569/">0.55</a>이다.</p>
 <p><span class="math display">\[\text{Prob}(X=j) = \frac{\Gamma(k+j)}{j!\Gamma(k)}\left(\frac{k}{k+R_0}\right)^k\left(\frac{R_0}{k+R_0}\right)^j \text{ for } k=0,1,2,...\]</span> The probability of a minor outbreak, 위와 동일한 방법으로 계산하면 우변은 아래와 같다.</p>
 <p><span class="math display">\[\sum_{j=0}^\infty p_j \theta^{j} = \left(\frac{k}{k + R_0 - R_0 \theta}\right)^k\]</span> 따라서 <span class="math display">\[\theta = \left(\frac{k}{k + R_0 - R_0 \theta}\right)^k\]</span>를 계산하여 소규모감염의 확률을 계산하고 <span class="math inline">\(1-\theta\)</span>를 계산하여 대규모유행 확률을 계산하면 된다.</p>
 <p>R 시물레이션을 통해서 세방법이 어떻게 다른 결과를 나타내는지 살펴보자</p>
@@ -210,7 +211,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>prob_outbreak_pois <span class="ot">=</span> <span class="cf">function</span>(theta, R0){</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  theta <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span>R0 <span class="sc">+</span> R0<span class="sc">*</span>theta) </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>prob_outbreak_geo <span class="ot">=</span> <span class="cf">function</span>(theta, R0){</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>prob_outbreak_geo <span class="ot">=</span> <span class="cf">function</span>(R0){</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">/</span>R0 </span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>prob_outbreak_nb <span class="ot">=</span> <span class="cf">function</span>(theta, R0, k){</span>
@@ -224,28 +225,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>Rs <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">1.1</span>, <span class="dv">10</span>, <span class="at">length.out=</span><span class="dv">100</span>)</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>theta1 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(Rs, <span class="cf">function</span>(x) </span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span>(rootSolve<span class="sc">::</span><span class="fu">multiroot</span>(prob_outbreak_pois, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">R0=</span>x)<span class="sc">$</span>root))</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>theta2 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(Rs, <span class="cf">function</span>(x) <span class="dv">1</span><span class="sc">/</span>x)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>theta2 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(Rs, <span class="cf">function</span>(x) <span class="fu">prob_outbreak_geo</span>(x))</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>theta3 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(Rs, <span class="cf">function</span>(x) </span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span>(rootSolve<span class="sc">::</span><span class="fu">multiroot</span>(prob_outbreak_nb, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">R0=</span>x, <span class="at">k=</span><span class="dv">20</span>)<span class="sc">$</span>root))</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>theta4 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(Rs, <span class="cf">function</span>(x) </span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span>(rootSolve<span class="sc">::</span><span class="fu">multiroot</span>(prob_outbreak_nb, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">R0=</span>x, <span class="at">k=</span><span class="fl">0.2</span>)<span class="sc">$</span>root))</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">R0=</span><span class="fu">rep</span>(Rs,<span class="dv">4</span>), </span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dist=</span><span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Pois"</span>,<span class="st">"Geom"</span>,<span class="st">"NB(k=20)"</span>,<span class="st">"NB(k=2)"</span>),<span class="at">each=</span><span class="dv">100</span>),</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                 <span class="at">prob_outbreak=</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>theta1,<span class="dv">1</span><span class="sc">-</span>theta2,<span class="dv">1</span><span class="sc">-</span>theta3,<span class="dv">1</span><span class="sc">-</span>theta4))</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>extrafont<span class="sc">::</span><span class="fu">loadfonts</span>(<span class="st">"win"</span>, <span class="at">quiet=</span><span class="cn">TRUE</span>)</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(hrbrthemes<span class="sc">::</span><span class="fu">theme_ipsum_rc</span>(<span class="at">base_size=</span><span class="dv">14</span>, <span class="at">subtitle_size=</span><span class="dv">16</span>, </span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">axis_title_size=</span><span class="dv">12</span>))</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df) <span class="sc">+</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(R0, prob_outbreak, <span class="at">color=</span>dist))<span class="sc">+</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">expression</span>(<span class="st">"Probability of a large outbreak vs."</span> <span class="sc">~</span><span class="fu">italic</span>(R)[<span class="dv">0</span>])) <span class="sc">+</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Probability of a large outbreak"</span>, <span class="at">x=</span><span class="fu">expression</span>(<span class="fu">italic</span>(R)[<span class="dv">0</span>]), <span class="at">color=</span><span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>   <span class="fu">min</span>(rootSolve<span class="sc">::</span><span class="fu">multiroot</span>(prob_outbreak_nb, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">R0=</span>x, <span class="at">k=</span><span class="fl">0.55</span>)<span class="sc">$</span>root))</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">R0=</span><span class="fu">rep</span>(Rs,<span class="dv">3</span>), </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dist=</span><span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Pois"</span>,<span class="st">"Geom"</span>,<span class="st">"NB(k=0.55)"</span>),<span class="at">each=</span><span class="dv">100</span>),</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>                 <span class="at">prob_outbreak=</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>theta1,<span class="dv">1</span><span class="sc">-</span>theta2,<span class="dv">1</span><span class="sc">-</span>theta3))</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>extrafont<span class="sc">::</span><span class="fu">loadfonts</span>(<span class="st">"win"</span>, <span class="at">quiet=</span><span class="cn">TRUE</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(hrbrthemes<span class="sc">::</span><span class="fu">theme_ipsum_rc</span>(<span class="at">base_size=</span><span class="dv">14</span>, <span class="at">subtitle_size=</span><span class="dv">16</span>, </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">axis_title_size=</span><span class="dv">12</span>))</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df) <span class="sc">+</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(R0, prob_outbreak, <span class="at">color=</span>dist))<span class="sc">+</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">expression</span>(<span class="st">"Probability of a large outbreak vs."</span> <span class="sc">~</span><span class="fu">italic</span>(R)[<span class="dv">0</span>])) <span class="sc">+</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">"Probability of a large outbreak"</span>, <span class="at">x=</span><span class="fu">expression</span>(<span class="fu">italic</span>(R)[<span class="dv">0</span>]), <span class="at">color=</span><span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("outbreak_prob.png", units="in", width=3.4*2, height=2.7*2)  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

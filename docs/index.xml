@@ -12,7 +12,7 @@
 <generator>quarto-1.3.450</generator>
 <lastBuildDate>Sun, 03 Mar 2024 15:00:00 GMT</lastBuildDate>
 <item>
-  <title>감염병 대유행 확률</title>
+  <title>감염병의 대유행 가능성 계산하기</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
   <link>https://kimfinale.github.io/myblog/posts/Probabily_outbreak/index.html</link>
   <description><![CDATA[ 
@@ -37,7 +37,8 @@
 <p><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BProb%7D(X=j)%20=%20(%5Cfrac%7BR_0%7D%7B1+R_0%7D)%5Ej%20%5Cfrac%7B1%7D%7B1+R_0%7D"> 위에서와 동일하게 계산하면 아래와 같다. <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bj=0%7D%5E%5Cinfty%20p_j%20%5Ctheta%5E%7Bj%7D%20=%20%5Cfrac%7B1%7D%7B1%20+%20R_0%20-%20R_0%20%5Ctheta%7D"> 따라서 아래의 식을 풀면 <img src="https://latex.codecogs.com/png.latex?%5Ctheta">를 구할 수 있다.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cfrac%7B1%7D%7B1%20+%20R_0%20-%20R_0%20%5Ctheta%7D."></p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cfrac%7B1%7D%7BR_0%7D."></p>
-<p>따라서 <a href="https://www.yes24.com/Product/Goods/99051113?ReviewYn=Y">감염병 인류</a> 책에서 언급된 것처럼 <img src="https://latex.codecogs.com/png.latex?%5Ctext%7B%EB%8C%80%EC%9C%A0%ED%96%89%EC%9D%98%20%EA%B0%80%EB%8A%A5%EC%84%B1%7D%20=%201%20-%20%5Cfrac%7B1%7D%7BR_0%7D."> 마지막으로 후속 감염자수가 이항분포 (negative binomial distribution)을 따른다고 가정해보자. 최근 연구들에서 빈번하게 언급되고 가장 현실에 가까운 가정인 듯 하다. 이항분포를 다양한 모수를 사용하여 표현할 수 있고 평균 <img src="https://latex.codecogs.com/png.latex?R_0">과 확산(dispersion; <img src="https://latex.codecogs.com/png.latex?k">)를 이용하여 나타내면 아래와 같다.</p>
+<p>따라서 <a href="https://www.yes24.com/Product/Goods/99051113?ReviewYn=Y">감염병 인류</a> 책에서 언급된 것처럼 <img src="https://latex.codecogs.com/png.latex?%5Ctext%7B%EB%8C%80%EC%9C%A0%ED%96%89%EC%9D%98%20%EA%B0%80%EB%8A%A5%EC%84%B1%7D%20=%201%20-%20%5Cfrac%7B1%7D%7BR_0%7D."> 마지막으로 후속 감염자수가 이항분포 (negative binomial distribution)을 따른다고 가정해보자. 최근 연구들에서 빈번하게 언급되고 가장 현실에 가까운 가정인 듯 하다.</p>
+<p>다양한 모수를 사용하여 표현할 수 있고 평균 <img src="https://latex.codecogs.com/png.latex?R_0">과 확산(dispersion; <img src="https://latex.codecogs.com/png.latex?k">)를 이용하여 나타내면 아래와 같다. 이항 분포는 <img src="https://latex.codecogs.com/png.latex?k=1">일 때는 기하분포와 동일하고 <img src="https://latex.codecogs.com/png.latex?k=%5Cinfty"> 일때는 푸아송분포와 동일하다. 코로나 19의 경우 <img src="https://latex.codecogs.com/png.latex?k"> 값이 약 <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9349569/">0.55</a>이다.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BProb%7D(X=j)%20=%20%5Cfrac%7B%5CGamma(k+j)%7D%7Bj!%5CGamma(k)%7D%5Cleft(%5Cfrac%7Bk%7D%7Bk+R_0%7D%5Cright)%5Ek%5Cleft(%5Cfrac%7BR_0%7D%7Bk+R_0%7D%5Cright)%5Ej%20%5Ctext%7B%20for%20%7D%20k=0,1,2,..."> The probability of a minor outbreak, 위와 동일한 방법으로 계산하면 우변은 아래와 같다.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bj=0%7D%5E%5Cinfty%20p_j%20%5Ctheta%5E%7Bj%7D%20=%20%5Cleft(%5Cfrac%7Bk%7D%7Bk%20+%20R_0%20-%20R_0%20%5Ctheta%7D%5Cright)%5Ek"> 따라서 <img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cleft(%5Cfrac%7Bk%7D%7Bk%20+%20R_0%20-%20R_0%20%5Ctheta%7D%5Cright)%5Ek">를 계산하여 소규모감염의 확률을 계산하고 <img src="https://latex.codecogs.com/png.latex?1-%5Ctheta">를 계산하여 대규모유행 확률을 계산하면 된다.</p>
 <p>R 시물레이션을 통해서 세방법이 어떻게 다른 결과를 나타내는지 살펴보자</p>
@@ -63,7 +64,7 @@ font-style: inherit;">*</span>theta) </span>
 background-color: null;
 font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">function</span>(theta, R0){</span>
+font-style: inherit;">function</span>(R0){</span>
 <span id="cb1-5">  <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -189,11 +190,9 @@ font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sapply</span>(Rs, <span class="cf" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">function</span>(x) <span class="dv" style="color: #AD0000;
+font-style: inherit;">function</span>(x) <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>x)</span>
+font-style: inherit;">prob_outbreak_geo</span>(x))</span>
 <span id="cb1-19">theta3 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -201,35 +200,7 @@ background-color: null;
 font-style: inherit;">sapply</span>(Rs, <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">function</span>(x) </span>
-<span id="cb1-20">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">min</span>(rootSolve<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">multiroot</span>(prob_outbreak_nb, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">R0=</span>x, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">k=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span>)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>root))</span>
-<span id="cb1-21">theta4 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sapply</span>(Rs, <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(x) </span>
-<span id="cb1-22">  <span class="fu" style="color: #4758AB;
+<span id="cb1-20">   <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">min</span>(rootSolve<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -247,11 +218,10 @@ font-style: inherit;">R0=</span>x, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">k=</span><span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0.2</span>)<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">0.55</span>)<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>root))</span>
-<span id="cb1-23"></span>
-<span id="cb1-24">df <span class="ot" style="color: #003B4F;
+<span id="cb1-21">df <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -261,8 +231,8 @@ font-style: inherit;">R0=</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">rep</span>(Rs,<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">4</span>), </span>
-<span id="cb1-25">                 <span class="at" style="color: #657422;
+font-style: inherit;">3</span>), </span>
+<span id="cb1-22">                 <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">dist=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -274,14 +244,12 @@ font-style: inherit;">"Pois"</span>,<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Geom"</span>,<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"NB(k=20)"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"NB(k=2)"</span>),<span class="at" style="color: #657422;
+font-style: inherit;">"NB(k=0.55)"</span>),<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">each=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span>),</span>
-<span id="cb1-26">                 <span class="at" style="color: #657422;
+<span id="cb1-23">                 <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">prob_outbreak=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -297,16 +265,12 @@ font-style: inherit;">-</span>theta2,<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">-</span>theta3,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span>theta4))</span>
-<span id="cb1-27"></span>
-<span id="cb1-28"><span class="fu" style="color: #4758AB;
+font-style: inherit;">-</span>theta3))</span>
+<span id="cb1-24"></span>
+<span id="cb1-25"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb1-29">extrafont<span class="sc" style="color: #5E5E5E;
+<span id="cb1-26">extrafont<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -317,7 +281,7 @@ background-color: null;
 font-style: inherit;">quiet=</span><span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">TRUE</span>)</span>
-<span id="cb1-30"><span class="fu" style="color: #4758AB;
+<span id="cb1-27"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -332,18 +296,18 @@ background-color: null;
 font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">16</span>, </span>
-<span id="cb1-31">                                     <span class="at" style="color: #657422;
+<span id="cb1-28">                                     <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">12</span>))</span>
-<span id="cb1-32"></span>
-<span id="cb1-33"><span class="fu" style="color: #4758AB;
+<span id="cb1-29"></span>
+<span id="cb1-30"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>(df) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb1-34">  <span class="fu" style="color: #4758AB;
+<span id="cb1-31">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -352,7 +316,7 @@ background-color: null;
 font-style: inherit;">color=</span>dist))<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb1-35">  <span class="fu" style="color: #4758AB;
+<span id="cb1-32">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggtitle</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -367,7 +331,7 @@ background-color: null;
 font-style: inherit;">0</span>])) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb1-36">  <span class="fu" style="color: #4758AB;
+<span id="cb1-33">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -389,6 +353,9 @@ font-style: inherit;">""</span>)</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://kimfinale.github.io/myblog/posts/Probabily_outbreak/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ggsave("outbreak_prob.png", units="in", width=3.4*2, height=2.7*2)  </span></span></code></pre></div>
 </div>
 
 
@@ -398,7 +365,7 @@ font-style: inherit;">""</span>)</span></code></pre></div>
   <category>reproduction number</category>
   <guid>https://kimfinale.github.io/myblog/posts/Probabily_outbreak/index.html</guid>
   <pubDate>Sun, 03 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/Probabily_outbreak/gates-climate-book.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/Probabily_outbreak/outbreak_prob.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Modeling the waning of the vaccine-derived immunity in the ODE model</title>
