@@ -32,11 +32,11 @@ $$\text{Prob}(X=j) = \frac{R^j e^R}{j!}\text{ for } j=0,1,2,...$$
 
 이 경우 @eq-theta 의 우변은 아래와 같이 나타내어질 수 있다.  
 
-$$\sum_{j=0}^\infty p_j \theta^{j} = e^{-R_0 + R_0 \theta}.$$ 
+$$\sum_{j=0}^\infty p_j \theta^{j} = e^{(1-\theta)R_0}.$$ 
 
 따라서 $\theta$는 아래의 식을 계산하면 된다. 다만 해를 직접 구할 수는 없고 수치해석방법을 이용 해서 답을 구해야 한다. 
 
-$$\theta = e^{-R_0 + R_0 \theta}.$$ 
+$$\theta = e^{(1-\theta)R_0}.$$ 
 
 위에서 언급한 $\text{대유행의 가능성} = 1 - \frac{1}{R_0}$는 후속 감염자수의 분포가 
 기하분포 (geometric distribution)를 따를때 성립한다. 기하분포는 아래와 같이 표현되
@@ -49,7 +49,7 @@ $$\text{Prob}(X=j) = (\frac{R_0}{1+R_0})^j \frac{1}{1+R_0}$$
 $$\sum_{j=0}^\infty p_j \theta^{j} = \frac{1}{1 + R_0 - R_0 \theta}$$ 
 따라서 아래의 식을 풀면 $\theta$를 구할 수 있다. 
 
-$$\theta = \frac{1}{1 + R_0 - R_0 \theta}.$$
+$$\theta = \frac{1}{1 + (1-\theta)R_0}.$$
 
 $$\theta = \frac{1}{R_0}.$$
 
@@ -66,8 +66,8 @@ $$\text{대유행의 가능성} = 1 - \frac{1}{R_0}.$$
 $$\text{Prob}(X=j) = \frac{\Gamma(k+j)}{j!\Gamma(k)}\left(\frac{k}{k+R_0}\right)^k\left(\frac{R_0}{k+R_0}\right)^j \text{ for } k=0,1,2,...$$ The probability of a minor outbreak,
 위와 동일한 방법으로 계산하면 우변은 아래와 같다. 
 
-$$\sum_{j=0}^\infty p_j \theta^{j} = \left(\frac{k}{k + R_0 - R_0 \theta}\right)^k$$
-따라서 $$\theta = \left(\frac{k}{k + R_0 - R_0 \theta}\right)^k$$를 계산하여 
+$$\sum_{j=0}^\infty p_j \theta^{j} = \left(\frac{k}{k + (1-\theta)R_0}\right)^k$$
+따라서 $$\theta = \left(\frac{k}{k + (1-\theta)R_0}\right)^k$$를 계산하여 
 소규모감염의 확률을 계산하고 $1-\theta$를 계산하여 대규모유행 확률을 계산하면
 된다. 
 
