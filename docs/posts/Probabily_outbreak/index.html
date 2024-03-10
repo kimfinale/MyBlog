@@ -9,7 +9,7 @@
 <meta name="author" content="Jong-Hoon Kim">
 <meta name="dcterms.date" content="2024-03-04">
 
-<title>Jong-Hoon Kim’s Blog - \(R_0\) and probability of a large outbreak</title>
+<title>Jong-Hoon Kim’s Blog - 기초감염재생산지수와 대유행의 가능성</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -144,7 +144,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title"><span class="math inline">\(R_0\)</span> and probability of a large outbreak</h1>
+      <h1 class="title">기초감염재생산지수와 대유행의 가능성</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">probability of a large outbreak</div>
                 <div class="quarto-category">reproduction number</div>
@@ -185,18 +185,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><a href="https://www.yes24.com/Product/Goods/99051113?ReviewYn=Y">감염병 인류</a> 라는 책을 재미있게 읽는 중이다. 136페이지에는 기초감염재생산지수와 대유행의 가능성에 대한 간단한 수식이 나온다. <span class="math display">\[\text{대유행의 가능성} = 1 - \frac{1}{R_0}\]</span></p>
-<p><span class="math inline">\(R_0\)</span>는 기초감염재생산지수, 즉 한 사람의 감염자가 다른 모든 사람이 감수성자 (susceptible) 일때 감염시키는 평균 감염자수를 나타낸다. 내가 아는 한 위 수식은 매우 제한적인 경우에만 적용된다. 감염병 유입 시 대유행의 가능성에 대한 내용은 Niels G. Becker가 저술한 <a href="https://www.amazon.com/Modeling-Infectious-Disease-Control-Biostatistics/dp/1498731066/ref=sr_1_3?crid=Q6E8KCGFJHES&amp;dib=eyJ2IjoiMSJ9.UCQn7lL_fhp-8cr31i1yvNkFiM8031ZLJrQd3oLch4MLiIGfVd7xSHYK8DxJcl2irN6hOSKXvwIBltRHfSRsMnCEZE09qU6Hj_BrGkMf45Q7EvhtR8q1EEZnjJP4ZrU8ow-Z6gIW1vhne7qQp5LiGeJsnbWorvZjpvfWu0Q-YbgfYopAUnSl95IUf0nlTDbvxm-rYGyOawJEC5BHEBXi3wsYCfLfM-F7eZW2vwT_9n8.DIMrBAhp9UdkHqkC9_69y7tViatvCC44j3phlaCTrA4&amp;dib_tag=se&amp;keywords=niels+becker&amp;qid=1709912228&amp;sprefix=niels+becker%2Caps%2C239&amp;sr=8-3">Modeling to Inform Infectious Disease Control</a>의 제 2장에 자세하게 기술되어 있다.</p>
-<p>동일한 사람들로 이루어진 인구 집단에서 감염병이 퍼져나가는 현상을 가지치기 과정 (<a href="https://en.wikipedia.org/wiki/Branching_process">branching process</a>)에 빗대어 설명할 수 있다. 한 사람이 평균적으로 <span class="math inline">\(R_0\)</span> 명을 감염시킨다고 해보자. 하지만 <span class="math inline">\(R_0\)</span>은 평균일뿐 실제 한 감염자의 후속 감염자수는 확률 분포를 가진다고 생각해볼 수 있다. 한 명의 감염자가 총 <span class="math inline">\(j\)</span> 명의 후속 감염자를 만들어 내는 확률을 <span class="math inline">\(P(X=j) = p_j\)</span>라고 하자. 그렇다면 위에서 언급했던 기초감염재생산지수는 아래와 같이 표현할 수 있다.</p>
+<p><span class="math inline">\(R_0\)</span>는 기초감염재생산지수, 즉 한 사람의 감염자가 다른 모든 사람이 감수성자 (susceptible) 일때 감염시키는 평균 감염자수를 나타낸다. 위 수식은 제한적인 경우에만 적용된다. 감염병 유입 시 대유행의 가능성에 대해 좀 더 일반적으로 적용될 수 있는 방법에 대해 적어보려고 한다. 물론 아래 내용도 상당히 이상적인 상황에 대한 기술일 뿐이고 현실은 그 보다 훨씬 더 복잡할 것이다. 감염병 유입 시 대유행의 가능성에 대한 내용은 Niels G. Becker가 저술한 <a href="https://www.amazon.com/Modeling-Infectious-Disease-Control-Biostatistics/dp/1498731066/ref=sr_1_3?crid=Q6E8KCGFJHES&amp;dib=eyJ2IjoiMSJ9.UCQn7lL_fhp-8cr31i1yvNkFiM8031ZLJrQd3oLch4MLiIGfVd7xSHYK8DxJcl2irN6hOSKXvwIBltRHfSRsMnCEZE09qU6Hj_BrGkMf45Q7EvhtR8q1EEZnjJP4ZrU8ow-Z6gIW1vhne7qQp5LiGeJsnbWorvZjpvfWu0Q-YbgfYopAUnSl95IUf0nlTDbvxm-rYGyOawJEC5BHEBXi3wsYCfLfM-F7eZW2vwT_9n8.DIMrBAhp9UdkHqkC9_69y7tViatvCC44j3phlaCTrA4&amp;dib_tag=se&amp;keywords=niels+becker&amp;qid=1709912228&amp;sprefix=niels+becker%2Caps%2C239&amp;sr=8-3">Modeling to Inform Infectious Disease Control</a>의 제 2장에 자세하게 기술되어 있다.</p>
+<p>동일한 사람들로 이루어진 인구 집단에서 감염병이 퍼져나가는 현상을 생각해 보자. 한 사람이 평균적으로 <span class="math inline">\(R_0\)</span> 명을 감염시킨다고 할 때 <span class="math inline">\(R_0\)</span>은 평균일뿐 후속 감염자수는 어떤 확률 분포를 가진다고 생각해볼 수 있다. 한 명의 감염자가 총 <span class="math inline">\(j\)</span> 명의 후속 감염자를 만들어 내는 확률을 <span class="math inline">\(P(X=j) = p_j\)</span>라고 할 때 <span class="math inline">\(R_0\)</span>는 아래와 같이 표현할 수 있다.</p>
 <p><span class="math display">\[R_0 = \sum_{k=0}^\infty j p_j.\]</span></p>
-<p>위의 확률분포와 가지치기 과정을 이용하여 대유행의 확률에 대해 계산해보자. 대유행의 가능성은 역으로 생각하는 것이 유리하다. 즉 대유행이 아닌 소규모의 감염으로 막을 내리는 확률, <span class="math inline">\(\theta\)</span>, 을 구한 후 대유행의 확률은 <span class="math inline">\(1-\theta\)</span>로 구하는 것이다. 소규모의 감염이 일어나기 위해서는 유입된 초기 환자가 아무도 감염시키지 않거나 혹은 몇 명을 감염시켰다고 할지라도 후속 감염자들이 추가적으로 일으키는 감염이 소규모일때만 가능할 것이다. 즉 소규모 감염의 확률, <span class="math inline">\(\theta\)</span>, 는 아래의 식을 만족한다.</p>
-<p><span class="math display">\[\theta =  p_0 + p_1 \theta + p_2 \theta^2 + ... =  \sum_{j=0}^\infty p_j \theta^{j}
-\text{ for } j=0,1,2,...\]</span> 후속 감염자수의 분포가 푸아송 분포 (Poisson distribution)를 따른다고 가정해 보자.<br>
-<span class="math display">\[\text{Prob}(X=j) = \frac{R^j e^R}{j!}\text{ for } j=0,1,2,...\]</span></p>
-<p>이 경우 우변은 아래와 같이 나타내어질 수 있다.</p>
+<p>대유행의 가능성은 역으로 생각하는 것이 유리하다. 즉 대유행이 아닌 소규모의 감염으로 막을 내리는 확률, <span class="math inline">\(\theta\)</span>, 을 구한 후 대유행의 확률은 <span class="math inline">\(1-\theta\)</span>로 구하는 것이다. 소규모의 감염이 일어나기 위해서는 유입된 초기 환자 (index patient)가 아무도 감염시키지 않거나 혹은 몇 명을 감염시켰다고 할지라도 후속 감염자들이 추가적으로 일으키는 감염이 소규모일때만 가능할 것이다. 즉 소규모 감염의 확률, <span class="math inline">\(\theta\)</span>, 는 아래의 식을 만족한다.</p>
+<p><span id="eq-theta"><span class="math display">\[
+\theta =  p_0 + p_1 \theta + p_2 \theta^2 + ...
+\tag{1}\]</span></span></p>
+<p>위 식을 보면 <span class="math inline">\(\theta\)</span> 는 후속 감염자수가 어떠한 분포를 따르느냐에 따라 달라질 것이라 예상할 수 있다. 가장 흔히 쓰이는 분포 중의 하나인 푸아송 분포 (Poisson distribution)를 생각해보자. 화률 분포 함수는 아래와 같다.</p>
+<p><span class="math display">\[\text{Prob}(X=j) = \frac{R^j e^R}{j!}\text{ for } j=0,1,2,...\]</span></p>
+<p>이 경우 <a href="#eq-theta">Equation&nbsp;1</a> 의 우변은 아래와 같이 나타내어질 수 있다.</p>
 <p><span class="math display">\[\sum_{j=0}^\infty p_j \theta^{j} = e^{-R_0 + R_0 \theta}.\]</span></p>
 <p>따라서 <span class="math inline">\(\theta\)</span>는 아래의 식을 계산하면 된다. 다만 해를 직접 구할 수는 없고 수치해석방법을 이용 해서 답을 구해야 한다.</p>
 <p><span class="math display">\[\theta = e^{-R_0 + R_0 \theta}.\]</span></p>
-<p>위에서 언급한 <span class="math inline">\(\text{대유행의 가능성} = 1 - \frac{1}{R_0}\)</span>는 후속 감염자수의 분포가 기하분포 (geometric distribution)를 따를때 성립한다. 기하분포는 아래와 같이 표현되고 <span class="math display">\[\text{Prob}(X=j) = (1-p)^j p\]</span></p>
+<p>위에서 언급한 <span class="math inline">\(\text{대유행의 가능성} = 1 - \frac{1}{R_0}\)</span>는 후속 감염자수의 분포가 기하분포 (geometric distribution)를 따를때 성립한다. 기하분포는 아래와 같이 표현되 <span class="math display">\[\text{Prob}(X=j) = (1-p)^j p\]</span></p>
 <p>평균과 성공확률의 관게, <span class="math inline">\(R = \frac{1-p}{p}\)</span>, 이용하여 다시 표현하면 아래와 같다.</p>
 <p><span class="math display">\[\text{Prob}(X=j) = (\frac{R_0}{1+R_0})^j \frac{1}{1+R_0}\]</span> 위에서와 동일하게 계산하면 아래와 같다. <span class="math display">\[\sum_{j=0}^\infty p_j \theta^{j} = \frac{1}{1 + R_0 - R_0 \theta}\]</span> 따라서 아래의 식을 풀면 <span class="math inline">\(\theta\)</span>를 구할 수 있다.</p>
 <p><span class="math display">\[\theta = \frac{1}{1 + R_0 - R_0 \theta}\]</span></p>
