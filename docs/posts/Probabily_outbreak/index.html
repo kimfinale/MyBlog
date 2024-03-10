@@ -199,7 +199,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><span class="math display">\[\theta = e^{(1-\theta)R_0}.\]</span></p>
 <p>위에서 언급한 <span class="math inline">\(\text{대유행의 가능성} = 1 - \frac{1}{R_0}\)</span>는 후속 감염자수의 분포가 기하분포 (geometric distribution)를 따를때 성립한다. 기하분포는 아래와 같이 표현되 <span class="math display">\[\text{Prob}(X=j) = (1-p)^j p\]</span></p>
 <p>평균과 성공확률의 관게, <span class="math inline">\(R = \frac{1-p}{p}\)</span>, 이용하여 다시 표현하면 아래와 같다.</p>
-<p><span class="math display">\[\text{Prob}(X=j) = (\frac{R_0}{1+R_0})^j \frac{1}{1+R_0}\]</span> 위에서와 동일하게 계산하면 아래와 같다. <span class="math display">\[\sum_{j=0}^\infty p_j \theta^{j} = \frac{1}{1 + R_0 - R_0 \theta}\]</span> 따라서 아래의 식을 풀면 <span class="math inline">\(\theta\)</span>를 구할 수 있다.</p>
+<p><span class="math display">\[\text{Prob}(X=j) = (\frac{R_0}{1+R_0})^j \frac{1}{1+R_0}\]</span> 위에서와 동일하게 계산하면 아래와 같다. <span class="math display">\[\sum_{j=0}^\infty p_j \theta^{j} = \frac{1}{1 + (1-\theta)R_0}\]</span> 따라서 아래의 식을 풀면 <span class="math inline">\(\theta\)</span>를 구할 수 있다.</p>
 <p><span class="math display">\[\theta = \frac{1}{1 + (1-\theta)R_0}.\]</span></p>
 <p><span class="math display">\[\theta = \frac{1}{R_0}.\]</span></p>
 <p>따라서 <a href="https://www.yes24.com/Product/Goods/99051113?ReviewYn=Y">감염병 인류</a> 책에서 언급된 것처럼 <span class="math display">\[\text{대유행의 가능성} = 1 - \frac{1}{R_0}.\]</span> 마지막으로 후속 감염자수가 이항분포 (negative binomial distribution)을 따른다고 가정해보자. 최근 연구들에서 빈번하게 언급되고 가장 현실에 가까운 가정인 듯 하다.</p>

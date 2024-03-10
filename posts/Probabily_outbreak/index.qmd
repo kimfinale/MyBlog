@@ -46,7 +46,7 @@ $$\text{Prob}(X=j) = (1-p)^j p$$
 
 $$\text{Prob}(X=j) = (\frac{R_0}{1+R_0})^j \frac{1}{1+R_0}$$
 위에서와 동일하게 계산하면 아래와 같다. 
-$$\sum_{j=0}^\infty p_j \theta^{j} = \frac{1}{1 + R_0 - R_0 \theta}$$ 
+$$\sum_{j=0}^\infty p_j \theta^{j} = \frac{1}{1 + (1-\theta)R_0}$$ 
 따라서 아래의 식을 풀면 $\theta$를 구할 수 있다. 
 
 $$\theta = \frac{1}{1 + (1-\theta)R_0}.$$
