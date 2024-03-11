@@ -84,10 +84,6 @@ prob_outbreak_nb = function(theta, R0, k){
   theta - (k / (k + R0 - R0*theta))^k 
 }
 
-sol1 <- min(rootSolve::multiroot(prob_outbreak_pois, c(0, 1), R0=3)$root)
-sol2 <- 1/3
-sol3 <- min(rootSolve::multiroot(prob_outbreak_nb, c(0, 1), R0=3, k=20)$root)
-
 Rs <- seq(1.1, 10, length.out=100)
 theta1 <- sapply(Rs, function(x) 
   min(rootSolve::multiroot(prob_outbreak_pois, c(0, 1), R0=x)$root))
