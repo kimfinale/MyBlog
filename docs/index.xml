@@ -753,6 +753,120 @@ font-style: inherit;">""</span>)</span></code></pre></div>
 background-color: null;
 font-style: inherit;"># ggsave("outbreak_prob.png", units="in", width=3.4*2, height=2.7*2)  </span></span></code></pre></div>
 </div>
+<p>각 분포에 대한 무한 수열의 합과 <img src="https://latex.codecogs.com/png.latex?%5Ctheta">에 대한 해는 아래 Mathematica 명령어를 사용하여 확인할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">Sum[PDF[PoissonDistribution[R],j]\[Theta]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span>j, {j, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, Infinity}]</span>
+<span id="cb3-2">FindRoot[\[Theta] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> E<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">R</span> (<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> \[Theta])) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, {\[Theta], <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>}] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>. </span>
+<span id="cb3-3"> R <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span></span>
+<span id="cb3-4">Sum[PDF[GeometricDistribution[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>R)],j]\[Theta]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span>j, {j, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, Infinity}]</span>
+<span id="cb3-5">FindRoot[\[Theta] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(R <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> \[Theta] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> R \[Theta]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, {\[Theta], </span>
+<span id="cb3-6">   <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>}] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>. R <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span></span>
+<span id="cb3-7"></span>
+<span id="cb3-8">FullSimplify[Sum[PDF[NegativeBinomialDistribution[k,k<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(R<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>k)],i]\[Theta]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span>i, {i, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, Infinity}],{ k<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, R<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span>\[Theta]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>}ㅑ</span>
+<span id="cb3-9">FindRoot[\[Theta] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (k<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(k <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> R <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> R \[Theta]))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span>k <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, {\[Theta], <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>}] </span></code></pre></div>
+</div>
 
 
 

@@ -242,6 +242,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("outbreak_prob.png", units="in", width=3.4*2, height=2.7*2)  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>각 분포에 대한 무한 수열의 합과 <span class="math inline">\(\theta\)</span>에 대한 해는 아래 Mathematica 명령어를 사용하여 확인할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Sum[PDF[PoissonDistribution[R],j]\[Theta]<span class="sc">^</span>j, {j, <span class="dv">0</span>, Infinity}]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>FindRoot[\[Theta] <span class="sc">-</span> E<span class="sc">^</span>(<span class="fu">R</span> (<span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> \[Theta])) <span class="sc">==</span> <span class="dv">0</span>, {\[Theta], <span class="fl">0.1</span>}] <span class="sc">/</span>. </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a> R <span class="ot">-&gt;</span> <span class="dv">3</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>Sum[PDF[GeometricDistribution[<span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span>R)],j]\[Theta]<span class="sc">^</span>j, {j, <span class="dv">0</span>, Infinity}]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>FindRoot[\[Theta] <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>(R <span class="sc">+</span> \[Theta] <span class="sc">-</span> R \[Theta]) <span class="sc">==</span> <span class="dv">0</span>, {\[Theta], </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>   <span class="fl">0.5</span>}] <span class="sc">/</span>. R <span class="ot">-&gt;</span> <span class="dv">3</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>FullSimplify[Sum[PDF[NegativeBinomialDistribution[k,k<span class="sc">/</span>(R<span class="sc">+</span>k)],i]\[Theta]<span class="sc">^</span>i, {i, <span class="dv">0</span>, Infinity}],{ k<span class="sc">&gt;</span><span class="dv">0</span>, R<span class="sc">&gt;</span><span class="dv">1</span>, <span class="dv">0</span><span class="sc">&lt;</span>\[Theta]<span class="sc">&lt;</span><span class="dv">1</span>}ㅑ</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>FindRoot[\[Theta] <span class="sc">-</span> (k<span class="sc">/</span>(k <span class="sc">+</span> R <span class="sc">-</span> R \[Theta]))<span class="sc">^</span>k <span class="sc">==</span> <span class="dv">0</span>, {\[Theta], <span class="fl">0.1</span>}] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 
