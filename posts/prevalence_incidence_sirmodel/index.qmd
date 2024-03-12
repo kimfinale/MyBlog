@@ -18,9 +18,9 @@ In the following, I implemented a simple model of disease incidence and recovery
 Susceptibles are infected at a constant rate, go through the natural history of
 infection, and finally recover at a constant rate. Infection and recovery follow
 the exponential decay. This is to explore the relationship between the incidence
-and prevalence. If the prevalence of a disease is less than 10%, the relationship is often described as follows (e.g., see the [link])(https://sphweb.bumc.bu.edu/otlt/MPH-Modules/PH717-QuantCore/PH717-Module3-Frequency-Association/PH717-Module3-Frequency-Association5.html): 
+and prevalence. If the prevalence of a disease is less than 10%, the relationship is often described as follows (e.g., see the [link](https://sphweb.bumc.bu.edu/otlt/MPH-Modules/PH717-QuantCore/PH717-Module3-Frequency-Association/PH717-Module3-Frequency-Association5.html)): 
 $$
-\text{Prevalence} = \text{IR} * \text{Average Duration of a Disease} 
+\text{Prevalence} = \text{IR} \times \text{Average Duration of a Disease} 
 $$ 
 I have computed the prevalence in three ways. In particular, I assumed a short-lived infection (e.g., 2 weeks) of infectious diseases but with a long-lasting immunity. Therefore, prevalence may mean the proportion of the population immune to infection in this context. First, I use the above method. Second, I developed a simple set of differential equations to model disease incidence and recovery. Finally, I derived analytical solutions to the differential equations.
 
