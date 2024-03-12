@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2024-03-11T00:27:26.721Z</lastmod>
+    <lastmod>2024-03-12T08:30:23.565Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -287,5 +287,9 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/infectious_disease_names/index.html</loc>
     <lastmod>2024-03-09T11:13:13.382Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/prevalence_incidence_sirmodel/index.html</loc>
+    <lastmod>2024-03-12T08:30:25.411Z</lastmod>
   </url>
 </urlset>
