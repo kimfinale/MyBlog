@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/counterintuitive/index.html",
       "/posts/prevalence_incidence_sirmodel/index.html",
       "/posts/Probabily_outbreak/index.html",
       "/posts/vacc_waning_nls_erlang/index.html",

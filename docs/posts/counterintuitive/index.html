@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jong-Hoon Kim">
-<meta name="dcterms.date" content="2024-02-25">
+<meta name="dcterms.date" content="2024-03-20">
 
-<title>Disease modeling for public health - Incremental Cost-Effectiveness Ratio (ICER)</title>
+<title>Disease modeling for public health - Counterintuitive effects in disease transmission dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -96,6 +96,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -142,10 +144,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Incremental Cost-Effectiveness Ratio (ICER)</h1>
+      <h1 class="title">Counterintuitive effects in disease transmission dynamics</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">cholera</div>
-                <div class="quarto-category">sub-Saharan Africa</div>
+                <div class="quarto-category">Infectious diseases</div>
+                <div class="quarto-category">nonlinearity</div>
+                <div class="quarto-category">transmission dynamics</div>
               </div>
                   </div>
   </div>
@@ -163,7 +166,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">February 25, 2024</p>
+        <p class="date">March 20, 2024</p>
       </div>
     </div>
     
@@ -181,27 +184,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="understanding-the-incremental-cost-effectiveness-ratio-icer-through-cholera-vaccination" class="level3">
-<h3 class="anchored" data-anchor-id="understanding-the-incremental-cost-effectiveness-ratio-icer-through-cholera-vaccination">Understanding the Incremental Cost-Effectiveness Ratio (ICER) Through Cholera Vaccination</h3>
-<p>The Incremental Cost-Effectiveness Ratio (ICER) is a crucial metric in health economics, offering insights into the value of medical interventions by comparing their costs and effectiveness. Essentially, ICER is used to evaluate the cost-effectiveness of a new healthcare intervention compared to an existing standard of care. It is calculated as the difference in costs between two options divided by the difference in their effectiveness, typically measured in quality-adjusted life years (QALYs). This ratio helps policymakers and healthcare providers make informed decisions on allocating limited resources to maximize health benefits.</p>
-<p>Consider the example of cholera, a severe diarrhoeal disease caused by the _/<em>Vibrio cholerae</em> bacterium, and the use of the oral cholera vaccine (OCV). In regions where cholera is endemic, introducing or expanding the use of OCV can significantly reduce the incidence of the disease. To assess the cost-effectiveness of OCV, we can compare the ICER of vaccinating a population against cholera to the standard of care, which might include treatments like rehydration solutions or antibiotics for those already infected.</p>
-<p>Let’s explore how to calculate the ICER for introducing OCV in a hypothetical scenario using R. Assume we have data on the cost of vaccinating individuals and the effectiveness of the vaccine in preventing cholera, as well as the cost and effectiveness of the current standard cholera treatment.</p>
+<section id="r_0-and-the-prevalence-of-infection" class="level3">
+<h3 class="anchored" data-anchor-id="r_0-and-the-prevalence-of-infection"><span class="math inline">\(R_0\)</span> and the prevalence of infection</h3>
+<p><a href="https://www.science.org/doi/10.1126/science.aaa4339">An article by Heesterbeek <em>et al</em>.</a> provides a few examples on the counterintuitive behavior of a dynamical system of disease transmission. The first example was about the relationship between the intensity of transmission and the prevalence of infection, citing <a href="https://pubmed.ncbi.nlm.nih.gov/3892436/">the work by Anderson <em>et al</em>.</a>. One message from the study by Anderson <em>et al</em>. is that the effect of intervention should not be measured by the prevalence of infection. A similar message can be drawn from a simple relationship between <span class="math inline">\(R_0\)</span> and the prevalence of infection. As shown in the figure below, reducing <span class="math inline">\(R_0\)</span> from 15 to 10 may require a lot of efforts and its effect on prevalence of infection may be small.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the costs and effectiveness of the oral cholera vaccine (OCV) and standard treatment</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cost_OCV <span class="ot">&lt;-</span> <span class="dv">10000</span> <span class="co"># Total cost of vaccinating a population</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>effectiveness_OCV <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="co"># Reduction in cholera incidence due to vaccination</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cost_standard <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># Total cost of treating cholera without vaccination</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>effectiveness_standard <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># Reduction in cholera incidence with standard treatment</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>R0 <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="at">by=</span><span class="fl">0.1</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># R0*s = 1 is assumed, i.e., endemic steady state</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>prev <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>R0</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">R0=</span>R0, <span class="at">Prev=</span>prev)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the incremental cost and effectiveness</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>incremental_cost <span class="ot">&lt;-</span> cost_OCV <span class="sc">-</span> cost_standard</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>incremental_effectiveness <span class="ot">&lt;-</span> effectiveness_OCV <span class="sc">-</span> effectiveness_standard</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>extrafont<span class="sc">::</span><span class="fu">loadfonts</span>(<span class="st">"win"</span>, <span class="at">quiet=</span><span class="cn">TRUE</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(hrbrthemes<span class="sc">::</span><span class="fu">theme_ipsum_rc</span>(<span class="at">base_size=</span><span class="dv">14</span>, <span class="at">subtitle_size=</span><span class="dv">16</span>, <span class="at">axis_title_size=</span><span class="dv">12</span>))</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the ICER</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>ICER <span class="ot">&lt;-</span> incremental_cost <span class="sc">/</span> incremental_effectiveness</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df,<span class="fu">aes</span>(<span class="at">x=</span>R0))<span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>prev))<span class="sc">+</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">expression</span>(<span class="st">"Prevalence of infection vs."</span> <span class="sc">~</span><span class="fu">italic</span>(R)[<span class="dv">0</span>]))<span class="sc">+</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))<span class="sc">+</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="fu">expression</span>(<span class="fu">italic</span>(R)[<span class="dv">0</span>]), <span class="at">y=</span><span class="st">"Prevalence"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
-<p>This R code snippet outlines the basic calculation for ICER, where cost_OCV and effectiveness_OCV represent the cost and effectiveness of the OCV intervention, respectively, and cost_standard and effectiveness_standard represent these metrics for the standard treatment. By comparing these values, the ICER provides a dollar amount per percentage point increase in effectiveness, offering a straightforward metric for evaluating the cost-effectiveness of implementing the oral cholera vaccine in a specific population.</p>
-<p>In summary, the ICER is a valuable tool in health economics, helping to guide decisions on the allocation of resources for interventions like the oral cholera vaccine. By quantifying the trade-offs between cost and effectiveness, ICER facilitates more informed, evidence-based choices in healthcare policy and practice.</p>
+</div>
 
 
 </section>

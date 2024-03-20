@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Jong-Hoon Kim's Blog"
+  title: "Disease modeling for public health"
   site-url: https://kimfinale.github.io/myblog/
   description: "Jong-Hoon Kim's Blog"
   navbar:
