@@ -1,0 +1,179 @@
+---
+title: "Vaccine effectiveness"
+author: "Jong-Hoon Kim"
+date: "2024-03-26"
+categories: [SEIR, profile likelihood, likelihood ratio]
+image: "profile_lik.png"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+### Vaccine efficacy
+
+Vaccine efficacy and effectiveness (VE) are generally estimated as one minus some measure of relative risk (RR) in the vaccinated group compared with the
+unvaccinated group [Halloran _et al_.](https://pubmed.ncbi.nlm.nih.gov/10520474/):
+ 
+$$
+\text{VE} = 1 - \text{RR}
+$$
+
+I will use the notations used in the [Study design for dependent happenings](https://pubmed.ncbi.nlm.nih.gov/1742381/). 
+
+![](study_design.png)
+In Population A, half of the population was vaccinated ("1") and the other half unvaccinated ("0"). In Population B, no one was vaccinated. Let's assume that $C_{A0}$, $C_{A1}$, and $C_B$ denote cumulative incidence in the unvaccinated and vaccinated individuals of Population A and individuals from Population B, respectively.  
+
+$$
+\text{DVE} = 1 - \frac{C_{A1}}{C_{A0}}
+$$
+$$
+\text{IVE} = 1 - \frac{C_{A0}}{C_{B0}}
+$$
+
+$$
+\text{TVE} = 1 - \frac{C_{A1}}{C_{B0}}
+$$
+
+Assuming population size for $C_{01}$ is twice as large as $C_{0-}$
+$$
+\text{OVE} = 1 - \frac{f C_{A1}+(1-f) C_{A0}}{C_{B0}}
+$$
+, where $f$ is the fraction of population A that was vaccinated.
+
+Using the above equation we can see that
+
+$$\text{IVE} = 2\times\text{OVE} - \text{TVE}$$
+Vaccines can produce effects on the vaccine recipients regarding the susceptibility and infectiousness after being infected. It can reduce the transmission probability
+
+See [Infection vs. Disease](https://www.ncbi.nlm.nih.gov/books/NBK235412/) or [How Infection Works](https://www.ncbi.nlm.nih.gov/books/NBK209710/#:~:text=Infection%20occurs%20when%20viruses%2C%20bacteria,symptoms%20of%20an%20illness%20appear) if you want to understand the formal definitions of infection and disease
+
+While the concepts are clear, there are multiple ways for the vac
+```{r}
+seir_2grp <- function(t, y, params) {
+  S1 <- y["S1"]; E1 <- y["E1"]; I1 <- y["I1"]; R1 <- y["R1"]; C1 <- y["C1"]
+  S0 <- y["S0"]; E0 <- y["E0"]; I0 <- y["I0"]; R0 <- y["R0"]; C0 <- y["C0"]
+  
+  beta <- params["beta"]
+  sigma <- params["sigma"]
+  gamma <- params["gamma"]
+  
+  muSE <- beta * (I1+I0) / (S1 + E1 + I1 + R1 + S0 + E0 + I0 + R0)
+  muEI <- sigma
+  muIR <- gamma
+  
+  dS1 <- - muSE*S1
+  dE1 <-  muSE*S1 - muEI*E1
+  dI1 <-  muEI*E1 - muIR*I1
+  dR1 <-  muIR*I1
+  dC1 <-  muEI*E1 ## cumulative symtom onset
+  
+  dS0 <- - muSE*S0
+  dE0 <-  muSE*S0 - muEI*E0
+  dI0 <-  muEI*E0 - muIR*I0
+  dR0 <-  muIR*I0
+  dC0 <-  muEI*E0 ## cumulative symtom onset
+  return(list(c(dS1,dE1,dI1,dR1,dC1,dS0,dE0,dI0,dR0,dC0)))
+}
+```
+
+### Case 0
+
+```{r}
+y0 <- c(S1=0.0, E1=0, I1=0.0, R1=0.0, C1=0, S0=1, E0=0, I0=0.01, R0=0, C0=0)
+times <- seq(from=0, to=200, by=1)
+params <- c(beta = 2.5/4.5, sigma = 1/5.2, gamma = 1/4.5)
+
+out <- deSolve::ode(y=y0, times=times, func=seir_2grp, parms=params)
+x_case0 <- as.data.frame(out) 
+```
+
+### Case 1
+Half of the population is given vaccines with VE of 0.7. Population size of 1
+```{r}
+VE <- 0.7 # vaccine efficacy on susceptibility
+vacc_cov <- 1.0
+y0 <- c(S1=0.3, E1=0, I1=0.01, R1=0.7, C1=0, S0=1, E0=0, I0=0.01, R0=0, C0=0)
+times <- seq(from=0, to=200, by=1)
+params <- c(beta = 2.5/4.5, sigma = 1/5.2, gamma = 1/4.5)
+
+out <- deSolve::ode(y=y0, times=times, func=seir_2grp, parms=params)
+x_case01 <- as.data.frame(out) 
+```
+
+
+Direct, indirect, overall, and total vaccine effectiveness
+```{r}
+(DVE <- 1 - x_case01[200,"C1"]/x_case01[200,"C0"]) # direct VE
+(IVE <- 1 - x_case01[200,"C0"]/x_case0[200,"C0"]) # indirect VE
+(OVE <- 1 - 0.5*(x_case01[200,"C0"]+x_case01[200,"C1"])/x_case0[200,"C0"]) # overall VE
+(TVE <- 1 - x_case01[200,"C1"]/x_case0[200,"C0"]) # total VE
+```
+
+### Translate the number of cases
+
+```{r}
+(baseline <- x_case0[200,"C0"])
+# if only DVE was implemented
+(1-VE) * x_case0[200,"C0"]
+# in fact incidence among the vaccine recipients
+x_case01[200,"C1"]
+# direct and indirect VE is applied
+(1-VE) * (1-IVE) * x_case0[200,"C0"]
+# total VE is applied
+(1-TVE) * x_case0[200,"C0"] + (1-IVE) * x_case0[200,"C0"]
+(1-OVE) * 2 * x_case0[200,"C0"]
+
+IVE == 2*OVE - TVE
+```
+
+
+```{r}
+seir_2grp_dynamic_vacc <- function(t, y, params) {
+  S1 <- y["S1"]; E1 <- y["E1"]; I1 <- y["I1"]; R1 <- y["R1"]; C1 <- y["C1"]
+  S0 <- y["S0"]; E0 <- y["E0"]; I0 <- y["I0"]; R0 <- y["R0"]; C0 <- y["C0"]
+  
+  beta <- params["beta"]
+  sigma <- params["sigma"]
+  gamma <- params["gamma"]
+  nu <- params["nu"]
+  psi <- params["psi"] # duration of a vaccination campaign
+  
+  muSE <- beta * (I1+I0) / (S1 + E1 + I1 + R1 + S0 + E0 + I0 + R0)
+  muEI <- sigma
+  muIR <- gamma
+  muSR <- 0 
+  if (t <= 7) muSR <- -log(1-nu*VE)/psi
+  
+  dS1 <- - muSE*S1 - muSR*S1
+  dE1 <-  muSE*S1 - muEI*E1
+  dI1 <-  muEI*E1 - muIR*I1
+  dR1 <-  muIR*I1 + muSR*S1 
+  dC1 <-  muEI*E1 ## cumulative symptom onset
+  
+  dS0 <- - muSE*S0
+  dE0 <-  muSE*S0 - muEI*E0
+  dI0 <-  muEI*E0 - muIR*I0
+  dR0 <-  muIR*I0
+  dC0 <-  muEI*E0 ## cumulative symtom onset
+  return(list(c(dS1,dE1,dI1,dR1,dC1,dS0,dE0,dI0,dR0,dC0)))
+}
+```
+
+```{r}
+VE <- 0.7 # vaccine efficacy on susceptibility
+vacc_cov <- 1.0
+y0 <- c(S1=1, E1=0, I1=0.01, R1=0.0, C1=0, S0=1, E0=0, I0=0.01, R0=0, C0=0)
+times <- seq(from=0, to=200, by=1)
+params <- c(beta=2.5/4.5, sigma=1/5.2, gamma=1/4.5, nu=1, psi=7)
+
+out <- deSolve::ode(y=y0, times=times, 
+                    func=seir_2grp_dynamic_vacc, parms=params)
+x <- as.data.frame(out) 
+tail(x)
+1 - x[200,"C1"]/x[200,"C0"]
+```
+
+

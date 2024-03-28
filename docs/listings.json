@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/cholera_seir_eqn/index.html",
+      "/posts/vaccine_effectiveness/index.html",
       "/posts/counterintuitive/index.html",
       "/posts/prevalence_incidence_sirmodel/index.html",
       "/posts/Probabily_outbreak/index.html",
@@ -15,7 +17,6 @@
       "/posts/universal_differential_eqn_julia/index.html",
       "/posts/oral_cholera_vacc_cov/index.html",
       "/posts/fit_a_straight_line_julia/index.html",
-      "/posts/cholera_seir_eqn/index.html",
       "/posts/critical_vacc_threshold/index.html",
       "/posts/generation_interval1/index.html",
       "/posts/generation_interval/index.html",
