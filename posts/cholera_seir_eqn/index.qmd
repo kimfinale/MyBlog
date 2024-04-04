@@ -56,13 +56,17 @@ i <- latex2r("\\frac{(\\mu +\\omega ) (\\beta  \\kappa -(\\gamma +\\mu ) (\\kapp
 r <- latex2r("\\frac{\\beta  \\gamma  \\kappa -\\gamma  (\\gamma +\\mu ) (\\kappa +\\mu )}{\\beta  \\omega  (\\gamma +\\kappa +\\mu )+\\beta  (\\gamma +\\mu ) (\\kappa +\\mu )}")
 
 kappa <- 1.115044 / 2 # mean late period is still around 1.4 days, 
-gamma <- 1/2 
+gamma <- 1/2
 mu <- 1/(65*365)
 omega <- 1/(4*365)
 beta <- 0.6
 
 states <- list(s=s, e=e, i=i, r=r)
-sapply(states, function(x) eval(parse(text = x)))
+val = sapply(states, function(x) eval(parse(text = x)))
+val[["e"]]/(val[["i"]]+val[["e"]])
+gamma/(gamma+kappa)
+(gamma+mu)/(gamma+kappa+mu)
+(1/kappa)/(1/kappa + 1/gamma) 
 ```
 
 Numerical solutions based on `deSolve::ode`.
