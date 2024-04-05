@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2024-04-04T04:52:05.647Z</lastmod>
+    <lastmod>2024-04-05T01:42:18.759Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -299,5 +299,9 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/vaccine_effectiveness/index.html</loc>
     <lastmod>2024-04-04T04:52:12.180Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index.html</loc>
+    <lastmod>2024-04-05T01:42:21.560Z</lastmod>
   </url>
 </urlset>
