@@ -12,15 +12,11 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
-The protection derived from vaccination often wanes over time and 
-require the second or the third doses (so-called booster doses). For example, the [study](https://pubmed.ncbi.nlm.nih.gov/8852414/) showed the efficacy of
-cholera vaccines over five years. The vaccine efficacy (VE) over the period seems
-to indicate that the VE wanes over time. In this post, we will develop a $SEIR$ 
-model to illustrate the waning of vaccine-derived immunity. 
+The protection derived from vaccination often wanes over time and require the second or the third doses (so-called booster doses). For example, the [study](https://pubmed.ncbi.nlm.nih.gov/8852414/) showed the efficacy of cholera vaccines over five years. The vaccine efficacy (VE) over the period seems to indicate that the VE wanes over time. In this post, we will develop a $SEIR$ model to illustrate the waning of vaccine-derived immunity.
 
 #### $SEIR$ model with vaccination
 
-```{r}
+```{r, eval=F}
 seir_vacc_trial_jl <- function(u, p, t){
   # vaccine recipients lose partial immunity over time.
   # this is implemented in a way that individuals in the V state
@@ -70,15 +66,14 @@ seir_vacc_trial_jl <- function(u, p, t){
 
 `diffeqr` package is used use Julia's `DifferentialEquations` library
 
-```{r}
+```{r, eval=F}
 library(diffeqr)
 de <- diffeqr::diffeq_setup()
 ```
 
-We assume that cholera transmission is in the steady state in the setting where
-the vaccine efficacy trial is examined. Algebraic [solutions](https://www.jonghoonk.com/posts/cholera_seir_eqn/) to the steady
-states (shown below) are used as initial conditions to generate initial conditions.
-```{r}
+We assume that cholera transmission is in the steady state in the setting where the vaccine efficacy trial is examined. Algebraic [solutions](https://www.jonghoonk.com/posts/cholera_seir_eqn/) to the steady states (shown below) are used as initial conditions to generate initial conditions.
+
+```{r, eval=F}
 Ss <- "((gamma + mu) * (epsilon + mu)) / (beta * epsilon)"
 Es <- "- ((gamma + mu) * (mu + omega) * ((gamma + mu) * (epsilon + mu) - beta * epsilon)) / (beta * epsilon * (gamma * (epsilon + mu + omega) + (epsilon + mu) * (mu + omega)))"
 
@@ -88,23 +83,11 @@ Rs <- "(beta * gamma * epsilon - gamma * (gamma + mu) * (epsilon + mu)) / (beta 
 
 #### Simulation of a clinical trial
 
-The basic idea is to use the steady states as initial conditions and therefore,
-cholera transmission is sustained as new susceptibles are supplied through 
-birth and waning of vaccine-derived and natural immunity. In this setting, a 
-clinical trial is implemented by moving some portion of the population to
-the vaccinated cohort. Note that the proportion of the vaccinated population, $f$, 
-is important in the subsequent dynamics. For example, we [know](https://www.jonghoonk.com/posts/critical_vacc_threshold/index.html) that if $f> 1- \frac{1}{R_0}$, cholera infections will die out. In this case,  we can not measure the relative risk of cholera among vaccinated and unvaccinated population over a period based on the cumulative incidence. Even if $f < 1- \frac{1}{R_0}$, moving some portion
-of the population into vaccinated states will perturb the steady states that were
-determined based on and a series of outbreaks may follow before the system reaches 
-new steady states eventually. 
+The basic idea is to use the steady states as initial conditions and therefore, cholera transmission is sustained as new susceptibles are supplied through birth and waning of vaccine-derived and natural immunity. In this setting, a clinical trial is implemented by moving some portion of the population to the vaccinated cohort. Note that the proportion of the vaccinated population, $f$, is important in the subsequent dynamics. For example, we [know](https://www.jonghoonk.com/posts/critical_vacc_threshold/index.html) that if $f> 1- \frac{1}{R_0}$, cholera infections will die out. In this case, we can not measure the relative risk of cholera among vaccinated and unvaccinated population over a period based on the cumulative incidence. Even if $f < 1- \frac{1}{R_0}$, moving some portion of the population into vaccinated states will perturb the steady states that were determined based on and a series of outbreaks may follow before the system reaches new steady states eventually.
 
-Since our objective is to vaccine efficacy in this dynamic population based on 
-cumulative incidence among vaccinated and unvaccinated people, and we used 
-the steady states without the vaccinated
-population, we can set the proportion of the vaccinated population small that the 
-system more or less maintains the states without vaccination. Wh
+Since our objective is to vaccine efficacy in this dynamic population based on cumulative incidence among vaccinated and unvaccinated people, and we used the steady states without the vaccinated population, we can set the proportion of the vaccinated population small that the system more or less maintains the states without vaccination. Wh
 
-```{r}
+```{r, eval=F}
 N <- 1e5 # unvaccinated population
 f <- 1e-4 # a very small proportion of the population is vaccinated
 R0 <- 2
@@ -153,7 +136,7 @@ legend("topleft",
 
 Measure vaccine impact
 
-```{r}
+```{r, eval=F}
 novacc <- c("S","E","I","R")
 vacc <- c("V","VS","VE","VI","VR")
 dve <- rep(NA, nrow(out)) # direct vaccine effectiveness measured daily
@@ -166,12 +149,14 @@ plot(1:length(dve)/365,dve, type="l", ylab="direct VE", xlab="year")
 ### Estimating VE and $omega_V$
 
 Let's suppose we want to the following dataset showing the vaccine effec
-```{r}
+
+```{r, eval=F}
 ve_obs <- c(76,72,68,63,58,52,46,39,32,24,15)/100
 ```
 
 Create a function to measure vaccine efficacy from the model based on cumulative incidence
-```{r}
+
+```{r, eval=F}
 measure_vacc_eff <- function(p, times, N=1e5, f=1e-4){
   params["ve"] <- p[1]
   params["omega_v"] <- p[2]
@@ -197,9 +182,9 @@ measure_vacc_eff <- function(p, times, N=1e5, f=1e-4){
 }
 ```
 
-Define sum of squared difference to evaluate the difference between
-the model and the observation
-```{r}
+Define sum of squared difference to evaluate the difference between the model and the observation
+
+```{r, eval=F}
 # the initial VE is not measured from the model
 times = seq(6,by=6,length.out=10)*30 # times to measure VE
 ssq <- function(p){
@@ -212,8 +197,9 @@ ssq(p=c(0.8,1/3650))
 ssq(p=c(0.4,1/365))
 ```
 
-Use the `nlminb` to identify the parameter values that minimize the ssq. 
-```{r}
+Use the `nlminb` to identify the parameter values that minimize the ssq.
+
+```{r, eval=F}
 fit <- nlminb(c(0.2, 1/(2*365)), objective=ssq, 
               lower=c(0.1,1/(1000*365)),
               upper=c(0.99,0.99))

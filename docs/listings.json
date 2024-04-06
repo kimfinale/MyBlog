@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/vacc_eff_waining_multiple_stages/index.html",
       "/posts/vaccine_effectiveness_waning/index.html",
       "/posts/cholera_seir_eqn/index.html",
       "/posts/vaccine_effectiveness/index.html",
