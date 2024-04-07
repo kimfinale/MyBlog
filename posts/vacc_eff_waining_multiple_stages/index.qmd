@@ -25,8 +25,7 @@ library(diffeqr)
 de <- diffeqr::diffeq_setup()
 ```
 
-First, let's construct the classic SEIR model for comparison. This model is 
-equivalent to a variant with variable compartments for the $I$ stage when considering only a single compartment.
+First, let's construct the classic SEIR model for comparison. This model is equivalent to a variant with variable compartments for the $I$ stage when considering only a single compartment.
 
 ```{r}
 seir <- function(u, p, t){
@@ -85,8 +84,8 @@ names(out) <- c("t","S","E","I","R","C")
 
 ### $SEIR$ model with `str2lang`
 
-The model with variable compartments for the $I$ stage. A part of the model
-is written using strings using `paste`, which are later evaluated using `eval(str2lang("some string"))`.
+The model with variable compartments for the $I$ stage. A part of the model is written using strings using `paste`, which are later evaluated using `eval(str2lang("some string"))`.
+
 ```{r}
 seir_nstg <- function(u, p, t){
   
