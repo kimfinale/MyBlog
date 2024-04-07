@@ -3,7 +3,7 @@ title: "SEIR model with varying number of compartments"
 author: "Jong-Hoon Kim"
 date: "2024-04-05"
 categories: [SEIR, Erlang distribution]
-image: "profile_lik.png"
+image: "seir_multi_comp.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -25,7 +25,8 @@ library(diffeqr)
 de <- diffeqr::diffeq_setup()
 ```
 
-### $SEIR$ model with `str2lang`
+First, let's construct the classic SEIR model for comparison. This model is 
+equivalent to a variant with variable compartments for the $I$ stage when considering only a single compartment.
 
 ```{r}
 seir <- function(u, p, t){
@@ -82,6 +83,10 @@ out <- cbind(data.frame(t=sol$t), udf)
 names(out) <- c("t","S","E","I","R","C") 
 ```
 
+### $SEIR$ model with `str2lang`
+
+The model with variable compartments for the $I$ stage. A part of the model
+is written using strings using `paste`, which are later evaluated using `eval(str2lang("some string"))`.
 ```{r}
 seir_nstg <- function(u, p, t){
   
@@ -132,7 +137,7 @@ seir_nstg <- function(u, p, t){
 }
 ```
 
-Simulation
+Simulation of the variable-compartment model
 
 ```{r}
 run_seir_nstg <- function(nstg) {
@@ -178,22 +183,27 @@ out5 <- run_seir_nstg(nstg=nstg)
 eval(str2lang(paste0('It5 <- rowSums(out5[,c(', In, ')])')))
 ```
 
+Plot the simulation results.
+
 ```{r}
+# png(filename="seir_multi_comp.png")
+
 plot(1:nrow(out), out$I, type="l", ylim=c(0,0.2),
-     ylab="daily incidence",
+     ylab="fraction infectious",
      xlab="day", col="black")
 
-lines(1:nrow(out), It1, col="steel blue")
+lines(1:nrow(out), It1, col="steelblue")
 lines(1:nrow(out), It2, col="firebrick")
 lines(1:nrow(out), It5, col="magenta")
 
 legend("topright", 
   legend=c("SEIR","1 compartment","2 compartments", "5 compartments"), 
-  col=c("black","steel blue", "firebrick","magenta"), 
+  col=c("black","steelblue", "firebrick","magenta"), 
   lty= 1,
   bty = "n", 
   cex = 1.0, 
   text.col = "black", 
   horiz = F , 
   inset = c(0.02,0.02))
+# dev.off()
 ```
