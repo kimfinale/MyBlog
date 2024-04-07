@@ -2113,7 +2113,7 @@ font-style: inherit;">"year"</span>)</span></code></pre></div>
 </div>
 </section>
 <section id="estimating-ve-and-omega_v" class="level3">
-<h3 class="anchored" data-anchor-id="estimating-ve-and-omega_v">Estimating VE and <img src="https://latex.codecogs.com/png.latex?omega_V"></h3>
+<h3 class="anchored" data-anchor-id="estimating-ve-and-omega_v">Estimating VE and <img src="https://latex.codecogs.com/png.latex?%5Comega_V"></h3>
 <p>Let’s suppose we want to the following dataset showing the vaccine effec</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">ve_obs <span class="ot" style="color: #003B4F;
@@ -2572,7 +2572,12 @@ font-style: inherit;">2</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 0.83 0.73 0.65 0.58 0.52 0.46 0.42 0.38 0.34 0.31 0.29</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># png("vacc_eff_waning.png")</span></span>
+<span id="cb16-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">plot</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -2589,7 +2594,7 @@ background-color: null;
 font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"firebrick"</span>, </span>
-<span id="cb16-2">     <span class="at" style="color: #657422;
+<span id="cb16-3">     <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">ylim=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2606,7 +2611,7 @@ background-color: null;
 font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"direct VE"</span>,</span>
-<span id="cb16-3">     <span class="at" style="color: #657422;
+<span id="cb16-4">     <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">type=</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -2615,8 +2620,8 @@ background-color: null;
 font-style: inherit;">pch=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>)</span>
-<span id="cb16-4"></span>
-<span id="cb16-5"><span class="fu" style="color: #4758AB;
+<span id="cb16-5"></span>
+<span id="cb16-6"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">lines</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -2641,17 +2646,17 @@ background-color: null;
 font-style: inherit;">p=</span>fit<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>par, times)),</span>
-<span id="cb16-6">      <span class="at" style="color: #657422;
+<span id="cb16-7">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"black"</span>)</span>
-<span id="cb16-7"><span class="fu" style="color: #4758AB;
+<span id="cb16-8"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"topright"</span>, </span>
-<span id="cb16-8">  <span class="at" style="color: #657422;
+<span id="cb16-9">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2660,7 +2665,7 @@ background-color: null;
 font-style: inherit;">"Data"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Model"</span>), </span>
-<span id="cb16-9">  <span class="at" style="color: #657422;
+<span id="cb16-10">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">col=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2669,7 +2674,7 @@ background-color: null;
 font-style: inherit;">"firebrick"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"black"</span>), </span>
-<span id="cb16-10">  <span class="at" style="color: #657422;
+<span id="cb16-11">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">lty=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2678,7 +2683,7 @@ background-color: null;
 font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>),</span>
-<span id="cb16-11">  <span class="at" style="color: #657422;
+<span id="cb16-12">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">pch=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2687,25 +2692,25 @@ background-color: null;
 font-style: inherit;">0</span>,<span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">NA</span>),</span>
-<span id="cb16-12">  <span class="at" style="color: #657422;
+<span id="cb16-13">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"n"</span>, </span>
-<span id="cb16-13">  <span class="at" style="color: #657422;
+<span id="cb16-14">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">cex =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1.0</span>, </span>
-<span id="cb16-14">  <span class="at" style="color: #657422;
+<span id="cb16-15">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">text.col =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"black"</span>, </span>
-<span id="cb16-15">  <span class="at" style="color: #657422;
+<span id="cb16-16">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">horiz =</span> F , </span>
-<span id="cb16-16">  <span class="at" style="color: #657422;
+<span id="cb16-17">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">inset =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2715,8 +2720,11 @@ font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># dev.off()</span></span></code></pre></div>
 </div>
 
 
@@ -2728,7 +2736,7 @@ font-style: inherit;">0.02</span>))</span></code></pre></div>
   <category>SEIR</category>
   <guid>https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index.html</guid>
   <pubDate>Wed, 03 Apr 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/profile_lik.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/vacc_eff_waning.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Solutions for the steady states of the SEIR model</title>
