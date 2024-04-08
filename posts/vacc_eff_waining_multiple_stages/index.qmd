@@ -12,11 +12,12 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
-In this post, we explore how to parameterize the disease transmission model (e.g., $SEIR$ model) when one wished to incorporate vaccination campaign and waning of vaccine-induced immunity. One way to model this is to assume partially immunity among individuals in the vaccinated state ($V$ compartment) and the individuals in the $V$ compartment gradually move to the susceptible state ($S$ compartment). This is a simple approach that may mimic the setting in which vaccine efficacy trial was conducted. I will use typhoid vaccine as an example. I followed the method that was presented in the [prior post]().
+In this article, I examined the process of modifying the disease transmission model (for instance, the $SEIR$ model) to include vaccination and the waning of vaccine-induced immunity as it might happen in a clinical trial. A straightforward method to represent this involves assuming vaccinated individuals (i.e., those in the vaccinated, $V$, compartment) possess partial immunity and subsequently transition back to the susceptible, $S$, compartment. This approach effectively simulates the diminishing effectiveness of vaccines using two parameters. I focus on determining these parameters through the analysis of existing vaccine efficacy data, utilizing the typhoid vaccine clinical trial as a case study. The adaptation of the model to account for the progressive reduction in vaccine-derived immunity across various compartments was conducted [prior post](https://www.jonghoonk.com/posts/seir_varying_number_compartments/).
+
 
 ### Vaccine efficacy data
 
-Vaccine efficacy data come from a clinical trial conducted in Malawian children over the period of Typhoid conjugate vaccine, Vi tetanus toxoid, were given to the children
+Vaccine efficacy data come from a clinical trial conducted in Malawi from 2018 through 2023, for which the detailed information is available in the [study](https://pubmed.ncbi.nlm.nih.gov/38281499/). 
 
 ```{r}
 # df <- data.frame(year=c(1,2), efficacy=c(83.4,73.0)) # Shakya (2021) Lancet Glob Health
@@ -142,7 +143,7 @@ seirv_nstg_trial <- function(u, p, t){
 
 ### Simulation of the variable-compartment $SEIRV$ model
 
-Solutions for the steady states of the $SEIR$ model. These are used to set the initial conditions as we assume that the disease transmission is in a steady state
+Solutions for the steady states of the $SEIR$ model. These are used to set the initial conditions as we assume that the disease transmission reached a [steady state](https://www.jonghoonk.com/posts/cholera_seir_eqn/).
 
 ```{r}
 Ss <- "((gamma + mu) * (epsilon + mu)) / (beta * epsilon)"
@@ -177,6 +178,8 @@ states0 <- list(S=Ss, E=Es, I=Is, R=Rs)
 steadys0 <- sapply(states0, function(x) eval(parse(text = x)))
 ```
 
+Function to run the model
+
 ```{r}
 run_seirv_nstg_trial <- function(params) {
   de <- diffeqr::diffeq_setup() # to use Julia's DifferentialEquations.jl
@@ -203,6 +206,8 @@ run_seirv_nstg_trial <- function(params) {
   return(out)
 }
 ```
+
+Test runs
 
 ```{r}
 nstg <- 1
@@ -237,7 +242,7 @@ for(i in 1:nrow(out)){
 plot(1:length(dve)/365, dve, type="l", ylab="direct VE", xlab="year")
 ```
 
-Measure vaccine effectiveness
+Function to measure vaccine effectiveness over time points.
 
 ```{r}
 measure_vacc_eff <- function(p, params, times){
@@ -261,7 +266,7 @@ measure_vacc_eff <- function(p, params, times){
 }
 ```
 
-Define sum of squared difference (ssq) to evaluate the difference between the model and the observation
+Define sum of squared difference (ssq) betwen the model and the data to evaluate the performance of the model.
 
 ```{r}
 # the initial VE is not measured from the model
@@ -285,15 +290,29 @@ plot(times/365, ve_obs, col="firebrick",
 lines(times/365, measure_vacc_eff(p=c(0.88,1/(20*365)), params=params, times=times), col="black")
 ```
 
+Estimate parameters by minimizing the ssq using the `nlminb` function.
 ```{r}
 params[["nstg"]] <- 1
-fit <- nlminb(c(0.9, 1/(100*365)), objective=ssq, 
+fit1 <- nlminb(c(0.9, 1/(10*365)), objective=ssq, 
+              lower=c(0.1,1/(1000*365)),
+              upper=c(0.99,0.99))
+fit1$par[1]
+1/fit1$par[2]/365
+fit1$objective
+ve_obs
+(ve_sim <- round(measure_vacc_eff(p=fit1$par, params=params, times=times), digits=3))
+```
+
+```{r, eval=F}
+params[["nstg"]] <- 2
+fit2 <- nlminb(c(0.9, 1/(100*365)), objective=ssq, 
               lower=c(0.1,1/(100000*365)),
               upper=c(0.99,0.99))
-fit$par[1]
-1/fit$par[2]/365
+fit2$par[1]
+1/fit2$par[2]/365
+fit2$objective
 ve_obs
-round(measure_vacc_eff(p=fit$par, params=params, times=times), digits=3)
+round(measure_vacc_eff(p=fit2$par, params=params, times=times), digits=3)
 ```
 
 Plot data and simulation results
@@ -303,7 +322,7 @@ Plot data and simulation results
 plot(times/365, ve_obs, col="firebrick", 
      ylim=c(0.5,1),  xlab="year since vaccination", ylab="direct vaccine effectiveness",
      type="p", pch=0)
-lines(times/365, measure_vacc_eff(p=fit$par, params=params, times=times), col="black")
+lines(times/365, ve_sim, col="black")
 legend("topright", 
   legend=c("Data", "Model"), 
   col=c("firebrick", "black"), 

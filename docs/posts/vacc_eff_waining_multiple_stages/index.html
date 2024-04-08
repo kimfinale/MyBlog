@@ -185,10 +185,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>In this post, we explore how to parameterize the disease transmission model (e.g., <span class="math inline">\(SEIR\)</span> model) when one wished to incorporate vaccination campaign and waning of vaccine-induced immunity. One way to model this is to assume partially immunity among individuals in the vaccinated state (<span class="math inline">\(V\)</span> compartment) and the individuals in the <span class="math inline">\(V\)</span> compartment gradually move to the susceptible state (<span class="math inline">\(S\)</span> compartment). This is a simple approach that may mimic the setting in which vaccine efficacy trial was conducted. I will use typhoid vaccine as an example. I followed the method that was presented in the <a href="">prior post</a>.</p>
+<p>In this article, I examined the process of modifying the disease transmission model (for instance, the <span class="math inline">\(SEIR\)</span> model) to include vaccination and the waning of vaccine-induced immunity as it might happen in a clinical trial. A straightforward method to represent this involves assuming vaccinated individuals (i.e., those in the vaccinated, <span class="math inline">\(V\)</span>, compartment) possess partial immunity and subsequently transition back to the susceptible, <span class="math inline">\(S\)</span>, compartment. This approach effectively simulates the diminishing effectiveness of vaccines using two parameters. I focus on determining these parameters through the analysis of existing vaccine efficacy data, utilizing the typhoid vaccine clinical trial as a case study. The adaptation of the model to account for the progressive reduction in vaccine-derived immunity across various compartments was conducted <a href="https://www.jonghoonk.com/posts/seir_varying_number_compartments/">prior post</a>.</p>
 <section id="vaccine-efficacy-data" class="level3">
 <h3 class="anchored" data-anchor-id="vaccine-efficacy-data">Vaccine efficacy data</h3>
-<p>Vaccine efficacy data come from a clinical trial conducted in Malawian children over the period of Typhoid conjugate vaccine, Vi tetanus toxoid, were given to the children</p>
+<p>Vaccine efficacy data come from a clinical trial conducted in Malawi from 2018 through 2023, for which the detailed information is available in the <a href="https://pubmed.ncbi.nlm.nih.gov/38281499/">study</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># df &lt;- data.frame(year=c(1,2), efficacy=c(83.4,73.0)) # Shakya (2021) Lancet Glob Health</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -321,7 +321,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="simulation-of-the-variable-compartment-seirv-model" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-of-the-variable-compartment-seirv-model">Simulation of the variable-compartment <span class="math inline">\(SEIRV\)</span> model</h3>
-<p>Solutions for the steady states of the <span class="math inline">\(SEIR\)</span> model. These are used to set the initial conditions as we assume that the disease transmission is in a steady state</p>
+<p>Solutions for the steady states of the <span class="math inline">\(SEIR\)</span> model. These are used to set the initial conditions as we assume that the disease transmission reached a <a href="https://www.jonghoonk.com/posts/cholera_seir_eqn/">steady state</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Ss <span class="ot">&lt;-</span> <span class="st">"((gamma + mu) * (epsilon + mu)) / (beta * epsilon)"</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>Es <span class="ot">&lt;-</span> <span class="st">"- ((gamma + mu) * (mu + omega) * ((gamma + mu) * (epsilon + mu) - beta * epsilon)) / (beta * epsilon * (gamma * (epsilon + mu + omega) + (epsilon + mu) * (mu + omega)))"</span></span>
@@ -352,6 +352,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>states0 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">S=</span>Ss, <span class="at">E=</span>Es, <span class="at">I=</span>Is, <span class="at">R=</span>Rs)</span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>steadys0 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(states0, <span class="cf">function</span>(x) <span class="fu">eval</span>(<span class="fu">parse</span>(<span class="at">text =</span> x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Function to run the model</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>run_seirv_nstg_trial <span class="ot">&lt;-</span> <span class="cf">function</span>(params) {</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  de <span class="ot">&lt;-</span> diffeqr<span class="sc">::</span><span class="fu">diffeq_setup</span>() <span class="co"># to use Julia's DifferentialEquations.jl</span></span>
@@ -378,6 +379,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
 <span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Test runs</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nstg <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>params[[<span class="st">"omega_v"</span>]] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
@@ -414,7 +416,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Measure vaccine effectiveness</p>
+<p>Function to measure vaccine effectiveness over time points.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>measure_vacc_eff <span class="ot">&lt;-</span> <span class="cf">function</span>(p, params, times){</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  de <span class="ot">&lt;-</span> diffeqr<span class="sc">::</span><span class="fu">diffeq_setup</span>()</span>
@@ -436,7 +438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ve_sim)</span>
 <span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Define sum of squared difference (ssq) to evaluate the difference between the model and the observation</p>
+<p>Define sum of squared difference (ssq) betwen the model and the data to evaluate the performance of the model.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the initial VE is not measured from the model</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">round</span>(tab3[tab3<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"Vi-TT"</span>,]<span class="sc">$</span>year_since_vacc<span class="sc">*</span><span class="dv">365</span>) <span class="co"># times to measure VE</span></span>
@@ -469,49 +471,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>Estimate parameters by minimizing the ssq using the <code>nlminb</code> function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>params[[<span class="st">"nstg"</span>]] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">nlminb</span>(<span class="fu">c</span>(<span class="fl">0.9</span>, <span class="dv">1</span><span class="sc">/</span>(<span class="dv">100</span><span class="sc">*</span><span class="dv">365</span>)), <span class="at">objective=</span>ssq, </span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">lower=</span><span class="fu">c</span>(<span class="fl">0.1</span>,<span class="dv">1</span><span class="sc">/</span>(<span class="dv">100000</span><span class="sc">*</span><span class="dv">365</span>)),</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">nlminb</span>(<span class="fu">c</span>(<span class="fl">0.9</span>, <span class="dv">1</span><span class="sc">/</span>(<span class="dv">10</span><span class="sc">*</span><span class="dv">365</span>)), <span class="at">objective=</span>ssq, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">lower=</span><span class="fu">c</span>(<span class="fl">0.1</span>,<span class="dv">1</span><span class="sc">/</span>(<span class="dv">1000</span><span class="sc">*</span><span class="dv">365</span>)),</span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">upper=</span><span class="fu">c</span>(<span class="fl">0.99</span>,<span class="fl">0.99</span>))</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>par[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>fit1<span class="sc">$</span>par[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.859002</code></pre>
+<pre><code>[1] 0.8589978</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>fit<span class="sc">$</span>par[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">365</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>fit1<span class="sc">$</span>par[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">365</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 22.13887</code></pre>
+<pre><code>[1] 22.14073</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ve_obs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fit1<span class="sc">$</span>objective</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0003437906</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ve_obs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.834 0.807 0.801 0.771 0.783</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">measure_vacc_eff</span>(<span class="at">p=</span>fit<span class="sc">$</span>par, <span class="at">params=</span>params, <span class="at">times=</span>times), <span class="at">digits=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>(ve_sim <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">measure_vacc_eff</span>(<span class="at">p=</span>fit1<span class="sc">$</span>par, <span class="at">params=</span>params, <span class="at">times=</span>times), <span class="at">digits=</span><span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.828 0.815 0.799 0.782 0.772</code></pre>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>params[[<span class="st">"nstg"</span>]] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">nlminb</span>(<span class="fu">c</span>(<span class="fl">0.9</span>, <span class="dv">1</span><span class="sc">/</span>(<span class="dv">100</span><span class="sc">*</span><span class="dv">365</span>)), <span class="at">objective=</span>ssq, </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">lower=</span><span class="fu">c</span>(<span class="fl">0.1</span>,<span class="dv">1</span><span class="sc">/</span>(<span class="dv">100000</span><span class="sc">*</span><span class="dv">365</span>)),</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">upper=</span><span class="fu">c</span>(<span class="fl">0.99</span>,<span class="fl">0.99</span>))</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>fit2<span class="sc">$</span>par[<span class="dv">1</span>]</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>fit2<span class="sc">$</span>par[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">365</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>fit2<span class="sc">$</span>objective</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>ve_obs</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">measure_vacc_eff</span>(<span class="at">p=</span>fit2<span class="sc">$</span>par, <span class="at">params=</span>params, <span class="at">times=</span>times), <span class="at">digits=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Plot data and simulation results</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># png("vacc_eff_obs_sim.png")</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(times<span class="sc">/</span><span class="dv">365</span>, ve_obs, <span class="at">col=</span><span class="st">"firebrick"</span>, </span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="fl">0.5</span>,<span class="dv">1</span>),  <span class="at">xlab=</span><span class="st">"year since vaccination"</span>, <span class="at">ylab=</span><span class="st">"direct vaccine effectiveness"</span>,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">type=</span><span class="st">"p"</span>, <span class="at">pch=</span><span class="dv">0</span>)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(times<span class="sc">/</span><span class="dv">365</span>, <span class="fu">measure_vacc_eff</span>(<span class="at">p=</span>fit<span class="sc">$</span>par, <span class="at">params=</span>params, <span class="at">times=</span>times), <span class="at">col=</span><span class="st">"black"</span>)</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, </span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"Data"</span>, <span class="st">"Model"</span>), </span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">col=</span><span class="fu">c</span>(<span class="st">"firebrick"</span>, <span class="st">"black"</span>), </span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">lty=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="cn">NA</span>),</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">"n"</span>, </span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> <span class="fl">1.0</span>, </span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">text.col =</span> <span class="st">"black"</span>, </span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">horiz =</span> F , </span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">inset =</span> <span class="fu">c</span>(<span class="fl">0.02</span>,<span class="fl">0.02</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># png("vacc_eff_obs_sim.png")</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(times<span class="sc">/</span><span class="dv">365</span>, ve_obs, <span class="at">col=</span><span class="st">"firebrick"</span>, </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="fl">0.5</span>,<span class="dv">1</span>),  <span class="at">xlab=</span><span class="st">"year since vaccination"</span>, <span class="at">ylab=</span><span class="st">"direct vaccine effectiveness"</span>,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">type=</span><span class="st">"p"</span>, <span class="at">pch=</span><span class="dv">0</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(times<span class="sc">/</span><span class="dv">365</span>, ve_sim, <span class="at">col=</span><span class="st">"black"</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"Data"</span>, <span class="st">"Model"</span>), </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">col=</span><span class="fu">c</span>(<span class="st">"firebrick"</span>, <span class="st">"black"</span>), </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">lty=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="cn">NA</span>),</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">"n"</span>, </span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> <span class="fl">1.0</span>, </span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">text.col =</span> <span class="st">"black"</span>, </span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">horiz =</span> F , </span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">inset =</span> <span class="fu">c</span>(<span class="fl">0.02</span>,<span class="fl">0.02</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dev.off()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dev.off()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

@@ -20,10 +20,10 @@
 
 
 
-<p>In this post, we explore how to parameterize the disease transmission model (e.g., <img src="https://latex.codecogs.com/png.latex?SEIR"> model) when one wished to incorporate vaccination campaign and waning of vaccine-induced immunity. One way to model this is to assume partially immunity among individuals in the vaccinated state (<img src="https://latex.codecogs.com/png.latex?V"> compartment) and the individuals in the <img src="https://latex.codecogs.com/png.latex?V"> compartment gradually move to the susceptible state (<img src="https://latex.codecogs.com/png.latex?S"> compartment). This is a simple approach that may mimic the setting in which vaccine efficacy trial was conducted. I will use typhoid vaccine as an example. I followed the method that was presented in the <a href="">prior post</a>.</p>
+<p>In this article, I examined the process of modifying the disease transmission model (for instance, the <img src="https://latex.codecogs.com/png.latex?SEIR"> model) to include vaccination and the waning of vaccine-induced immunity as it might happen in a clinical trial. A straightforward method to represent this involves assuming vaccinated individuals (i.e., those in the vaccinated, <img src="https://latex.codecogs.com/png.latex?V">, compartment) possess partial immunity and subsequently transition back to the susceptible, <img src="https://latex.codecogs.com/png.latex?S">, compartment. This approach effectively simulates the diminishing effectiveness of vaccines using two parameters. I focus on determining these parameters through the analysis of existing vaccine efficacy data, utilizing the typhoid vaccine clinical trial as a case study. The adaptation of the model to account for the progressive reduction in vaccine-derived immunity across various compartments was conducted <a href="https://www.jonghoonk.com/posts/seir_varying_number_compartments/">prior post</a>.</p>
 <section id="vaccine-efficacy-data" class="level3">
 <h3 class="anchored" data-anchor-id="vaccine-efficacy-data">Vaccine efficacy data</h3>
-<p>Vaccine efficacy data come from a clinical trial conducted in Malawian children over the period of Typhoid conjugate vaccine, Vi tetanus toxoid, were given to the children</p>
+<p>Vaccine efficacy data come from a clinical trial conducted in Malawi from 2018 through 2023, for which the detailed information is available in the <a href="https://pubmed.ncbi.nlm.nih.gov/38281499/">study</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -1030,7 +1030,7 @@ font-style: inherit;">",dVS,dVE,dVI,dVR,dVC)"</span>))))</span>
 </section>
 <section id="simulation-of-the-variable-compartment-seirv-model" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-of-the-variable-compartment-seirv-model">Simulation of the variable-compartment <img src="https://latex.codecogs.com/png.latex?SEIRV"> model</h3>
-<p>Solutions for the steady states of the <img src="https://latex.codecogs.com/png.latex?SEIR"> model. These are used to set the initial conditions as we assume that the disease transmission is in a steady state</p>
+<p>Solutions for the steady states of the <img src="https://latex.codecogs.com/png.latex?SEIR"> model. These are used to set the initial conditions as we assume that the disease transmission reached a <a href="https://www.jonghoonk.com/posts/cholera_seir_eqn/">steady state</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">Ss <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1227,6 +1227,7 @@ font-style: inherit;">parse</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">text =</span> x)))</span></code></pre></div>
 </div>
+<p>Function to run the model</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">run_seirv_nstg_trial <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1425,6 +1426,7 @@ background-color: null;
 font-style: inherit;">return</span>(out)</span>
 <span id="cb10-24">}</span></code></pre></div>
 </div>
+<p>Test runs</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">nstg <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1687,7 +1689,7 @@ font-style: inherit;">"year"</span>)</span></code></pre></div>
 <p><img src="https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Measure vaccine effectiveness</p>
+<p>Function to measure vaccine effectiveness over time points.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">measure_vacc_eff <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1825,7 +1827,7 @@ background-color: null;
 font-style: inherit;">return</span>(ve_sim)</span>
 <span id="cb13-19">}</span></code></pre></div>
 </div>
-<p>Define sum of squared difference (ssq) to evaluate the difference between the model and the observation</p>
+<p>Define sum of squared difference (ssq) betwen the model and the data to evaluate the performance of the model.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -2020,6 +2022,7 @@ font-style: inherit;">"black"</span>)</span></code></pre></div>
 <p><img src="https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>Estimate parameters by minimizing the ssq using the <code>nlminb</code> function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1">params[[<span class="st" style="color: #20794D;
 background-color: null;
@@ -2028,7 +2031,119 @@ background-color: null;
 font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span></span>
-<span id="cb21-2">fit <span class="ot" style="color: #003B4F;
+<span id="cb21-2">fit1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nlminb</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.9</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365</span>)), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">objective=</span>ssq, </span>
+<span id="cb21-3">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lower=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365</span>)),</span>
+<span id="cb21-4">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">upper=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.99</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.99</span>))</span>
+<span id="cb21-5">fit1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8589978</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>fit1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 22.14073</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">fit1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>objective</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0003437906</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">ve_obs</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.834 0.807 0.801 0.771 0.783</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">(ve_sim <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">measure_vacc_eff</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">p=</span>fit1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>par, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">params=</span>params, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times=</span>times), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.828 0.815 0.799 0.782 0.772</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1">params[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"nstg"</span>]] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb31-2">fit2 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2049,7 +2164,7 @@ background-color: null;
 font-style: inherit;">365</span>)), <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">objective=</span>ssq, </span>
-<span id="cb21-3">              <span class="at" style="color: #657422;
+<span id="cb31-3">              <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">lower=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2066,7 +2181,7 @@ background-color: null;
 font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">365</span>)),</span>
-<span id="cb21-4">              <span class="at" style="color: #657422;
+<span id="cb31-4">              <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">upper=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2075,19 +2190,16 @@ background-color: null;
 font-style: inherit;">0.99</span>,<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.99</span>))</span>
-<span id="cb21-5">fit<span class="sc" style="color: #5E5E5E;
+<span id="cb31-5">fit2<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>par[<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1</span>]</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.859002</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="dv" style="color: #AD0000;
+font-style: inherit;">1</span>]</span>
+<span id="cb31-6"><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">/</span>fit<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">/</span>fit2<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>par[<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -2095,21 +2207,18 @@ font-style: inherit;">2</span>]<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">365</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 22.13887</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">ve_obs</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.834 0.807 0.801 0.771 0.783</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="fu" style="color: #4758AB;
+font-style: inherit;">365</span></span>
+<span id="cb31-7">fit2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>objective</span>
+<span id="cb31-8">ve_obs</span>
+<span id="cb31-9"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">measure_vacc_eff</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">p=</span>fit<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">p=</span>fit2<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>par, <span class="at" style="color: #657422;
 background-color: null;
@@ -2120,16 +2229,13 @@ background-color: null;
 font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.828 0.815 0.799 0.782 0.772</code></pre>
-</div>
 </div>
 <p>Plot data and simulation results</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># png("vacc_eff_obs_sim.png")</span></span>
-<span id="cb29-2"><span class="fu" style="color: #4758AB;
+<span id="cb32-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">plot</span>(times<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2140,7 +2246,7 @@ background-color: null;
 font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"firebrick"</span>, </span>
-<span id="cb29-3">     <span class="at" style="color: #657422;
+<span id="cb32-3">     <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">ylim=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2157,7 +2263,7 @@ background-color: null;
 font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"direct vaccine effectiveness"</span>,</span>
-<span id="cb29-4">     <span class="at" style="color: #657422;
+<span id="cb32-4">     <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">type=</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -2166,33 +2272,23 @@ background-color: null;
 font-style: inherit;">pch=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>)</span>
-<span id="cb29-5"><span class="fu" style="color: #4758AB;
+<span id="cb32-5"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">lines</span>(times<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">365</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">measure_vacc_eff</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">p=</span>fit<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>par, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">params=</span>params, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">times=</span>times), <span class="at" style="color: #657422;
+font-style: inherit;">365</span>, ve_sim, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"black"</span>)</span>
-<span id="cb29-6"><span class="fu" style="color: #4758AB;
+<span id="cb32-6"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"topright"</span>, </span>
-<span id="cb29-7">  <span class="at" style="color: #657422;
+<span id="cb32-7">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">legend=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2201,7 +2297,7 @@ background-color: null;
 font-style: inherit;">"Data"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Model"</span>), </span>
-<span id="cb29-8">  <span class="at" style="color: #657422;
+<span id="cb32-8">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">col=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2210,7 +2306,7 @@ background-color: null;
 font-style: inherit;">"firebrick"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"black"</span>), </span>
-<span id="cb29-9">  <span class="at" style="color: #657422;
+<span id="cb32-9">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">lty=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2219,7 +2315,7 @@ background-color: null;
 font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>),</span>
-<span id="cb29-10">  <span class="at" style="color: #657422;
+<span id="cb32-10">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">pch=</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2228,25 +2324,25 @@ background-color: null;
 font-style: inherit;">0</span>,<span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">NA</span>),</span>
-<span id="cb29-11">  <span class="at" style="color: #657422;
+<span id="cb32-11">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"n"</span>, </span>
-<span id="cb29-12">  <span class="at" style="color: #657422;
+<span id="cb32-12">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">cex =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1.0</span>, </span>
-<span id="cb29-13">  <span class="at" style="color: #657422;
+<span id="cb32-13">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">text.col =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"black"</span>, </span>
-<span id="cb29-14">  <span class="at" style="color: #657422;
+<span id="cb32-14">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">horiz =</span> F , </span>
-<span id="cb29-15">  <span class="at" style="color: #657422;
+<span id="cb32-15">  <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">inset =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2256,9 +2352,9 @@ font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># dev.off()</span></span></code></pre></div>
 </div>
