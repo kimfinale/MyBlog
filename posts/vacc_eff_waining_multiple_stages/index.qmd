@@ -207,29 +207,11 @@ run_seirv_nstg_trial <- function(params) {
 }
 ```
 
-Test runs
+Direct vaccine effectiveness in case vaccine-derived immunity does not wane over time
 
 ```{r}
-nstg <- 1
+nstg <- params[["nstg"]]
 params[["omega_v"]] <- 0
-out <- run_seirv_nstg_trial(params=params)
-
-plot(1:nrow(out)/365, out[,"C"], type="l", ylab="cumulative incidence", xlab="year", col="black")
-lines(1:nrow(out)/365, out[,"VC"], col="firebrick")
-legend("topleft", 
-  legend=c("No vaccine", "Vaccine"), 
-  col=c("black", "firebrick"), 
-  lty= 1,
-  bty = "n", 
-  cex = 1.0, 
-  text.col = "black", 
-  horiz = F , 
-  inset = c(0.02,0.02))
-```
-
-Direct vaccine efficacy
-
-```{r}
 out <- run_seirv_nstg_trial(params=params)
 novacc <- c("S","E","I","R")
 Vn <- paste(sapply(1:nstg, function(x) paste0('"V', x, '"')), collapse=",")
@@ -242,7 +224,24 @@ for(i in 1:nrow(out)){
 plot(1:length(dve)/365, dve, type="l", ylab="direct VE", xlab="year")
 ```
 
-Function to measure vaccine effectiveness over time points.
+Direct vaccine efficacy in case vaccine-derived immunity wanes over time with the average waiting time of 10 years
+
+```{r}
+nstg <- params[["nstg"]]
+params[["omega_v"]] <- 1/10/365 # average waiting time = 10 years
+out <- run_seirv_nstg_trial(params=params)
+novacc <- c("S","E","I","R")
+Vn <- paste(sapply(1:nstg, function(x) paste0('"V', x, '"')), collapse=",")
+vacc <- eval(str2lang(paste0('c(', Vn, ',"VS","VE","VI","VR")'))) 
+  
+dve <- rep(NA, nrow(out)) # direct vaccine effectiveness measured daily
+for(i in 1:nrow(out)){
+  dve[i] <- 1 - (out[i,"VC"]/sum(out[i,vacc]))/(out[i,"C"]/sum(out[i,novacc]))
+}
+plot(1:length(dve)/365, dve, type="l", ylab="direct VE", xlab="year")
+```
+
+Function to measure vaccine effectiveness over time.
 
 ```{r}
 measure_vacc_eff <- function(p, params, times){
@@ -266,7 +265,7 @@ measure_vacc_eff <- function(p, params, times){
 }
 ```
 
-Define sum of squared difference (ssq) betwen the model and the data to evaluate the performance of the model.
+Define sum of squared difference (ssq) between the model and the data to evaluate the performance of the model.
 
 ```{r}
 # the initial VE is not measured from the model
@@ -278,16 +277,8 @@ ssq <- function(p){
 }
 # check for some predetermined ve and omega
 # ssq(p=c(0.8,1/3650)) must be smaller than ssq(p=c(0.4,1/365))
-ssq(p=c(0.8,0.0))
 ssq(p=c(0.8,1/3650))
 ssq(p=c(0.4,1/3650))
-
-plot(times/365, ve_obs, col="firebrick", 
-     ylim=c(0.5,1),  
-     xlab="year since vaccination", ylab="direct vaccine effectiveness",
-     type="p", pch=0)
-
-lines(times/365, measure_vacc_eff(p=c(0.88,1/(20*365)), params=params, times=times), col="black")
 ```
 
 Estimate parameters by minimizing the ssq using the `nlminb` function.
