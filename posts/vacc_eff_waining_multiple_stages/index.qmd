@@ -1,9 +1,9 @@
 ---
-title: "SEIR model with varying number of compartments"
+title: "Waning vaccine efficacy on susceptibility"
 author: "Jong-Hoon Kim"
-date: "2024-04-05"
-categories: [SEIR, Erlang distribution]
-image: "seir_multi_comp.png"
+date: "2024-04-08"
+categories: [Vaccine, waning, SEIR, Erlang distribution]
+image: "vacc_eff_obs_sim.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -12,193 +12,303 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
-The $SEIR$ model structures each stage as a distinct compartment, with transitions between compartments dictated by specific rate constants, except for the transition between $S$ and $E$ that involve force of infection which is also a function of $t$. Waiting times in the $E$ and $I$ compartments are assumed to follow an exponential distribution. However, to better reflect reality, it might be necessary to consider alternative distributions. For instance, the waiting time in the $E$ compartment, i.e., incubation period, could be represented by a lognormal or Weibull distribution. Within the framework of ordinary differential equations (ODEs), incorporating these distributions directly poses challenges. Nevertheless, by dividing a single compartment into multiple sub-compartments, waiting times follow the Erlang distribution, effectively capturing the essence of both lognormal and Weibull distributions.
+In this post, we explore how to parameterize the disease transmission model (e.g., $SEIR$ model) when one wished to incorporate vaccination campaign and waning of vaccine-induced immunity. One way to model this is to assume partially immunity among individuals in the vaccinated state ($V$ compartment) and the individuals in the $V$ compartment gradually move to the susceptible state ($S$ compartment). This is a simple approach that may mimic the setting in which vaccine efficacy trial was conducted. I will use typhoid vaccine as an example. I followed the method that was presented in the [prior post]().
 
-The process of adding multiple sub-compartments is relatively straightforward. The challenge arises when one wishes to dynamically adjust the number of sub-compartments within a single model framework. This post discusses a method to achieve such adaptability in model construction. To enhance model flexibility, I extensively employ strings, specifically utilizing the `eval(str2lang("some text"))` function.
+### Vaccine efficacy data
 
-### `diffeqr` package
-
-`diffeqr` package is used use Julia's `DifferentialEquations` library
+Vaccine efficacy data come from a clinical trial conducted in Malawian children over the period of Typhoid conjugate vaccine, Vi tetanus toxoid, were given to the children
 
 ```{r}
-library(diffeqr)
-de <- diffeqr::diffeq_setup()
+# df <- data.frame(year=c(1,2), efficacy=c(83.4,73.0)) # Shakya (2021) Lancet Glob Health
+
+# vaccine efficacy cumulative over the four years
+# Patel (2024) Lancet
+tab2_vitt <- data.frame(group = "Vi-TT",
+                   age = c("<2yo","2-4yo",">=5yo","all_ITT","all_PP"),
+                   person_years = c(6586,15007,38907,60500,59942), 
+                   typhoid_culture = c(4,5,15,24,22),
+                   IR_obs = c(60.7,33.3,38.6,39.7,36.7),
+                   VE_obs = c(70.6,79.6,79.3,78.3,80.0))
+
+tab2_mena <- data.frame(group = "MenA",
+                   age = c("<2yo","2-4yo",">=5yo","all_ITT","all_PP"),
+                   person_years = c(6773,15297,38151,60220,59662), 
+                   typhoid_culture = c(14,25,71,110,109),
+                   IR_obs = c(206.7,163.4,186.1,182.7,182.7),
+                   VE_obs = NA)
+
+tab2 <- rbind(tab2_vitt, tab2_mena)
+# Check the sanity of the data
+tab2$IR_cal <- round(tab2$typhoid_culture/tab2$person_years*1e5, digits=1)
+tab2$IR_cal == tab2$IR_obs
+tab2$VE_cal <- NA
+tab2[tab2$group == "Vi-TT",]$VE_cal <- 
+  round(100*(1 - tab2[tab2$group == "Vi-TT",]$IR_cal/
+               tab2[tab2$group == "MenA",]$IR_cal),digits=1) 
+tab2$VE_cal == tab2$VE_obs
+
+tab3_vitt <- data.frame(group = "Vi-TT",
+                   age = "all_ITT",
+                   person_years = c(14058,28104,42135,56121,60500),
+                   year_since_vacc = c(1,2,3,4,4.61),
+                   typhoid_culture = c(6,12,15,23,24),
+                   IR_obs = c(42.7,42.7,35.6,41.0,39.7),
+                   VE_obs=c(83.4,80.7,80.1,77.1,78.3))
+tab3_mena <- data.frame(group = "MenA",
+                   age = "all_ITT",
+                   person_years = c(14036,28021,41983,55889,60220),
+                   year_since_vacc = c(1,2,3,4,4.61),
+                   typhoid_culture = c(36,62,75,100,110),
+                   IR_obs = c(256.5,221.3,178.6,178.9,182.7),
+                   VE_obs = NA)
+tab3 <- rbind(tab3_vitt, tab3_mena)
+# Check the sanity of the data
+tab3$IR_cal <- round(tab3$typhoid_culture/tab3$person_years*1e5, digits=1)
+tab3$VE_cal <- NA
+tab3[tab3$group == "Vi-TT",]$VE_cal <- 
+  round(100*(1 - tab3[tab3$group == "Vi-TT",]$IR_cal/
+               tab3[tab3$group == "MenA",]$IR_cal),digits=1) 
+tab3$VE_cal == tab3$VE_obs
 ```
 
-First, let's construct the classic SEIR model for comparison. This model is equivalent to a variant with variable compartments for the $I$ stage when considering only a single compartment.
+### Model of typhoid transmission for a clinical trial
 
 ```{r}
-seir <- function(u, p, t){
+seirv_nstg_trial <- function(u, p, t){
   
-  S <- u[1]; 
-  E <- u[2];
-  # the number of compartments to model the duration of infectiousness
-  I <- u[3];
-  R <- u[4]; 
-  C <- u[5];
-
-  # population size
-  pop <- S+E+I+R
-  
-  epsilon <- p[1] # 1/latent period
-  gamma <- p[2] # 1/duration of infectiousness
-  beta <- p[3] # transmission rate
-  omega <- p[4] # 1/omega = duration of natural immunity
-  # force of infection
-  foi <- beta*I/pop 
-  
-  muEI <- epsilon
-  muIR <- gamma
-  muRS <- omega
-  
-  # differential equations
-  dS <- - foi*S + muRS*R 
-  dE <- foi*S - muEI*E
-  dI <- muEI*E - muIR*I
-  dR <- muIR*I - muRS*R
-  
-  dC <- muEI*E
-
-  return(c(dS,dE,dI,dR,dC))
-}
-
-# simulation
-R0 <- 2 # basic reproduction number
-epsilon <- 1/4 # 1/epsilon = incubation period
-gamma <- 1/7 # 1/gamma = duration of infectiousness
-beta <- R0*gamma # instantaneous transmission rate
-omega <- 1/(4*365) # natural immunity waning rate
-# parameters
-params <- c(epsilon=epsilon, gamma=gamma, beta=beta, omega=omega)
-u0 <- c(0.99, 0, 0.01, 0, 0)
-tend <- 100 #  
-tspan <- c(0.0, tend)
-  
-prob <- de$ODEProblem(seir, u0, tspan, params)
-sol <- de$solve(prob, de$Tsit5(), saveat=1)
-mat <- sapply(sol$u, identity)
-udf <- as.data.frame(t(mat))
-out <- cbind(data.frame(t=sol$t), udf)
-names(out) <- c("t","S","E","I","R","C") 
-```
-
-### $SEIR$ model with `str2lang`
-
-The model with variable compartments for the $I$ stage. A part of the model is written using strings using `paste`, which are later evaluated using `eval(str2lang("some string"))`.
-
-```{r}
-seir_nstg <- function(u, p, t){
-  
-  S <- u[1]; 
-  E <- u[2];
-  # the number of compartments to model the duration of infectiousness
-  nstg <- p[1] 
+  S <- u[1]; E <- u[2]; I <- u[3]; R <- u[4]; C <- u[5]
+  # # vaccinated cohort
+  nstg <- p[1]
   for (i in 1:nstg) {
-    eval(str2lang(paste0("I",i," <- ", "u[2+",i,"]")));
-  } 
-  R <- u[2 + nstg + 1]; 
-  C <- u[2 + nstg + 2];
-
-  # population size
-  istr_sum <- paste(sapply(1:nstg, function(x) paste0("I",x)), collapse="+")
-  eval(str2lang(paste0("pop <- S+E+R+", istr_sum)))
+    eval(str2lang(paste0("V",i," <- ", "u[5+",i,"]")));
+  }# vaccinated and partially protected
+ 
+  VS <- u[5 + nstg + 1] # vaccinated but immunity waned and fully susceptible
+  VE <- u[5 + nstg + 2] 
+  VI <- u[5 + nstg + 3] 
+  VR <- u[5 + nstg + 4] 
+  VC <- u[5 + nstg + 5]
+  
+  pop <- S + E + I + R
+  
+  v_sum <- paste(sapply(1:nstg, function(x) paste0("V",x)), collapse="+")
+  eval(str2lang(paste0("popV <- VS+VE+VI+VR+", v_sum)))
   
   epsilon <- p[2] # 1/latent period
   gamma <- p[3] # 1/duration of infectiousness
   beta <- p[4] # transmission rate
-  omega <- p[5] # 1/omega = duration of natural immunity
-  # force of infection
-  eval(str2lang(paste0("foi <- beta*(", istr_sum, ")/pop"))) 
+  mu <- p[5] # death rate is applied and population size decreases over time
+  omega <- p[6] # 1 / duration of natural immunity
+  omega_v <- p[7] # 1 / duration of partial vaccine-derived immunity
+  ve <- p[8] # vaccine efficacy
+  # vaccinated and unvaccinated population mix randomly
+  foi <- beta*(I+VI)/(pop+popV) # force of infection
   
   muEI <- epsilon
   muIR <- gamma
   muRS <- omega
+  muVS <- nstg*omega_v
   
   # differential equations
-  dS <- - foi*S + muRS*R 
-  dE <- foi*S - muEI*E
-  dI1 <- muEI*E - nstg*muIR*I1
-
-  #dI2, ...
-  if (nstg >= 2) {
-    for (i in 2:nstg) {
-      eval(str2lang(paste0("dI",i," <- ", 
-                           nstg, "*muIR*(I", i-1, "-I", i, ")")))
-    }
-  }
-  # dR
-  eval(str2lang(paste0("dR <- muIR*I", nstg, "-muRS*R")))
-  
+  dS <- - foi*S + muRS*R - mu*S + mu*(pop+popV)
+  dE <- foi*S - muEI*E - mu*E
+  dI <- muEI*E - muIR*I - mu*I
+  dR <- muIR*I - muRS*R - mu*R
   dC <- muEI*E
 
-  distr <- paste(sapply(1:nstg, function(x) paste0("dI", x)), collapse=",")
-  return(eval(str2lang(paste0("c(dS,dE,", distr, ",dR,dC)"))))
+  dV1 <- - foi*(1-ve)*V1 - muVS*V1 - mu*V1
+  if (nstg >= 2) {
+    for (i in 2:nstg) {
+      eval(str2lang(paste0("dV",i," <- - foi*(1-ve)*V", i, " + muVS*V",
+                           i-1 , " - muVS*V", i," - mu*V", i)))
+    }
+  }
+
+  eval(str2lang(paste0("dVS <- - foi*VS + muVS*V", 
+                       nstg, " + muRS*VR - mu*VS"))) 
+  
+  eval(str2lang(paste0("dVE <- foi*((1-ve)*(", 
+                       v_sum, ")+VS) - muEI*VE - mu*VE")))
+  
+  dVI <- muEI*VE - muIR*VI - mu*VI
+  dVR <- muIR*VI - muRS*VR - mu*VR
+  dVC <- muEI*VE
+  
+  dvstr <- paste(sapply(1:nstg, function(x) paste0("dV", x)), collapse=",")
+  return(eval(str2lang(paste0("c(dS,dE,dI,dR,dC,", 
+                              dvstr, ",dVS,dVE,dVI,dVR,dVC)"))))
 }
 ```
 
-Simulation of the variable-compartment model
+### Simulation of the variable-compartment $SEIRV$ model
+
+Solutions for the steady states of the $SEIR$ model. These are used to set the initial conditions as we assume that the disease transmission is in a steady state
 
 ```{r}
-run_seir_nstg <- function(nstg) {
-  R0 <- 2 # basic reproduction number
-  epsilon <- 1/4 # 1/epsilon = incubation period
-  gamma <- 1/7 # 1/gamma = duration of infectiousness
-  beta <- R0*gamma # instantaneous transmission rate
-  omega <- 1/(4*365) # natural immunity waning rate
-  # parameters
-  params <- c(nstg=nstg, epsilon=epsilon, gamma=gamma, beta=beta, omega=omega)
+Ss <- "((gamma + mu) * (epsilon + mu)) / (beta * epsilon)"
+Es <- "- ((gamma + mu) * (mu + omega) * ((gamma + mu) * (epsilon + mu) - beta * epsilon)) / (beta * epsilon * (gamma * (epsilon + mu + omega) + (epsilon + mu) * (mu + omega)))"
+
+Is <- "((mu + omega) * (beta * epsilon - (gamma + mu) * (epsilon + mu))) / (beta * omega * (gamma + epsilon + mu) + beta * (gamma + mu) * (epsilon + mu))"
+Rs <- "(beta * gamma * epsilon - gamma * (gamma + mu) * (epsilon + mu)) / (beta * omega * (gamma + epsilon + mu) + beta * (gamma + mu) * (epsilon + mu))"
+```
+
+Common parameters
+
+```{r}
+R0 <- 3 # basic reproduction number
+epsilon <- 1/5 # 1/epsilon = incubation period
+gamma <- 1/11.8 # 1/gamma = duration of infectiousness
+beta <- R0*gamma # instantaneous transmission rate
+mu <- 1/(65*365) # natural death rate
+omega <- 0 # re-infection is not counted in the clinical trial
+omega_v <- 1/(4*365) # natural immunity waning rate
+ve <- 0.834
+nstg <- 1 # number of stages
+N <- 1e6 # population size
+f <- 1e-4 # fraction of vaccinated population
+tend <- 10*365
+# parameters
+params <- c(nstg=nstg, epsilon=epsilon, gamma=gamma, beta=beta, 
+            mu=mu, omega=omega, omega_v=omega_v, ve=ve,
+            N=N, f=f, tend=tend)
+
+# steady states for given parameters
+states0 <- list(S=Ss, E=Es, I=Is, R=Rs)
+steadys0 <- sapply(states0, function(x) eval(parse(text = x)))
+```
+
+```{r}
+run_seirv_nstg_trial <- function(params) {
+  de <- diffeqr::diffeq_setup() # to use Julia's DifferentialEquations.jl
   # initial distribution of the population across the states
-  I0s <- paste(sapply(1:nstg, function(x) paste0("I", x,"=0")), collapse=",")
-  eval(str2lang(paste0("u0 <- c(S=0,E=0,", I0s,",R=0,C=0)")))
-  u0[c("S","E","I1","R")] <- 
-    c(0.99, 0, 0.01, 0) # all I in the first compartment of the nstg I compartments
-  tend <- 100 #  
+  nstg <- params[["nstg"]]
+  N <- params[["N"]]
+  f <- params[["f"]]
+  V0s <- paste(sapply(1:nstg, function(x) paste0("V", x,"=0")), collapse=",")
+  eval(str2lang(paste0("u0 <- c(steadys0*N,C=0,", 
+                       V0s, ",VS=0,VE=0,VI=0,VR=0,VC=0)")))
+  u0[c("V1","VE","VI","VR")] <- as.numeric(steadys0*N*f/(1-f))
+  tend <- params[["tend"]]
   tspan <- c(0.0, tend)
   
-  prob <- de$ODEProblem(seir_nstg, u0, tspan, params)
+  prob <- de$ODEProblem(seirv_nstg_trial, u0, tspan, params)
   sol <- de$solve(prob, de$Tsit5(), saveat=1)
-  
   mat <- sapply(sol$u, identity)
   udf <- as.data.frame(t(mat))
   out <- cbind(data.frame(t=sol$t), udf)
-  In <- paste(sapply(1:nstg, function(x) paste0('"I', x, '"')), collapse=",")
-  names(out) <- eval(str2lang(paste0('c("t","S","E",', In, ',"R","C")'))) 
-  
+
+  Vn <- paste(sapply(1:nstg, function(x) paste0('"V', x, '"')), collapse=",")
+  names(out) <- eval(str2lang(paste0('c("t","S","E","I","R","C",', Vn, 
+                                     ',"VS","VE","VI","VR","VC")'))) 
   return(out)
 }
-
-nstg <- 1
-In <- paste(sapply(1:nstg, function(x) paste0('"I', x, '"')), collapse=",")
-out1 <- run_seir_nstg(nstg=nstg)
-It1 <- out1[,"I1"]
-
-nstg <- 2
-In <- paste(sapply(1:nstg, function(x) paste0('"I', x, '"')), collapse=",")
-out2 <- run_seir_nstg(nstg=nstg)
-eval(str2lang(paste0('It2 <- rowSums(out2[,c(', In, ')])')))
-nstg <- 5
-In <- paste(sapply(1:nstg, function(x) paste0('"I', x, '"')), collapse=",")
-out5 <- run_seir_nstg(nstg=nstg)
-eval(str2lang(paste0('It5 <- rowSums(out5[,c(', In, ')])')))
 ```
 
-Plot the simulation results.
+```{r}
+nstg <- 1
+params[["omega_v"]] <- 0
+out <- run_seirv_nstg_trial(params=params)
+
+plot(1:nrow(out)/365, out[,"C"], type="l", ylab="cumulative incidence", xlab="year", col="black")
+lines(1:nrow(out)/365, out[,"VC"], col="firebrick")
+legend("topleft", 
+  legend=c("No vaccine", "Vaccine"), 
+  col=c("black", "firebrick"), 
+  lty= 1,
+  bty = "n", 
+  cex = 1.0, 
+  text.col = "black", 
+  horiz = F , 
+  inset = c(0.02,0.02))
+```
+
+Direct vaccine efficacy
 
 ```{r}
-# png(filename="seir_multi_comp.png")
+out <- run_seirv_nstg_trial(params=params)
+novacc <- c("S","E","I","R")
+Vn <- paste(sapply(1:nstg, function(x) paste0('"V', x, '"')), collapse=",")
+vacc <- eval(str2lang(paste0('c(', Vn, ',"VS","VE","VI","VR")'))) 
+  
+dve <- rep(NA, nrow(out)) # direct vaccine effectiveness measured daily
+for(i in 1:nrow(out)){
+  dve[i] <- 1 - (out[i,"VC"]/sum(out[i,vacc]))/(out[i,"C"]/sum(out[i,novacc]))
+}
+plot(1:length(dve)/365, dve, type="l", ylab="direct VE", xlab="year")
+```
 
-plot(1:nrow(out), out$I, type="l", ylim=c(0,0.2),
-     ylab="fraction infectious",
-     xlab="day", col="black")
+Measure vaccine effectiveness
 
-lines(1:nrow(out), It1, col="steelblue")
-lines(1:nrow(out), It2, col="firebrick")
-lines(1:nrow(out), It5, col="magenta")
+```{r}
+measure_vacc_eff <- function(p, params, times){
+  de <- diffeqr::diffeq_setup()
+  params[["ve"]] <- p[1]
+  params[["omega_v"]] <- p[2]
+  nstg <- params[["nstg"]]
+  
+  out <- run_seirv_nstg_trial(params)
+  novacc <- c("S","E","I","R")
+  Vn <- paste(sapply(1:nstg, function(x) paste0('"V', x, '"')), collapse=",")
+  vacc <- eval(str2lang(paste0('c(', Vn, ',"VS","VE","VI","VR")'))) 
+  
+  ve_sim <- rep(NA, length(times))
+  for (i in 1:length(times)) {
+    ve_sim[i] <- 1 - 
+      ((out[times[i],"VC"])/sum(out[times[i],vacc])) / 
+      ((out[times[i],"C"])/sum(out[times[i],novacc]))
+  }
+  return(ve_sim)
+}
+```
 
+Define sum of squared difference (ssq) to evaluate the difference between the model and the observation
+
+```{r}
+# the initial VE is not measured from the model
+times <- round(tab3[tab3$group == "Vi-TT",]$year_since_vacc*365) # times to measure VE
+ve_obs <- tab3[tab3$group == "Vi-TT",]$VE_obs/100
+ssq <- function(p){
+  ve_sim <- measure_vacc_eff(p, params=params, times=times)
+  sum((ve_obs - ve_sim)^2)  
+}
+# check for some predetermined ve and omega
+# ssq(p=c(0.8,1/3650)) must be smaller than ssq(p=c(0.4,1/365))
+ssq(p=c(0.8,0.0))
+ssq(p=c(0.8,1/3650))
+ssq(p=c(0.4,1/3650))
+
+plot(times/365, ve_obs, col="firebrick", 
+     ylim=c(0.5,1),  
+     xlab="year since vaccination", ylab="direct vaccine effectiveness",
+     type="p", pch=0)
+
+lines(times/365, measure_vacc_eff(p=c(0.88,1/(20*365)), params=params, times=times), col="black")
+```
+
+```{r}
+params[["nstg"]] <- 1
+fit <- nlminb(c(0.9, 1/(100*365)), objective=ssq, 
+              lower=c(0.1,1/(100000*365)),
+              upper=c(0.99,0.99))
+fit$par[1]
+1/fit$par[2]/365
+ve_obs
+round(measure_vacc_eff(p=fit$par, params=params, times=times), digits=3)
+```
+
+Plot data and simulation results
+
+```{r}
+# png("vacc_eff_obs_sim.png")
+plot(times/365, ve_obs, col="firebrick", 
+     ylim=c(0.5,1),  xlab="year since vaccination", ylab="direct vaccine effectiveness",
+     type="p", pch=0)
+lines(times/365, measure_vacc_eff(p=fit$par, params=params, times=times), col="black")
 legend("topright", 
-  legend=c("SEIR","1 compartment","2 compartments", "5 compartments"), 
-  col=c("black","steelblue", "firebrick","magenta"), 
-  lty= 1,
+  legend=c("Data", "Model"), 
+  col=c("firebrick", "black"), 
+  lty= c(0,1),
+  pch=c(0,NA),
   bty = "n", 
   cex = 1.0, 
   text.col = "black", 

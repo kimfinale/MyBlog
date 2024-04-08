@@ -1,5 +1,5 @@
 ---
-title: "감염병의 대유행 가능성 계산하기"
+title: "감염병의 대유행 가능성"
 author: "Jong-Hoon Kim"
 date: "2024-03-04"
 categories: [probability of a large outbreak, reproduction number]
@@ -92,8 +92,8 @@ ggplot(df) +
 # ggsave("outbreak_prob.png", units="in", width=3.4*2, height=2.7*2)  
 ```
 
+각 분포에 대한 무한 수열의 합과 $\theta$에 대한 해는 아래 Mathematica 명령어를 사용하여 확인할 수 있다.
 
-각 분포에 대한 무한 수열의 합과 $\theta$에 대한 해는 아래 Mathematica 명령어를 사용하여 확인할 수 있다. 
 ```{r, eval=FALSE}
 Sum[PDF[PoissonDistribution[R],j]\[Theta]^j, {j, 0, Infinity}]
 FindRoot[\[Theta] - E^(R (-1 + \[Theta])) == 0, {\[Theta], 0.1}] /. 

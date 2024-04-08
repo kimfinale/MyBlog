@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2024-04-07T00:55:29.005Z</lastmod>
+    <lastmod>2024-04-08T07:04:55.401Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -202,7 +202,7 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/cholera_seir_eqn/index.html</loc>
-    <lastmod>2024-04-02T03:26:33.253Z</lastmod>
+    <lastmod>2024-04-07T01:04:59.781Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/universal_differential_eqn_julia/index.html</loc>
@@ -282,7 +282,7 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/Probabily_outbreak/index.html</loc>
-    <lastmod>2024-03-12T08:54:06.103Z</lastmod>
+    <lastmod>2024-04-08T05:48:29.013Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/infectious_disease_names/index.html</loc>
@@ -302,10 +302,14 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index.html</loc>
-    <lastmod>2024-04-07T00:55:32.264Z</lastmod>
+    <lastmod>2024-04-07T01:04:42.345Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index.html</loc>
-    <lastmod>2024-04-07T00:08:03.525Z</lastmod>
+    <lastmod>2024-04-08T07:05:02.162Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/seir_varying_number_compartments/index.html</loc>
+    <lastmod>2024-04-08T05:48:47.888Z</lastmod>
   </url>
 </urlset>
