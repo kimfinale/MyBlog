@@ -8412,7 +8412,7 @@ font-style: inherit;">"Prevalence"</span>)</span></code></pre></div>
 </div>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># ggsave("R0_prevalence.png", units="in", width=3.4, height=2.7)</span></span></code></pre></div>
+font-style: inherit;"># ggsave("R0_prevalence.png")</span></span></code></pre></div>
 </div>
 
 
@@ -8424,7 +8424,7 @@ font-style: inherit;"># ggsave("R0_prevalence.png", units="in", width=3.4, heigh
   <category>transmission dynamics</category>
   <guid>https://kimfinale.github.io/myblog/posts/counterintuitive/index.html</guid>
   <pubDate>Tue, 19 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/counterintuitive/R0_prevalence.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/counterintuitive/R0_prevalence.png" medium="image" type="image/png" height="184" width="144"/>
 </item>
 <item>
   <title>Prevalence vs. incidence for the SIR model</title>
