@@ -8259,7 +8259,7 @@ font-style: inherit;">-</span>IVE))</span></code></pre></div>
   <category>overall</category>
   <guid>https://kimfinale.github.io/myblog/posts/vaccine_effectiveness/index.html</guid>
   <pubDate>Mon, 25 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness/profile_lik.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness/study_design.png" medium="image" type="image/png" height="130" width="144"/>
 </item>
 <item>
   <title>Counterintuitive effects in disease transmission dynamics</title>
@@ -8424,7 +8424,7 @@ font-style: inherit;"># ggsave("R0_prevalence.png")</span></span></code></pre></
   <category>transmission dynamics</category>
   <guid>https://kimfinale.github.io/myblog/posts/counterintuitive/index.html</guid>
   <pubDate>Tue, 19 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/counterintuitive/R0_prevalence.png" medium="image" type="image/png" height="184" width="144"/>
+  <media:content url="https://kimfinale.github.io/myblog/posts/counterintuitive/R0_prevalence.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Prevalence vs. incidence for the SIR model</title>

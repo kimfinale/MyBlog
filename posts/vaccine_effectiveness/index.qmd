@@ -3,7 +3,7 @@ title: "Vaccine effectiveness"
 author: "Jong-Hoon Kim"
 date: "2024-03-26"
 categories: [SEIR, vaccine efficacy, direct, indirect, total, overall]
-image: "profile_lik.png"
+image: "study_design.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -20,12 +20,11 @@ $$
 \text{VE} = 1 - \text{RR}
 $$
 
-RR measures may relative infection probability given exposure, hazard ratio, or the ratio of cumulative incidence (or attack rate). I will explain 
-different effects of the vaccine using the cumulative incidence ($C$) measure based on the notations from the [Study design for dependent happenings](https://pubmed.ncbi.nlm.nih.gov/1742381/). 
+RR measures may relative infection probability given exposure, hazard ratio, or the ratio of cumulative incidence (or attack rate). I will explain different effects of the vaccine using the cumulative incidence ($C$) measure based on the notations from the [Study design for dependent happenings](https://pubmed.ncbi.nlm.nih.gov/1742381/).
 
-![](study_design.png) 
+![](study_design.png)
 
-In population $A$, a fraction, $f$, of the population was vaccinated (denoted with $1$) and the rest, $1-f$, of the Population A remains unvaccinated (denoted with $0$). In Population $B$, no one was vaccinated. I can now use $C_{A0}$ and $C_{A1}$ to denote cumulative incidence, $C$, in the unvaccinated and vaccinated individuals of Population $A$. Similarly, I can use $C_{B0}$ to denote the cumulative incidence in the (unvaccinated) population $B$. 
+In population $A$, a fraction, $f$, of the population was vaccinated (denoted with $1$) and the rest, $1-f$, of the Population A remains unvaccinated (denoted with $0$). In Population $B$, no one was vaccinated. I can now use $C_{A0}$ and $C_{A1}$ to denote cumulative incidence, $C$, in the unvaccinated and vaccinated individuals of Population $A$. Similarly, I can use $C_{B0}$ to denote the cumulative incidence in the (unvaccinated) population $B$.
 
 The VE can be divided into four different measures and they are direct, indirect, total, and overall VE, which are noted as DVE, IVE, TVE, and OVE, respectively.
 
@@ -43,6 +42,7 @@ $$
 $$
 
 Let's construct a simple $SEIR$ model to illustrate the different metrics of VE.
+
 ```{r}
 seir_2grp <- function(t, y, params) {
   S0 <- y["S0"]; E0 <- y["E0"]; I0 <- y["I0"]; R0 <- y["R0"]; C0 <- y["C0"]
@@ -74,7 +74,9 @@ seir_2grp <- function(t, y, params) {
 ```
 
 ### Population B
+
 No one in the population is vaccinated.
+
 ```{r}
 N <- 1
 pop_B <- c(N0=N)
@@ -94,10 +96,7 @@ pop_B_out <- as.data.frame(out)
 
 ### Population A
 
-A fraction $f$ of the population A received the vaccine.
-Vaccine efficacy is VE. Vaccination can be implemented by assuming all-or-nothing vaccine. That is, the a fraction of vaccine recipients, $N*f*\text{VE}$, are completely protected from infection. Here, $N, f$, and VE represent
-population size, the fraction of the population that is vaccinated, 
-and vaccine efficacy, respectively. In the SEIR model, by setting the initial population size for the $R$ compartment as $N*f*\text{VE}$, we can mimic the vaccination scenario.
+A fraction $f$ of the population A received the vaccine. Vaccine efficacy is VE. Vaccination can be implemented by assuming all-or-nothing vaccine. That is, the a fraction of vaccine recipients, $N*f*\text{VE}$, are completely protected from infection. Here, $N, f$, and VE represent population size, the fraction of the population that is vaccinated, and vaccine efficacy, respectively. In the SEIR model, by setting the initial population size for the $R$ compartment as $N*f*\text{VE}$, we can mimic the vaccination scenario.
 
 ```{r}
 VE <- 0.7 # vaccine efficacy on susceptibility
@@ -113,6 +112,7 @@ pop_A_out <- as.data.frame(out)
 ```
 
 Let's compute the four VE measures.
+
 ```{r}
 (DVE <- 1 - (pop_A_out[tend,"C1"]/pop_A[["N1"]])/(pop_A_out[tend,"C0"]/pop_A[["N0"]]))
 (IVE <- 1 - (pop_A_out[tend,"C0"]/pop_A[["N0"]])/(pop_B_out[tend,"C0"]/pop_B[["N0"]]))
@@ -121,4 +121,3 @@ Let's compute the four VE measures.
 IVE == 1 - (1-TVE)/(1-DVE)
 OVE == 1 - (f*(1-TVE)+(1-f)*(1-IVE))
 ```
-
