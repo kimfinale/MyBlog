@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2024-04-08T11:54:35.038Z</lastmod>
+    <lastmod>2024-04-23T02:30:07.140Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -311,5 +311,9 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/seir_varying_number_compartments/index.html</loc>
     <lastmod>2024-04-08T05:48:47.888Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/index.html</loc>
+    <lastmod>2024-04-23T02:30:22.329Z</lastmod>
   </url>
 </urlset>

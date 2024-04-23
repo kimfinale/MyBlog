@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/logistic_indirect_ve/index.html",
       "/posts/vacc_eff_waining_multiple_stages/index.html",
       "/posts/seir_varying_number_compartments/index.html",
       "/posts/vaccine_effectiveness_waning/index.html",

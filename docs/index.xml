@@ -10,7 +10,605 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Disease modeling for public health</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Sun, 07 Apr 2024 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 18 Apr 2024 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Logistic function in R</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="logistic-function" class="level3">
+<h3 class="anchored" data-anchor-id="logistic-function">Logistic function</h3>
+<p>The <a href="https://en.wikipedia.org/wiki/Logistic_function">logistic function</a>, represented as: <img src="https://latex.codecogs.com/png.latex?%0Af(x)%20=%20%5Cfrac%7BL%7D%7B1+e%5E%7B-k(x-x_0)%7D%7D%0A"> , where <img src="https://latex.codecogs.com/png.latex?x_%7B0%7D,%20L">, and <img src="https://latex.codecogs.com/png.latex?k"> represent tht value of the function’s midpoint, the supremum of the values of the function, and the logistic growth rate or steepness of the curve. For values of <img src="https://latex.codecogs.com/png.latex?x"> in the domain of real numbers from <img src="https://latex.codecogs.com/png.latex?-%5Cinfty"> to <img src="https://latex.codecogs.com/png.latex?+%5Cinfty">, the S-shaped curve approaching <img src="https://latex.codecogs.com/png.latex?L"> as <img src="https://latex.codecogs.com/png.latex?x"> approaches <img src="https://latex.codecogs.com/png.latex?+%5Cinfty"> and approaching zero as <img src="https://latex.codecogs.com/png.latex?x"> approaches <img src="https://latex.codecogs.com/png.latex?-%5Cinfty">.</p>
+<p>This function was originally devised as a model of <a href="https://en.wikipedia.org/wiki/Logistic_function">population growth</a> and is a versatile tool used in various fields, including epidemiology. In epidemiological contexts, it serves as a mathematical model to describe the growth or decline of infectious diseases within a population over time. See this <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7444956/">study</a>, for example, in which the logistic equation was used to decribe the growth of COVID-19 in a population.</p>
+<p>The standard logistic function, where <img src="https://latex.codecogs.com/png.latex?x_%7B0%7D=0,%20L=1,%20k=1">, is sometimes called sigmoid or expit.</p>
+<p>In the logistic function, the initial stage of growth is approximately exponential (geometric); then, as saturation begins, the growth slows to linear (arithmetic), and at maturity, growth stops. This function may be also used to describe other phenomena and <a href="https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003003">was recently used</a> to model the shape of indirect vaccine efficacy (IVE) in response to the vaccine coverage levels. We are going to explore the use of the logistic function to model the IVE.</p>
+</section>
+<section id="indirect-effect-effectiveness" class="level3">
+<h3 class="anchored" data-anchor-id="indirect-effect-effectiveness">Indirect effect effectiveness</h3>
+<p><a href="https://www.jonghoonk.com/posts/vaccine_effectiveness/">Indirect vaccine effectiveness (IVE)</a> is a crucial metric in assessing the impact of vaccination on both vaccinated and unvaccinated individuals within a population. It refers to the protection unvaccinated individuals receive due to the presence of vaccinated individuals in the community.</p>
+<p>To delve into the dynamics of IVE, we examine data from clinical trials of oral cholera vaccine conducted in Bangladesh and India. These studies provide insights into how varying levels of vaccination coverage affect the incidence rates among unvaccinated individuals residing in the same cluster.</p>
+<p>In particular, we use the IVE analyzed based on clinical trials of oral cholera vaccines in <a href="https://pubmed.ncbi.nlm.nih.gov/15993232/">Bangladesh</a> and in <a href="https://pubmed.ncbi.nlm.nih.gov/23362293/">India</a>. In Table 1 below, we analyze the relationship between “Level of vaccine coverage” and the incidence rates among placebo recipients. The presence of IVE is evident as the risk of illness among placebo recipients diminishes with increasing vaccine coverage levels.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/ali2005_table1_ive.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Table 1</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">vc_cut <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">28</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">35</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">65</span>)</span>
+<span id="cb1-2">vc_matlab <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> vc_cut[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">diff</span>(vc_cut)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb1-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># the data coming from the first year of vaccination</span></span>
+<span id="cb1-4">ve_first_year <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.65</span></span>
+<span id="cb1-5">eff_vc_matlab <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ve_first_year <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> vc_matlab </span>
+<span id="cb1-6">ir <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7.01</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5.87</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.72</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.65</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.47</span>)</span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># lowest vaccine coverage group has no indirect effect</span></span>
+<span id="cb1-8">ive_matlab <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> (ir[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>ir)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>ir[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb1-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Ali (2013) Kolkata, India</span></span>
+<span id="cb1-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Data from 3-year follow-up. Total protective efficacy remained high (66%)</span></span>
+<span id="cb1-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># therefore, effective vaccine coverage still calculated as we did for</span></span>
+<span id="cb1-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Matlab, Bangladesh data</span></span>
+<span id="cb1-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Out of 107,347 eligible residents, 66,990 received 2 doses</span></span>
+<span id="cb1-14">vc_cut <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">28</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">31</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">34</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">66990</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">107347</span>)</span>
+<span id="cb1-15">vc_kolkata <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> vc_cut[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">diff</span>(vc_cut)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb1-16">ve_first_year <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.65</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># the data coming from the first year of vaccination</span></span>
+<span id="cb1-17">eff_vc_kolkata <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ve_first_year <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> vc_kolkata</span>
+<span id="cb1-18">ir <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5.54</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5.64</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.48</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.25</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.93</span>)</span>
+<span id="cb1-19">ive_kolkata <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> (ir[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>ir)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>ir[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb1-20"></span>
+<span id="cb1-21">ive_dat <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">eff_vacc_cov =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(eff_vc_kolkata, eff_vc_matlab), </span>
+<span id="cb1-22">                      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">indirect_vacc_eff =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(ive_kolkata, ive_matlab))</span>
+<span id="cb1-23">ive_dat <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ive_dat <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb1-24">ive_dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>type <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data"</span></span>
+<span id="cb1-25">ive_dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>location <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Kolkata"</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(eff_vc_kolkata)), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Matlab"</span>,<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(eff_vc_matlab)))</span></code></pre></div>
+</div>
+<p>Here, we assumed that the incidence rate among in the unvaccinated population, (i.e., no one was vaccinated) would be the same as the incidence rate observed in the lowest level of vaccine coverage rate, which would be 14% for Matlab and 12.5% for Kolkata. Because of this assumption, we may be underestimating the IVE. While it may be possible to reduce effective vaccine coverage rates by taking the difference between the effective vaccine coverage rates presented here and the lowest vaccine coverage rates (i.e., 14% or 12.5%), I wanted to be rather conservative than overestimating the impact.</p>
+<p>Now we develop the logistic equation and fit the equation to the data. Since we know that the IVE has to be between <img src="https://latex.codecogs.com/png.latex?0"> and <img src="https://latex.codecogs.com/png.latex?1">, we set <img src="https://latex.codecogs.com/png.latex?L"> at 1.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">fm <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> indirect_vacc_eff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>k<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(eff_vacc_cov<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>x0)))</span>
+<span id="cb2-2">fit <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nls</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">formula=</span>fm, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data=</span>ive_dat, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">start=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">k=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x0=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.27</span>))</span>
+<span id="cb2-3">predict_logis <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x) {</span>
+<span id="cb2-4">  <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coef</span>(fit)[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coef</span>(fit)[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>])))</span>
+<span id="cb2-5">}</span>
+<span id="cb2-6">newx <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>)</span>
+<span id="cb2-7">newy <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict_logis</span>(newx)</span>
+<span id="cb2-8">d <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rbind</span>(ive_dat, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">eff_vacc_cov=</span>newx, </span>
+<span id="cb2-9">                               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">indirect_vacc_eff=</span>newy,</span>
+<span id="cb2-10">                               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"model"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">location=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>))</span></code></pre></div>
+</div>
+<p>R has a self-starting logistic function, which can be helpful in case <code>nls</code> function is not successful for finding the parameter values with the given staring values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">fit_SSlogis <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nls</span>(indirect_vacc_eff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">SSlogis</span>(eff_vacc_cov, Asym, xmid, scal), </span>
+<span id="cb3-2">                   ive_dat)</span>
+<span id="cb3-3">Asym <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coef</span>(fit_SSlogis)[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Asym"</span>]</span>
+<span id="cb3-4">xmid <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coef</span>(fit_SSlogis)[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"xmid"</span>]</span>
+<span id="cb3-5">scal <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coef</span>(fit_SSlogis)[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"scal"</span>]</span>
+<span id="cb3-6"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">## SSlogis has a different convention for the terms</span></span>
+<span id="cb3-7">pred_SSlogis <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x){</span>
+<span id="cb3-8">  Asym <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>((xmid <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> x)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>scal))</span>
+<span id="cb3-9">}</span>
+<span id="cb3-10">newx <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>)</span>
+<span id="cb3-11">newy <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pred_SSlogis</span>(newx)</span>
+<span id="cb3-12">d <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rbind</span>(d, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">eff_vacc_cov=</span>newx, </span>
+<span id="cb3-13">                               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">indirect_vacc_eff=</span>newy,</span>
+<span id="cb3-14">                               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"SSmodel"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">location=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>))</span>
+<span id="cb3-15"></span>
+<span id="cb3-16"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb3-17">extrafont<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">loadfonts</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"win"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">quiet=</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb3-18"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>))</span>
+<span id="cb3-19"></span>
+<span id="cb3-20"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">subset</span>(d, type<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data"</span>),</span>
+<span id="cb3-22">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(eff_vacc_cov, indirect_vacc_eff, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span>location))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-23">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">subset</span>(d, type<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"model"</span>), </span>
+<span id="cb3-24">            <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(eff_vacc_cov, indirect_vacc_eff), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"firebrick"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-25">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">subset</span>(d, type<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"SSmodel"</span>), </span>
+<span id="cb3-26">            <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(eff_vacc_cov, indirect_vacc_eff), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"forestgreen"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-27">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Indirect vaccine efficacy"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Effective vaccine coverage"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ggsave("ive_vacc_cov.png")</span></span></code></pre></div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>Logistic function</category>
+  <category>indirect vaccine effectiveness</category>
+  <category>oral cholera vaccine</category>
+  <guid>https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/index.html</guid>
+  <pubDate>Thu, 18 Apr 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/ive_vacc_cov.png" medium="image" type="image/png" height="157" width="144"/>
+</item>
 <item>
   <title>Waning vaccine efficacy on susceptibility</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -17408,95 +18006,6 @@ font-style: inherit;"># ggsave("immune_time.png", gg, units="in", width=3.4*2, h
   <guid>https://kimfinale.github.io/myblog/posts/critical_vacc_threshold/index.html</guid>
   <pubDate>Wed, 13 Dec 2023 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/critical_vacc_threshold/Vc_R0.png" medium="image" type="image/png" height="114" width="144"/>
-</item>
-<item>
-  <title>Generation interval</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/generation_interval1/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="generation-interval-incubation-period-infectious-period" class="level3">
-<h3 class="anchored" data-anchor-id="generation-interval-incubation-period-infectious-period">Generation interval = incubation period + infectious period?</h3>
-<p>Although not published, I wrote a correspondence to Lancet to commenting the <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(20)30260-9/fulltext">article</a>. In the article, the authors stated that the generation interval is the sum of the incubation period and the infectious period. I argued that this statement holds only for a constant rate of transmission during the exponentially distributed infectious period (i.e., only a very limited case). Then, I showed that the generation interval varies if the infectious period distribution is different from the exponential distribution even with the constant rate of transmission. Following is the whole message. I now think I am glad that it was not published because I realized that <a href="https://www.sciencedirect.com/science/article/abs/pii/S0025556406002094?via%3Dihub">Svensson</a> wrote an article in 2007 to show a similar message in a more rigorous and general way. At least the message and arguments I presented were correct.</p>
-</section>
-<section id="the-main-text" class="level3">
-<h3 class="anchored" data-anchor-id="the-main-text">The main text</h3>
-<p>When confronted with a novel disease like the coronavirus disease 2019 (COVID-19), the incubation period and the serial interval are two critical epidemiological variables that are measured during the early stages of an outbreak. A transmission model can be constructed based on these variables to project potential scenarios of outbreak expansion or resolution and, importantly, define the basic reproduction number (<img src="https://latex.codecogs.com/png.latex?R_0">) for the disease. The recent article by <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(20)30260-9/fulltext">Wu et al.</a>, published in The Lancet on January 31 of this year, one month after the first case was reported in Wuhan, China, uses a transmission model parameterized by data available at the time. This study provided important and timely insights into the spread of COVID-19 in China and elsewhere, concluding that, in addition to Wuhan, other major cities in China and well-connected cities outside China were likely to already have sustained localized outbreaks. The model utilized by Wu et al.&nbsp;makes a key statement, which has limited applications and may lead to unjustified assumptions in subsequent model iterations. The dynamic model requires an input on the length of the infectious period, which Wu et al.&nbsp;derived by assuming that the serial interval is equal to the sum of the infectious period and the latent period (on page 4 of the article by Wu et al.). Neither Wu et al.&nbsp;nor the <a href="https://www.science.org/doi/10.1126/science.1086616">study</a> to which they refer provides a clear rationale for this statement. The serial interval represents the time between the clinical onset of successive cases [3] and it is naturally expressed as the sum of the incubation period and disease age at transmission* <a href="https://link.springer.com/book/10.1007/978-90-481-2313-1">4</a>. Here we treat the incubation period (the time between infection and the onset of symptoms) as the same as latent period (the time between infection and the onset of infectiousness), for simplicity. The disease age at transmission represents the time between the onset of symptoms of a primary case and the time of infection of the associated secondary cases. Therefore, for the mean serial interval to be the same as the sum of mean incubation period and mean infectious period, the mean disease age at transmission must be equal to the mean infectious period. The mean disease age at transmission is indeed as long as the mean of the exponentially-distributed infectious period, which is often used for convenience in building a differential equation-based model (Table 1). However, for other distributions we explored, the mean disease age at transmission is shorter than mean infectious period, and it is only half of the mean infectious period† when the infectious period is constant. The gamma-distributed infectious period can also be easily adopted in a differential-equation based model to represent a more realistic representation of infectious period and in this case, following Wu et al.’s recipe will lead to a shorter serial interval than is intended. Moreover, each of the aforementioned arguments holds when transmission occurs at a constant rate over the infectious period, and violating this assumption of a constant rate (such as when viral load is high during the initial part of the infectious period and tapers off over time <a href="https://pubmed.ncbi.nlm.nih.gov/32080991/">5</a><a href="https://pubmed.ncbi.nlm.nih.gov/32074444/">6</a> will likely induce an even shorter disease age at transmission.</p>
-<p>The assumption that the serial interval is the sum of incubation (or latent) period and infectious period seems to hold only when the infectious period is exponentially distributed for a constant transmission rate. For a wider application, one has to calculate the disease age at transmission that leads to a correct serial interval for a given distribution of the infectious period. We believe this is an important point and potentially unjustified assumptions in subsequent model iterations may result in providing outbreak responders with inaccurate projections on the characteristics of disease transmission.</p>
-<p>Table 1. Time to infection since symptom onset under infectious period with different distributions.</p>
-<table class="table">
-<caption>Table 1. Time to infection since symptom onset under infectious period with different distributions.</caption>
-<colgroup>
-<col style="width: 20%">
-<col style="width: 14%">
-<col style="width: 41%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th colspan="2">Infectious period</th>
-<th colspan="2">Time to transmission (disease age)</th>
-</tr>
-<tr class="odd">
-<th>Distribution</th>
-<th>Expectation</th>
-<th>Sample mean‡ [<img src="https://latex.codecogs.com/png.latex?2.5%5E%7Bth%7D">, <img src="https://latex.codecogs.com/png.latex?97.5%5E%7Bth%7D"> percentile]</th>
-<th>Expectation§</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Exponential</td>
-<td>5</td>
-<td>5</td>
-<td>5</td>
-</tr>
-<tr class="even">
-<td>Gamma(2,5/2)¶</td>
-<td>5</td>
-<td>3.73 [3.75, 3.71]</td>
-<td>3.75</td>
-</tr>
-<tr class="odd">
-<td>Uniform(0,10)</td>
-<td>5</td>
-<td>3.34 [3.32, 3.35]</td>
-<td>3.33</td>
-</tr>
-<tr class="even">
-<td>Weibull(2,5/2)</td>
-<td>5</td>
-<td>3.17 [3.16, 3.19]</td>
-<td>3.18</td>
-</tr>
-<tr class="odd">
-<td>Lognormal(2,5/2)</td>
-<td>5</td>
-<td>2.90 [2.89, 2.91]</td>
-<td>2.90</td>
-</tr>
-<tr class="even">
-<td>Constant at 5</td>
-<td>5</td>
-<td>2.51 [2.49, 2.52]</td>
-<td>2.50</td>
-</tr>
-</tbody>
-</table>
-<p>Footnotes *Taking statistical distribution into account, we can write the serial interval at time <img src="https://latex.codecogs.com/png.latex?t"> as the convolution of the distributions of disease age, <img src="https://latex.codecogs.com/png.latex?g">, and incubation period, <img src="https://latex.codecogs.com/png.latex?f">: <img src="https://latex.codecogs.com/png.latex?s(t)=%20%5Cint_0%5Et%20g(t-%5Ctau)f(%5Ctau)%5Ctextrm%7Bd%7D%5Ctau">. † Interestingly, the <a href="https://en.wikipedia.org/wiki/Serial_interval">Wikipedia article</a> says that the length of a serial interval is equal to the sum of incubation period and the half of the infectious period <a href="https://en.wikipedia.org/wiki/Serial_interval">7</a>. ‡To simulate disease age, we drew a random infectious period from each distribution and let transmission occur at a constant probability with R0 of 2.2 over the infectious period. We repeated the process 100000 times to calculate a mean and a <img src="https://latex.codecogs.com/png.latex?2.5%5E%7Bth%7D"> and <img src="https://latex.codecogs.com/png.latex?95%5E%7Bth%7D"> percentiles. §The probability density function for the disease age at transmission at time <img src="https://latex.codecogs.com/png.latex?t"> may be obtained by <img src="https://latex.codecogs.com/png.latex?g(t)%20=%20%5Cfrac%7BP(X%3Et)%7D%7B%E2%88%AB_0%5E%E2%88%9E%20P(X%3Et)dt%7D%20~%5Ctextrm%7Bfor%7D~%20t%E2%88%88(0,+%E2%88%9E)"> for infectious period <img src="https://latex.codecogs.com/png.latex?X">. The expected value can then be calculated as <img src="https://latex.codecogs.com/png.latex?%5Cint_0%5E%7B%5Cinfty%7D%20t%20g(t)%5Ctextrm%7Bd%7Dt">. ¶Gamma(shape, rate). This distribution can be produced by assuming two successive compartments with the exit rate of 2/5.</p>
-
-
-</section>
-
- ]]></description>
-  <category>generation interval</category>
-  <category>reproduction number</category>
-  <guid>https://kimfinale.github.io/myblog/posts/generation_interval1/index.html</guid>
-  <pubDate>Wed, 06 Dec 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/generation_interval1/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 </channel>
 </rss>
