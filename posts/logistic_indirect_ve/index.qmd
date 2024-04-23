@@ -3,7 +3,7 @@ title: "Logistic function in R"
 author: "Jong-Hoon Kim"
 date: "2024-04-19"
 categories: [Logistic function, indirect vaccine effectiveness, oral cholera vaccine]
-image: "ive_vacc_cov.png"
+image: "ali2005_table1_ive.png"
 editor_options: 
   chunk_output_type: console
 ---
