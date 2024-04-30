@@ -100,7 +100,7 @@ newx <- seq(0,1,by=0.01)
 newy <- predict_logis(newx)
 d <- rbind(ive_dat, data.frame(eff_vacc_cov=newx, 
                                indirect_vacc_eff=newy,
-                               type="model", location=NA))
+                               type="Model1", location=NA))
 ```
 
 R has a self-starting logistic function, which can be helpful in case `nls` 
@@ -122,7 +122,31 @@ newy <- pred_SSlogis(newx)
 d <- rbind(d, data.frame(eff_vacc_cov=newx, 
                                indirect_vacc_eff=newy,
                                type="SSmodel", location=NA))
+```
 
+Finally, we can force the logistic function to converge to 1 when the effective vaccine coverage reaches 1 and to 0 when the effective 
+vaccine coverage is 0.
+
+```{r}
+dat <- data.frame(x=ive_dat$eff_vacc_cov, y=ive_dat$indirect_vacc_eff)
+# fm <- indirect_vacc_eff ~ 1 / (1 + exp(-k*(eff_vacc_cov-x0)))
+fm2 <- y ~ 1 / (1+((1-x)*x0/(x*(1-x0)))^k)
+fit2 <- nls(formula=fm2, data=dat, start=list(k=1, x0=0.1))
+predict_logis2 <- function(x) {
+  k <- coef(fit2)[["k"]]
+  x0 <- coef(fit2)[["x0"]]
+  1 / (1+((1-x)*x0/(x*(1-x0)))^k)
+}
+
+newx <- seq(0,1,by=0.01)
+newy <- predict_logis2(newx)
+d <- rbind(d, data.frame(eff_vacc_cov=newx, 
+                               indirect_vacc_eff=newy,
+                               type="Model2", location=NA))
+```
+
+
+```{r}
 library(ggplot2)
 extrafont::loadfonts("win", quiet=TRUE)
 theme_set(hrbrthemes::theme_ipsum_rc(base_size=14, subtitle_size=16, axis_title_size=12))
@@ -130,7 +154,9 @@ theme_set(hrbrthemes::theme_ipsum_rc(base_size=14, subtitle_size=16, axis_title_
 ggplot() +
   geom_point(data=subset(d, type=="data"),
   aes(eff_vacc_cov, indirect_vacc_eff, color=location))+
-  geom_line(data=subset(d, type=="model"), 
+  geom_line(data=subset(d, type=="Model1"), 
+            aes(eff_vacc_cov, indirect_vacc_eff), color="steelblue") +
+  geom_line(data=subset(d, type=="Model2"), 
             aes(eff_vacc_cov, indirect_vacc_eff), color="firebrick") +
   geom_line(data=subset(d, type=="SSmodel"), 
             aes(eff_vacc_cov, indirect_vacc_eff), color="forestgreen")+
