@@ -216,7 +216,8 @@ dat <- dat[!is.na(contacts),]
 
 ```{r}
 library(MASS)
-m <- glm.nb(contacts ~ age_grp + gender + dayofweek + hh_size_grp + country, data = dat)
+m <- glm.nb(contacts ~ age_grp + gender + dayofweek + hh_size_grp + country, 
+            data = dat)
 # summary(m4)
 exp(m$coefficients)
 ```

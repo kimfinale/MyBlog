@@ -291,11 +291,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.7335613</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>IVE <span class="sc">==</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>TVE)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>DVE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(IVE <span class="sc">==</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>TVE)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>DVE))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>OVE <span class="sc">==</span> <span class="dv">1</span> <span class="sc">-</span> (f<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>TVE)<span class="sc">+</span>(<span class="dv">1</span><span class="sc">-</span>f)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>IVE))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(OVE <span class="sc">==</span> <span class="dv">1</span> <span class="sc">-</span> (f<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>TVE)<span class="sc">+</span>(<span class="dv">1</span><span class="sc">-</span>f)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>IVE)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(IVE <span class="sc">==</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">-</span> OVE <span class="sc">-</span> f<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>TVE))<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>f))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(TVE <span class="sc">==</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>DVE)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>IVE))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>

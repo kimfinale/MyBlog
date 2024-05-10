@@ -118,6 +118,8 @@ Let's compute the four VE measures.
 (IVE <- 1 - (pop_A_out[tend,"C0"]/pop_A[["N0"]])/(pop_B_out[tend,"C0"]/pop_B[["N0"]]))
 (OVE <- 1 - ((1-f)*pop_A_out[tend,"C0"]/pop_A[["N0"]] + f*pop_A_out[tend,"C1"]/pop_A[["N1"]])/ (pop_B_out[tend,"C0"]/pop_B[["N0"]]))
 (TVE <- 1 - (pop_A_out[tend,"C1"]/pop_A[["N1"]])/(pop_B_out[tend,"C0"]/pop_B[["N0"]]))
-IVE == 1 - (1-TVE)/(1-DVE)
-OVE == 1 - (f*(1-TVE)+(1-f)*(1-IVE))
+(IVE == 1 - (1-TVE)/(1-DVE))
+(OVE == 1 - (f*(1-TVE)+(1-f)*(1-IVE)))
+(IVE == 1 - (1 - OVE - f*(1-TVE))/(1-f))
+(TVE == 1 - (1-DVE)*(1-IVE))
 ```
