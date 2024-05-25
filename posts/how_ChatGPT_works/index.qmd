@@ -1,9 +1,9 @@
 ---
-title: "How does ChatGPT work? Implemented in R"
+title: "Top 5 probabilities for the next word: R implementation of the GPT-2"
 author: "Jong-Hoon Kim"
 date: "2024-05-01"
-categories: [R, API, apartment]
-image: "apt_price.png"
+categories: [GPT-2, ChatGPT, Wolfram]
+image: "top5_prob.png"
 editor_options: 
   chunk_output_type: console
 ---
@@ -51,7 +51,7 @@ Model0$load_state_dict(state_dict = torch_load("Model-weights.pt"),
 Create a function to list up `top_k` words with their probabilities.
 
 ```{r}
-top_probabilties <- function(model = NULL,
+top_k_words <- function(model = NULL,
                              device = NULL,
                              raw_text = NULL, 
                              temperature = NULL, 
@@ -90,13 +90,13 @@ Generate the results
 
 ```{r}
 set.seed(1) # for reproducibility, GPT-2 output is random.
-df <- top_probabilties(model = Model0,
-                       device = device0,
-                       raw_text = "The best thing about AI is its ability to", 
-                       temperature = 0.8,
-                       top_k = 10)
+df <- top_k_words(model = Model0,
+                  device = device0,
+                  raw_text = "The best thing about AI is its ability to", 
+                  temperature = 0.8,
+                  top_k = 5)
 
-names(df) <- c("Probability", "Token")
+names(df) <- c("Token","Probability")
 knitr::kable(df)
 ```
 
