@@ -10,7 +10,536 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Disease modeling for public health</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Thu, 18 Apr 2024 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 17 May 2024 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Variables selection in statistical models</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/variable_selection/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>When building statistical models, one of the most critical steps is variable selection. This process involves choosing the appropriate predictors or features that will be included in your model. The goal is to create a model that is both accurate and interpretable, avoiding overfitting and underfitting. I’ll explore what I am learning regarding issues related to variable selection, the common methods used, and best practices to ensure robust model performance.</p>
+<p>The following contents are mainly based on <a href="https://diagnprognres.biomedcentral.com/articles/10.1186/s41512-020-00074-3">the work by Sauebrei et al</a>, which I am learning. As such, the following contents should not be used as a definitive guide to variable selection.</p>
+<p>Variable selection should start by defining what kind of model one is developing. The work by Shumeli, <a href="https://www.stat.berkeley.edu/~aldous/157/Papers/shmueli.pdf">To explain or to predict?</a>, discusses that there may be three kinds of statistical models: descriptive, explanatory, and predictive models. The first sentence of its abstract reads, “Statistical modeling is a powerful tool for developing and testing theories by way of causal explanation, prediction, and description.”</p>
+<p>Then we can list the variables based on the prior information. In this stage, drawing a directed acyclic graph (DAG) may help.</p>
+<p>Once the list is made, one can employ a</p>
+<ol type="1">
+<li>Forward selection (FS)</li>
+<li>Backward elimination (BE)</li>
+<li>Stepwise method that combines FS with additional BE. BE method is preferred because we already starts with a plausible model</li>
+<li>Best subset selection</li>
+</ol>
+<p>Different information criteria have been proposed, among which Akaike’s information criterion (AIC) is in principle preferable for predictive models and Schwartz’s Bayesian information criterion (BIC) for descriptive models.</p>
+<ol start="19" type="1">
+<li>Burnham KP, Anderson DR. Model selection and multimodel inference: a practical information-theoretic approach. New York: Springer; 2002.</li>
+</ol>
+<p>true data generating model??</p>
+<ol type="1">
+<li>Filter Methods: These methods apply statistical measures to assign a score to each feature. Features are ranked by their scores, and the top-ranked ones are selected.</li>
+</ol>
+<p>Correlation Coefficient: Measures the linear relationship between each feature and the target variable. Features with high correlation (positive or negative) are preferred.</p>
+<p>Chi-Square Test: Used for categorical variables, this test assesses whether there is a significant association between the feature and the target variable.</p>
+<p>ANOVA F-Value: For continuous variables, the ANOVA F-value tests the null hypothesis that all means are equal.</p>
+<ol start="2" type="1">
+<li>Wrapper Methods: These methods evaluate feature subsets based on model performance. The main types of wrapper methods include:</li>
+</ol>
+<p>Forward Selection: Starts with no variables and adds one variable at a time based on model performance improvement.</p>
+<p>Backward Elimination: Starts with all variables and removes the least significant variable at each step.</p>
+<p>Recursive Feature Elimination (RFE): Builds the model and eliminates the least important feature iteratively until the optimal number of features is reached.</p>
+<ol start="3" type="1">
+<li>Embedded Methods: These methods perform variable selection during the model training process and are typically specific to certain types of models.</li>
+</ol>
+<p>LASSO (Least Absolute Shrinkage and Selection Operator): Adds a penalty equal to the absolute value of the magnitude of coefficients. This penalty can shrink some coefficients to zero, effectively performing variable selection.</p>
+<p>Ridge Regression: Adds a penalty equal to the square of the magnitude of coefficients. While it doesn’t perform variable selection outright, it can reduce the impact of less important variables.</p>
+<p>Tree-Based Methods: Models like Random Forests or Gradient Boosting Trees inherently perform variable selection by considering the importance of variables based on their contribution to reducing impurity or error.</p>
+<p>Best Practices for Variable Selection 1. Understand Your Data: Before diving into variable selection techniques, it’s crucial to have a deep understanding of your data. Perform exploratory data analysis (EDA) to identify potential relationships and understand the context of each variable.</p>
+<ol start="2" type="1">
+<li><p>Use Domain Knowledge: Leverage domain expertise to inform your variable selection process. Certain variables might be inherently more important based on the context of the problem.</p></li>
+<li><p>Cross-Validation: Always use cross-validation to assess the performance of your model with the selected variables. This ensures that your model’s performance is consistent across different subsets of the data.</p></li>
+<li><p>Combine Methods: Often, the best approach is to combine multiple methods. For instance, you might start with filter methods to narrow down the field and then use wrapper methods to fine-tune the selection.</p></li>
+<li><p>Regularly Re-Evaluate: As new data becomes available or the problem context changes, re-evaluate your variable selection. What was relevant at one time may no longer be the best choice.</p></li>
+</ol>
+<p>Conclusion Variable selection is a pivotal step in building effective statistical models. By carefully choosing the right variables, you can improve model accuracy, interpretability, and efficiency. Whether using filter methods, wrapper methods, or embedded methods, the key is to balance model complexity with performance. Combining these methods with domain knowledge and cross-validation will ensure that your model is robust and reliable. As data science continues to evolve, so too will the strategies for variable selection, making it an exciting area of ongoing research and application.</p>
+<p>Use prior information. Try to draw a directed acyclic graph (DAG)</p>
+<ol type="1">
+<li>Forward selection (FS)</li>
+<li>Backward elimination (BE)</li>
+<li>Stepwise method that combines FS with additional BE. BE method is preferred because we already starts with a plausible model</li>
+<li>Best subset selection</li>
+</ol>
+<p>Different information criteria have been proposed, among which Akaike’s information criterion (AIC) is in principle preferable for predictive models and Schwartz’s Bayesian information criterion (BIC) for descriptive models.</p>
+<ol start="19" type="1">
+<li>Burnham KP, Anderson DR. Model selection and multimodel inference: a practical information-theoretic approach. New York: Springer; 2002.</li>
+</ol>
+<p>true data generating model??</p>
+<ol start="5" type="1">
+<li>Change-in-estimate</li>
+<li>Lasso</li>
+<li>Elastic net</li>
+<li>Boosting - Component-wise boosting is a forward stagewise regression procedure applicable to generalised linear models</li>
+<li>Resampling-based: 9.1: bootstrap inclusion frequencies (BIF) 9.2: stability selection</li>
+</ol>
+<p>Post-selection inference</p>
+<p>Since the main aim of descriptive models is the interpretation of the estimated regression coefficients, point estimates should be accompanied by confidence intervals and sometimes also by <img src="https://latex.codecogs.com/png.latex?p"> values.</p>
+<p>Generalised additive model (GAM) <a href="https://diagnprognres.biomedcentral.com/articles/10.1186/s41512-020-00074-3">State-of-the-art</a></p>
+<p><a href="https://www.stat.berkeley.edu/~aldous/157/Papers/shmueli.pdf">To explain or to predict?</a></p>
+<p>Clssic guide to the generalized linear mixed model is <a href="https://www.cell.com/trends/ecology-evolution/abstract/S0169-5347(09)00019-6?mobileUi\u003d0\u0026code\u003dcell-site=">Bolker et al.</a></p>
+<p><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2021.666182/full">Reporting guidelines for the GLIMM</a></p>
+<section id="data-fields" class="level3">
+<h3 class="anchored" data-anchor-id="data-fields">Data Fields</h3>
+<p>age: Age of the subject age_grp: sex: household size: Number of people living together excluding oneself school/occupation</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>variable selection</category>
+  <category>generalized linear model</category>
+  <guid>https://kimfinale.github.io/myblog/posts/variable_selection/index.html</guid>
+  <pubDate>Fri, 17 May 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/variable_selection/chatgpt.png" medium="image" type="image/png"/>
+</item>
+<item>
+  <title>How does ChatGPT work? Implemented in R</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/how_ChatGPT_works/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Inspired by the <a href="https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/">blog post by Stephen Wolfram</a> about the workings of the GPT-2 system, I decided to learn a bit about ChatGPT myself. Luckily, <a href="https://github.com/AGPatriota/GPT-2-for-R">GPT-2</a> is now available for R. My first task is simply to learn to run the model and generate the probability table for the words that can follow the text, “The best thing about AI is to be able to”. The following contents are mainly based on <a href="https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/">the blog post by Stephen Wolfram</a>. Additional resources include OpenAI Github page for <a href="https://github.com/openai/gpt-2">gpt-2</a> and <a href="https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf">the paper</a> describing GPT-2 paper.</p>
+<p>Load the libraries and R implementation of GPT-2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(tok)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(torch)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'GPT.R'</span>)</span></code></pre></div>
+</div>
+<p>Create a tokenizer to process inputs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">tok <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> tok<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span>tokenizer<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">from_pretrained</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gpt2"</span>)</span></code></pre></div>
+</div>
+<p>Load a GPT-2 model</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">torch<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">with_device</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">device =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"meta"</span>,{</span>
+<span id="cb3-2">  Model0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">GPT</span>(</span>
+<span id="cb3-3">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">block_size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1024</span>,</span>
+<span id="cb3-4">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n_embd =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">768</span>,</span>
+<span id="cb3-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">N_Layers =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>,</span>
+<span id="cb3-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nvoc =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50257</span>,</span>
+<span id="cb3-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Head =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span></span>
+<span id="cb3-8">  )</span>
+<span id="cb3-9">})</span></code></pre></div>
+</div>
+<p>Apply the model weights</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">Model0<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">load_state_dict</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">state_dict =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">torch_load</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Model-weights.pt"</span>),</span>
+<span id="cb4-2">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.refer_to_state_dict =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span></code></pre></div>
+</div>
+<p>Create a function to list up <code>top_k</code> words with their probabilities.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">top_probabilties <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">model =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>,</span>
+<span id="cb5-2">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">device =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>,</span>
+<span id="cb5-3">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">raw_text =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, </span>
+<span id="cb5-4">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">temperature =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, </span>
+<span id="cb5-5">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">top_k =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>){</span>
+<span id="cb5-6">  </span>
+<span id="cb5-7">  idx <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> tok<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">encode</span>(raw_text)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>ids</span>
+<span id="cb5-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Input text is "</span>, raw_text)</span>
+<span id="cb5-9">  idx <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> torch<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">torch_tensor</span>(idx<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dtype=</span>torch<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">torch_int</span>(), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">device=</span>device0)</span>
+<span id="cb5-10">  idx <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> torch<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">torch_unsqueeze</span>(idx, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb5-11">  idx_cond <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> idx    </span>
+<span id="cb5-12">  logits <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> model<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">eval</span>()(idx_cond)</span>
+<span id="cb5-13">  logits <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> logits[, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(idx<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">size</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1024</span>), ] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> temperature</span>
+<span id="cb5-14">  </span>
+<span id="cb5-15">  logits <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> logits<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">topk</span>(top_k)</span>
+<span id="cb5-16">  probs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> torch<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nnf_softmax</span>(logits[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]],<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb5-17">  df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">token =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>,</span>
+<span id="cb5-18">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">probability=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(probs))</span>
+<span id="cb5-19">  </span>
+<span id="cb5-20">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>top_k) {</span>
+<span id="cb5-21">    idx_next <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> logits[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]][,<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.integer</span>(i)]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unsqueeze</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb5-22">    token <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> tok<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">decode</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.integer</span>(idx_next<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cpu</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>))</span>
+<span id="cb5-23">    df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>token[i] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> token</span>
+<span id="cb5-24">  }</span>
+<span id="cb5-25">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(df)</span>
+<span id="cb5-26">}</span></code></pre></div>
+</div>
+<p>Have the model run on GPU</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">Model0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (torch<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cuda_is_available</span>()) Model0<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cuda</span>() <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> Model0<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cpu</span>()</span>
+<span id="cb6-2">device0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (torch<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cuda_is_available</span>()) <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cuda"</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cpu"</span></span></code></pre></div>
+</div>
+<p>Generate the results</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># for reproducibility, GPT-2 output is random.</span></span>
+<span id="cb7-2">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">top_probabilties</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">model =</span> Model0,</span>
+<span id="cb7-3">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">device =</span> device0,</span>
+<span id="cb7-4">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">raw_text =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"The best thing about AI is its ability to"</span>, </span>
+<span id="cb7-5">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">temperature =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>,</span>
+<span id="cb7-6">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">top_k =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)</span>
+<span id="cb7-7"></span>
+<span id="cb7-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>(df) <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Probability"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Token"</span>)</span>
+<span id="cb7-9">knitr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">kable</span>(df)</span></code></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Probability</th>
+<th style="text-align: right;">Token</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">learn</td>
+<td style="text-align: right;">0.1770876</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">predict</td>
+<td style="text-align: right;">0.1309014</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">make</td>
+<td style="text-align: right;">0.1167285</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">understand</td>
+<td style="text-align: right;">0.1115737</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">do</td>
+<td style="text-align: right;">0.1029230</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">be</td>
+<td style="text-align: right;">0.0967846</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">solve</td>
+<td style="text-align: right;">0.0881194</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">adapt</td>
+<td style="text-align: right;">0.0607838</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">find</td>
+<td style="text-align: right;">0.0590370</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">create</td>
+<td style="text-align: right;">0.0560608</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>API</category>
+  <category>apartment</category>
+  <guid>https://kimfinale.github.io/myblog/posts/how_ChatGPT_works/index.html</guid>
+  <pubDate>Tue, 30 Apr 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/how_ChatGPT_works/apt_price.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
 <item>
   <title>Logistic function in R</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -17109,1126 +17638,6 @@ $vr1
   <guid>https://kimfinale.github.io/myblog/posts/oral_cholera_vacc_cov/index.html</guid>
   <pubDate>Mon, 08 Jan 2024 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/oral_cholera_vacc_cov/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
-</item>
-<item>
-  <title>Fitting a straight line in Julia: Flux machine learning</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/fit_a_straight_line_julia/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="fitting-a-straight-line-in-julia" class="level3">
-<h3 class="anchored" data-anchor-id="fitting-a-straight-line-in-julia">Fitting a straight line in Julia</h3>
-<p>This post is my attempt to learn machine learning in Julia. The contents of this page came from the <a href="https://fluxml.ai/Flux.jl/stable/models/overview/">Flux</a>. <code>Flux</code> is a machine learning package written in Julia.</p>
-</section>
-<section id="create-training-and-test-data" class="level3">
-<h3 class="anchored" data-anchor-id="create-training-and-test-data">Create training and test data</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">using</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">Flux</span>, <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">Distributions</span>, <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">Random</span>, <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">Statistics</span></span>
-<span id="cb1-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># create the data</span></span>
-<span id="cb1-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># true parameter values are 4 and 2</span></span>
-<span id="cb1-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">linear_model</span>(x) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rand</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">Normal</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>x<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>))[<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>linear_model (generic function with 1 method)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"></span>
-<span id="cb3-2">x_train, x_test <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">hcat</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">...</span>), <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">hcat</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">6</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">...</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>([0 1 … 4 5], [6 7 … 9 10])</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1">y_train, y_test <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">linear_model</span>.(x_train), <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">linear_model</span>.(x_test)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>([1.552234290757838 5.997621972031162 … 17.799006293669162 21.987462504032138], [26.82759499486528 28.113859596390927 … 38.71844108675521 43.89937704938766])</code></pre>
-</div>
-</div>
-</section>
-<section id="create-a-neural-network-model-with-a-single-layer" class="level3">
-<h3 class="anchored" data-anchor-id="create-a-neural-network-model-with-a-single-layer">Create a neural network model with a single layer</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># y = σ.(W * x .+ bias) </span></span>
-<span id="cb7-2">model <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> Flux.<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">Dense</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=&gt;</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 2 parameters</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Dense(1 =&gt; 1)       # 2 parameters</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># prediction based on the untrained baseline model </span></span>
-<span id="cb9-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">model</span>(x_train)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>1×6 Matrix{Float32}:
- 0.0  -0.230685  -0.461369  -0.692054  -0.922739  -1.15342</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"></span>
-<span id="cb11-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># define the loss function to use it for training</span></span>
-<span id="cb11-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">loss</span>(m, x, y) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mean</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">abs2</span>.(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">m</span>(x) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.-</span> y))</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>loss (generic function with 1 method)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">loss</span>(model, x_train, y_train)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>214.52561035758617</code></pre>
-</div>
-</div>
-</section>
-<section id="train-the-model" class="level3">
-<h3 class="anchored" data-anchor-id="train-the-model">Train the model</h3>
-<p><code>Flux</code> package has the <code>Flux.train!</code> function for model training. The function requires an optimizer, which can be, for example, created using <code>Descent</code> function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">using</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">Flux</span>: train!</span>
-<span id="cb15-2"></span>
-<span id="cb15-3">opt <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">Descent</span>() <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># gradient descent algorithm </span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Descent(0.1)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">Descent</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Descent(0.1)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"></span>
-<span id="cb19-2">data <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [(x_train, y_train)]</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>1-element Vector{Tuple{Matrix{Int64}, Matrix{Float64}}}:
- ([0 1 … 4 5], [1.552234290757838 5.997621972031162 … 17.799006293669162 21.987462504032138])</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"></span>
-<span id="cb21-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">train!</span>(loss, model, data, opt)</span>
-<span id="cb21-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">loss</span>(model, x_train, y_train)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>203.61293290763626</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"></span>
-<span id="cb23-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># check model parameters after going through the data once</span></span>
-<span id="cb23-3">model.weight, model.bias</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Float32[8.607251;;], Float32[2.5395057])</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"></span>
-<span id="cb25-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># iteratively train the model</span></span>
-<span id="cb25-3"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> epoch <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">200</span></span>
-<span id="cb25-4">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">train!</span>(loss, model, data, opt)</span>
-<span id="cb25-5"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">end</span></span></code></pre></div>
-</div>
-</section>
-<section id="examine-the-trained-model" class="level3">
-<h3 class="anchored" data-anchor-id="examine-the-trained-model">Examine the trained model</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># check the loss</span></span>
-<span id="cb26-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">loss</span>(model, x_train, y_train)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.19602860021782811</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># check the model parameters</span></span>
-<span id="cb28-2">model.weight, model.bias</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Float32[4.0600896;;], Float32[2.0363088])</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># check the model against the test data set</span></span>
-<span id="cb30-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">model</span>(x_test)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>1×5 Matrix{Float32}:
- 26.3968  30.4569  34.517  38.5771  42.6372</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1">y_test</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>1×5 Matrix{Float64}:
- 26.8276  28.1139  33.7393  38.7184  43.8994</code></pre>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>julia</category>
-  <category>Flux</category>
-  <category>linear model</category>
-  <guid>https://kimfinale.github.io/myblog/posts/fit_a_straight_line_julia/index.html</guid>
-  <pubDate>Wed, 03 Jan 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/fit_a_straight_line_julia/flux_logo.png" medium="image" type="image/png" height="49" width="144"/>
-</item>
-<item>
-  <title>Critical vaccination threshold</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/critical_vacc_threshold/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>The following <a href="https://academic.oup.com/cid/article/52/7/911/299077">article by Fine</a> provides a great introduction to the critical vaccination threshold.</p>
-<section id="critical-vaccination-threshold" class="level4">
-<h4 class="anchored" data-anchor-id="critical-vaccination-threshold">Critical vaccination threshold</h4>
-<p>The simplest scenario would be to assume that individuals are well-mixed and vaccine recipients are completely protected from infection. For this scenario, the critical threshold for random vaccination, <img src="https://latex.codecogs.com/png.latex?V_c">, is as follows: <img src="https://latex.codecogs.com/png.latex?%0AV_c%20=%201-1/R_0%0A"> If vaccines are only partially protective and <img src="https://latex.codecogs.com/png.latex?E"> fraction of the vaccine recipients are completely protected, <img src="https://latex.codecogs.com/png.latex?V_c"> becomes as follows: <img src="https://latex.codecogs.com/png.latex?%0AV_c%20=%20%5Cfrac%7B1-1/R_0%7D%7BE%7D%0A"></p>
-<p>I used the population <a href="https://population.un.org/wpp/Download/Standard/MostUsed/">World Population Prospects 2022</a>.</p>
-</section>
-<section id="plot-the-results" class="level4">
-<h4 class="anchored" data-anchor-id="plot-the-results">Plot the results</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb1-2">extrafont<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">loadfonts</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"win"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">quiet=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">12</span>))</span>
-<span id="cb1-4">R0 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>,<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">length.out=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>)</span>
-<span id="cb1-5">VE <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.4</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.6</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.8</span>)</span>
-<span id="cb1-6">Vc <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lapply</span>(VE, <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(x) <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>((<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1-1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>R0)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>x <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1-1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>R0)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>x, <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NA</span>))</span>
-<span id="cb1-7"></span>
-<span id="cb1-8">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">R0=</span>R0, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">Vc1=</span>Vc[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">Vc2=</span>Vc[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">Vc3=</span>Vc[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>]])</span>
-<span id="cb1-9"></span>
-<span id="cb1-10">gg <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> R0)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-11">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_rect</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xmin=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.15</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xmax=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2.78</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ymin=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ymax=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">max</span>(df<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>Vc3)),</span>
-<span id="cb1-12">                   <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"pink"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.01</span>)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-13">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>Vc3, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linetype=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"80%"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-14">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>Vc2, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linetype=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"60%"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-15">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>Vc1, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linetype=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"40%"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-16">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_linetype_manual</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Vaccine efficacy"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">values=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"80%"</span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"solid"</span>,</span>
-<span id="cb1-17">                                   <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"60%"</span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"dashed"</span>, </span>
-<span id="cb1-18">                                   <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"40%"</span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"dotted"</span>))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-19">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># labs(y="Critical vaccination threshold", x=expression(R[0])) +</span></span>
-<span id="cb1-20">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">expression</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Critical vaccination threshold (%), "</span>, V[C])), </span>
-<span id="cb1-21">       <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">expression</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Basic reproduction number, "</span>, R[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>]))) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-22">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">text =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>),</span>
-<span id="cb1-23">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.text =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>),</span>
-<span id="cb1-24">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend.text=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15</span>), </span>
-<span id="cb1-25">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"bottom"</span>)</span>
-<span id="cb1-26"></span>
-<span id="cb1-27">gg</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/critical_vacc_threshold/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ggsave("Vc_R0.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">R0 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.15</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2.78</span>)</span>
-<span id="cb3-2">(Vc <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1-1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>R0)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1304348 0.6402878</code></pre>
-</div>
-</div>
-</section>
-<section id="india-simulation" class="level3">
-<h3 class="anchored" data-anchor-id="india-simulation">India simulation</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(data.table)</span>
-<span id="cb5-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(readxl)</span>
-<span id="cb5-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)</span>
-<span id="cb5-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># d &lt;- read_xlsx("C:/Users/jonghoon.kim/Documents/myblog/posts/critical_vacc_threshold/WPP2022_POP_F01_1_POPULATION_SINGLE_AGE_BOTH_SEXES.xlsx", sheet= "Medium variant")</span></span>
-<span id="cb5-5"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># d2 &lt;- d[-(1:11),]</span></span>
-<span id="cb5-6"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># india &lt;- d2[(d2$...3 == "India" &amp; d2$...11 &gt; 2023),]</span></span>
-<span id="cb5-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># names(india) &lt;- c(1:2, "country", 4:10 ,"year", paste0("age_", 0:100))</span></span>
-<span id="cb5-8"></span>
-<span id="cb5-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># saveRDS(india, "C:/Users/jonghoon.kim/Documents/myblog/posts/critical_vacc_threshold/WPP2022_India.rds")</span></span>
-<span id="cb5-10"></span>
-<span id="cb5-11">india <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">readRDS</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"C:/Users/jonghoon.kim/Documents/myblog/posts/critical_vacc_threshold/WPP2022_India.rds"</span>)</span>
-<span id="cb5-12">india<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>year <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.numeric</span>(india<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>year)</span>
-<span id="cb5-13"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># india[,paste0("age_", 0:100)] &lt;- as.numeric(india[,paste0("age_", 0:100)])</span></span>
-<span id="cb5-14">india <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> india <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate_at</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"age_"</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>), as.numeric)</span>
-<span id="cb5-15"></span>
-<span id="cb5-16">yrs <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2024</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2100</span></span>
-<span id="cb5-17"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># simulate</span></span>
-<span id="cb5-18">VE <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.4</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.6</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.8</span>)</span>
-<span id="cb5-19">prop_immune <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NA</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(yrs))</span>
-<span id="cb5-20"></span>
-<span id="cb5-21"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span>(i <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq_along</span>(yrs)) {</span>
-<span id="cb5-22">  numerator <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(india[india<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>year <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> yrs[i], <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"age_"</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>(i<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">-1</span>))])</span>
-<span id="cb5-23">  denominator <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(india[india<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>year <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> yrs[i], <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"age_"</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>)])</span>
-<span id="cb5-24">  prop_immune[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> numerator <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> denominator</span>
-<span id="cb5-25">} </span>
-<span id="cb5-26"></span>
-<span id="cb5-27">existing_immune <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span></span>
-<span id="cb5-28">pop_immune_ve <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lapply</span>(VE, <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(z) <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>z<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>prop_immune)</span>
-<span id="cb5-29"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># add the existing immunity, assumed to be 15%</span></span>
-<span id="cb5-30">pop_immune_ve_added <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lapply</span>(VE, <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(z) <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>z<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>prop_immune <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> existing_immune)</span>
-<span id="cb5-31"></span>
-<span id="cb5-32">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">years=</span>yrs<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">-2024</span>, </span>
-<span id="cb5-33">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pi1=</span>pop_immune_ve[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]], </span>
-<span id="cb5-34">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pi2=</span>pop_immune_ve[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]], </span>
-<span id="cb5-35">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pi3=</span>pop_immune_ve[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>]], </span>
-<span id="cb5-36">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pi4=</span>pop_immune_ve_added[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]], </span>
-<span id="cb5-37">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pi5=</span>pop_immune_ve_added[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]], </span>
-<span id="cb5-38">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pi6=</span>pop_immune_ve_added[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>]])</span>
-<span id="cb5-39"></span>
-<span id="cb5-40">extrafont<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">loadfonts</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"win"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">quiet=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb5-41"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">12</span>))</span>
-<span id="cb5-42"></span>
-<span id="cb5-43"></span>
-<span id="cb5-44">gg <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(df, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> years)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-45">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_rect</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xmin=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xmax=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">30</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ymin=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ymax=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">63</span>),</span>
-<span id="cb5-46">                   <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"pink"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alpha=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.01</span>)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-47">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>pi3, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linetype=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"80%"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-48">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>pi2, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linetype=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"60%"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-49">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>pi1, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linetype=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"40%"</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-50">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>pi6, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linetype=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"80%"</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"dark green"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-51">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>pi5, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linetype=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"60%"</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"dark green"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-52">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>pi4, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linetype=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"40%"</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"dark green"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-53">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">limits=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">30</span>))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-54">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_linetype_manual</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Vaccine efficacy"</span>, </span>
-<span id="cb5-55">                        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">values=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"80%"</span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"solid"</span>,</span>
-<span id="cb5-56">                                 <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"60%"</span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"dashed"</span>, </span>
-<span id="cb5-57">                                 <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"40%"</span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"dotted"</span>))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-58">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># labs(y="Critical vaccination threshold", x=expression(R[0])) +</span></span>
-<span id="cb5-59">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Population immune (%)"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Years since vaccination"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb5-60">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">text =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>),</span>
-<span id="cb5-61">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.text =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>),</span>
-<span id="cb5-62">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend.text=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15</span>), </span>
-<span id="cb5-63">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"bottom"</span>)</span>
-<span id="cb5-64">gg</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/critical_vacc_threshold/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ggsave("immune_time.png", gg, units="in", width=3.4*2, height=2.7*2)</span></span></code></pre></div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>vaccine</category>
-  <category>population immunity</category>
-  <category>critical vaccination threshold</category>
-  <guid>https://kimfinale.github.io/myblog/posts/critical_vacc_threshold/index.html</guid>
-  <pubDate>Wed, 13 Dec 2023 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/critical_vacc_threshold/Vc_R0.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 </channel>
 </rss>

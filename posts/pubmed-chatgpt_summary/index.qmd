@@ -60,7 +60,8 @@ chatgpt_api_token <- readRDS("G:/My Drive/Personal/chatGPT_api_key.rds")
 library(rentrez)
 
 query <- "typhoid" # the search query
-search_results <- entrez_search(db="pubmed", term=query, datetype="pdat", reldate=10) # any other useful parameters?
+search_results <- entrez_search(db="pubmed", term=query) # any other useful parameters?
+
 ```
 
 2.  Fetch the details of the article in xml format
@@ -88,11 +89,12 @@ dois <- xml_text(xml_find_all(doc, ".//PubmedData/ArticleIdList/ArticleId[@IdTyp
 4.  Call ChatGPT to summarize the abstract in 1-2 sentences This is a subscription-based service. You must have a ChatGPT API key and must have signed up for their paid service.
 
 ```{r, eval=FALSE}
-get_completion <- function(prompt, model="gpt-3.5-turbo", temperature=0){
+# gpt-4o
+get_completion <- function(prompt, model="gpt-4o", temperature=0){
   response <- httr::POST(
     url = "https://api.openai.com/v1/chat/completions", 
-    add_headers(Authorization = paste("Bearer", chatgpt_api_token)),
-    content_type_json(),
+    httr::add_headers(Authorization = paste("Bearer", chatgpt_api_token)),
+    httr::content_type_json(),
     encode = "json",
     body = list(
       model = model,
@@ -103,7 +105,7 @@ get_completion <- function(prompt, model="gpt-3.5-turbo", temperature=0){
      ))
    )
   )
-  return(content(response)$choices[[1]]$message$content)
+  return(httr::content(response)$choices[[1]]$message$content)
 }
 
 
@@ -114,6 +116,7 @@ for (i in 1:length(abstracts)) {
   prompt = paste0("Your task is to generate a short summary of a scientific article based on its title and abstract. Summarize the text delimited by triple backticks into one sentence. ``` Title: ", titles[i], ". Abstract: ", abstracts[i], "```")
   abstract_summary[i] <- get_completion(prompt=prompt)
 }
+get_completion(promp="The cat sat on the", model="gpt-4o")
 ```
 
 5.  Make R send you an email everyday Use simple HTML syntaxes (`<p></p>` or `<b></b>`) to compose an email message using `blastula` package
