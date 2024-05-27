@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2024-05-25T10:38:04.519Z</lastmod>
+    <lastmod>2024-05-27T04:01:12.123Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -323,5 +323,9 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/variable_selection/index.html</loc>
     <lastmod>2024-05-25T03:05:03.007Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/neural_network_basic/index.html</loc>
+    <lastmod>2024-05-27T04:01:17.017Z</lastmod>
   </url>
 </urlset>

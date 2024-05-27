@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/neural_network_basic/index.html",
       "/posts/variable_selection/index.html",
       "/posts/how_ChatGPT_works/index.html",
       "/posts/logistic_indirect_ve/index.html",
