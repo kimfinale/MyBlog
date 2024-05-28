@@ -2,9 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/learning_ChatGPT_2/index.html",
       "/posts/neural_network_basic/index.html",
       "/posts/variable_selection/index.html",
-      "/posts/how_ChatGPT_works/index.html",
+      "/posts/learning_ChatGPT_1/index.html",
       "/posts/logistic_indirect_ve/index.html",
       "/posts/vacc_eff_waining_multiple_stages/index.html",
       "/posts/seir_varying_number_compartments/index.html",

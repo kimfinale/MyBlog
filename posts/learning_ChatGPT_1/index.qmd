@@ -1,5 +1,5 @@
 ---
-title: "Top 5 probabilities for the next word: R implementation of the GPT-2"
+title: "Learning ChatGPT 1: Probabilities for the next word"
 author: "Jong-Hoon Kim"
 date: "2024-05-01"
 categories: [GPT-2, ChatGPT, Wolfram]
@@ -14,21 +14,22 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 Inspired by the [blog post by Stephen Wolfram](https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/) about the workings of the GPT-2 system, I decided to learn a bit about ChatGPT myself. Luckily, [GPT-2](https://github.com/AGPatriota/GPT-2-for-R) is now available for R. My first task is simply to learn to run the model and generate the probability table for the words that can follow the text, "The best thing about AI is to be able to". The following contents are mainly based on [the blog post by Stephen Wolfram](https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/). Additional resources include OpenAI Github page for [gpt-2](https://github.com/openai/gpt-2) and [the paper](https://d4mucfpksywv.cloudfront.net/better-language-models/language-models.pdf) describing GPT-2 paper.
 
-
 Load the libraries and R implementation of GPT-2.
+
 ```{r}
 require(tok)
 require(torch)
 source('GPT.R')
 ```
 
-Create a tokenizer to process inputs. 
+Create a tokenizer to process inputs.
 
 ```{r}
 tok <- tok::tokenizer$from_pretrained("gpt2")
 ```
 
 Load a GPT-2 model
+
 ```{r}
 torch::with_device(device = "meta",{
   Model0 <- GPT(
@@ -99,7 +100,3 @@ df <- top_k_words(model = Model0,
 names(df) <- c("Token","Probability")
 knitr::kable(df)
 ```
-
-
-
-
