@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/claude_api/index.html",
       "/posts/learning_ChatGPT_2/index.html",
       "/posts/neural_network_basic/index.html",
       "/posts/variable_selection/index.html",
