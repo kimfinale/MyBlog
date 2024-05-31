@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2024-05-30T05:42:03.549Z</lastmod>
+    <lastmod>2024-05-31T23:58:07.961Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -38,7 +38,7 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/pubmed-chatgpt_summary/index.html</loc>
-    <lastmod>2024-05-25T03:05:00.975Z</lastmod>
+    <lastmod>2024-05-31T23:58:26.874Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/nb-regression-optim/index.html</loc>
@@ -338,6 +338,6 @@
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/claude_api/index.html</loc>
-    <lastmod>2024-05-30T05:42:12.113Z</lastmod>
+    <lastmod>2024-05-31T23:58:03.708Z</lastmod>
   </url>
 </urlset>
