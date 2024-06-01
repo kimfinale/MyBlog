@@ -33,13 +33,12 @@ Next generation operator $G$ 은 전파를 통해서 생산되는 새로운 감�
 
 ```{python}
 from sympy import *
-b, k, g, = symbols('p k g')
+b, k, g, = symbols('b k g')
 F = Matrix([[0, b],[0, 0]])
 V = Matrix([[k, 0], [-k, g]])
 M = F*(V**-1)
 eigval = M.eigenvals(simplify=true)
 init_printing(use_unicode=True)
-eigval
 lst = list(eigval.keys())
 lst[1]
 ```
@@ -48,11 +47,11 @@ lst[1]
 
 ```{=tex}
 \begin{align} 
-\mathrm{d}S_1/\mathrm{d}t &= B + \epsilon S_2 - (\lambda_p+\lambda_w-\mu)S_1\\
+\mathrm{d}S_1/\mathrm{d}t &= B + \epsilon S_2 - (\lambda_p+\lambda_w+\mu)S_1\\
 \mathrm{d}I_1/\mathrm{d}t &= (\lambda_p+\lambda_w)S_1 - (\delta+\mu) I_1 \\
 \mathrm{d}R/\mathrm{d}t &= \delta(1-\theta-\alpha)(I_1+I_2) - (\omega +\mu)R \\
 \mathrm{d}C/\mathrm{d}t &= \delta\theta(I_1+I_2) - \mu C \\
-\mathrm{d}S_2/\mathrm{d}t &= \omega R -\epsilon S_2 - (\lambda_p+\lambda_w-\mu) S_2\\
+\mathrm{d}S_2/\mathrm{d}t &= \omega R -\epsilon S_2 - (\lambda_p+\lambda_w+\mu) S_2\\
 \mathrm{d}I_2/\mathrm{d}t &= (\lambda_p+\lambda_w) S_2 - (\delta+\mu) I_2 \\
 \mathrm{d}W/\mathrm{d}t &= \gamma(I_1+rI_2+rC) - \xi W
 \end{align}
@@ -65,7 +64,7 @@ R_0 = \frac{1}{\mu+\delta} \left(\beta_p +\frac{\gamma \beta_w}{\xi}\right) \lef
 \end{align}
 ```
 ```{python}
-p, r, w, N, d, m, t, m, g, x = symbols('p r w N d m t m g x')
+p, r, w, N, d, m, t, g, x = symbols('p r w N d m t g x')
 F = Matrix([[p, r*p, r*p, w*N], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
 V = Matrix([[d+m, 0, 0, 0], [0, d+m, 0, 0], [-d*t, -d*t, m, 0], [-g, -r*g, -r*g, x]])
 M = F*(V**-1)

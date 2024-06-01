@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jong-Hoon Kim">
-<meta name="dcterms.date" content="2023-08-11">
+<meta name="dcterms.date" content="2024-06-01">
 
-<title>Disease modeling for public health - Basic reproduction number using SymPy</title>
+<title>Disease modeling for public health - Basic reproduction number: An algorithmic approach</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -144,10 +144,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Basic reproduction number using SymPy</h1>
+      <h1 class="title">Basic reproduction number: An algorithmic approach</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Basic reproduction number</div>
-                <div class="quarto-category">SymPy</div>
+                <div class="quarto-category">Mathematica</div>
+                <div class="quarto-category">algorithmic approach</div>
+                <div class="quarto-category">next generation matrix</div>
               </div>
                   </div>
   </div>
@@ -165,7 +167,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 11, 2023</p>
+        <p class="date">June 1, 2024</p>
       </div>
     </div>
     
@@ -183,17 +185,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>감염병의 전파를 이해하는 데 있어 가장 기본적인 개념이 <a href="https://jonghoonkim.ghost.io/ghost/#/editor/post/63aae251d7d6b5003d2967d1">재감염지수</a>, 특히 기초재감염지수 (<span class="math inline">\(\mathcal{R}_0\)</span>) 이다. 재감염지수는 한 명의 감염자로부터 생산되는 평균 후속 감염자의 수를 일컫는데 기초재감염지수는 코로나19의 경우 처럼 인구 집단에 면역력을 가진 사람이 없어 모든 사람이 감염될 수 있는 상태하 에서의 재감염지수를 말한다. 기초 재감염 지수는 다음과 같은 수식으로 표현할 수 있다.</p>
-<p><span class="math display">\[ \mathcal{R}_0 = \beta c D \]</span></p>
-<p><span class="math inline">\(\beta\)</span> 는 한 명의 감염자가 타인을 접촉할 때 상대방을 감염시킬 수 있는 확률, <span class="math inline">\(c\)</span> 는 단위 시간 당 접촉이 일어나는 횟수, <span class="math inline">\(D\)</span> 는 감염 상태가 지속되는 시간을 나타낸다. <span class="math inline">\(\beta\)</span> 만으로 <span class="math inline">\(\beta c\)</span> 를 대신해 사용하는 경우도 흔하다. 그 경우 <span class="math inline">\(\beta\)</span> 는 단위 시간 당 후속 감염자의 수로 표현할 수 있을 것 같다. 미분방정식에 기반한 감염병 모형의 경우는 <span class="math inline">\(\mathcal{R}_0\)</span>를 어떻게 계산할까? 아래와 같이 SIR 모형을 정의해 보자.</p>
+<p>A <a href="https://www.mdpi.com/2227-7390/12/1/27">recent article</a> published in Mathematics discusses an approach to calculating <span class="math inline">\(\mathcal{R}_0\)</span>. Since I have previously written a <a href="https://www.jonghoonk.com/posts/R0-sympy/">post</a> about calculating <span class="math inline">\(\mathcal{R}_0\)</span> using Sympy, I wanted explore a new algorithmic approach proposed by the article.</p>
+<p>The article claims that <span class="math inline">\(\mathcal{R}_0\)</span> is a not function of the original set of ordinary differential equation because <span class="math inline">\((F, V)\)</span> gradient decomposition may not be unique for a given set of ODE. As a reminder, <a href="https://link.springer.com/article/10.1007/BF00178324">Diekmann <em>et al.</em></a> showed that <span class="math inline">\(\mathcal{R}_0\)</span> is the spectral radius, or Perron–Frobenius eigenvalue, of the next generation operator.</p>
 <span class="math display">\[\begin{align}
 \mathrm{d}S/\mathrm{d}t &amp;= -\beta I S/N \\
 \mathrm{d}I/\mathrm{d}t &amp;= \beta I S/N - \gamma I\\
 \mathrm{d}R/\mathrm{d}t &amp;= \gamma I
 \end{align}\]</span>
-<p>위의 정의에서 사용되었던 개념을 적용한다면 <span class="math inline">\(\mathcal{R}_0 = \beta/\gamma\)</span> 라고 할 수 있다. 이는 <span class="math inline">\(\mathcal{R}_0\)</span>가 감염병이 집단 내에서 유행을 일으킬 수 있는 역치조건임을 이용해도 동일한 결론에 이를 수 있다. (i.e., <span class="math inline">\(\mathrm{d}I/\mathrm{d}t&gt;0\)</span>)</p>
-<p>위와는 달리 <a href="https://link.springer.com/article/10.1007/BF00178324">Diekmann <em>et al.</em></a> 에 의해서 도입된 next generation 방법으로 좀 더 다양한 상황 하에서 <span class="math inline">\(\mathcal{R}_0\)</span>를 구할 수 있다. 이 방법에서는 <span class="math inline">\(\mathcal{R}_0\)</span>가 next generation operator의 spectral radius 가 된다. 위 논문 보다는 <a href="https://www.sciencedirect.com/science/article/pii/S0025556402001086">van den Driessche <em>et al.</em></a> 가 좀 더 이해하기 쉬운 것 같아 이 방법을 기준으로 살펴보겠다. 그리고 그 계산을 python의 SymPy 라이브러리를 이용해서 구현을 해보겠다. 먼저 간단한 우선 ( SEIR ) 모형의 경우부터 살펴보자.</p>
-<p>Next generation operator <span class="math inline">\(G\)</span> 은 전파를 통해서 생산되는 새로운 감염이 발생하는 속도를 나타내는 행렬 <span class="math inline">\(F\)</span>와 감염이 다른 상태로 변화되는 속도 (V)로 구성되며 다음과 같은 관계를 갖는다. <span class="math inline">\(G=FV^{-1}\)</span>. 그리고 <span class="math inline">\(R_0\)</span>는 <span class="math inline">\(G\)</span>의 <a href="https://en.wikipedia.org/wiki/Spectral_radius">spectral radius</a>가 된다. 아래 파이썬 구현에서는 <span class="math inline">\(\beta, \gamma\)</span> 를 b, g로 나타내었다.</p>
+<p>Following Python and Mathematica codes generates that <span class="math display">\[\mathcal{R}_0 = \frac{\beta}{\gamma}.\]</span> if <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\gamma\)</span> are replaced with <span class="math inline">\(b\)</span> and <span class="math inline">\(g\)</span>, respectively.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sympy <span class="im">import</span> <span class="op">*</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>b, k, g, <span class="op">=</span> symbols(<span class="st">'b k g'</span>)</span>
@@ -202,21 +201,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> F<span class="op">*</span>(V<span class="op">**-</span><span class="dv">1</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>eigval <span class="op">=</span> M.eigenvals(simplify<span class="op">=</span>true)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>init_printing(use_unicode<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>eigval</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>⎧      b   ⎫
-⎨0: 1, ─: 1⎬
-⎩      g   ⎭</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lst <span class="op">=</span> <span class="bu">list</span>(eigval.keys())</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>lst[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>lst <span class="op">=</span> <span class="bu">list</span>(eigval.keys())</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>lst[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>b
 ─
 g</code></pre>
 </div>
 </div>
-<p>위에서 언급한 SEIR 모형의 경우는 너무 간단하니 그 보다 조금 더 복잡한 그 예로 다음 연구를 살펴보자. <a href="https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0002642">Pitzer <em>et al</em>.</a>의 연구인데 사용된 감염병 모형은 사람 간 직접 전파와 물을 통한 간접 전파 두 가지의 전파 메케니즘을 구현 하였고 (<span class="math inline">\(\lambda_p\)</span> 와 <span class="math inline">\(\lambda_w\)</span>) 최초 감염 <span class="math inline">\(S_1 \rightarrow I_1\)</span> 과 중복 감염<span class="math inline">\(R \rightarrow S_2 \rightarrow I_2\)</span> 을 다르게 취급하였다. 부록 (supplementary material)을 보면 사용된 미분식을 볼 수 있다.</p>
+<p>Mathematica uses the following next generation method (NGM) function provided in the article.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>NGM[mod_, inf_] <span class="sc">:</span><span class="er">=</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> Module[{dyn, X, infc, M, V, F, F1, V1, K}, dyn <span class="ot">=</span> mod[[<span class="dv">1</span>]]; </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">=</span> mod[[<span class="dv">2</span>]]; infc <span class="ot">=</span> Complement[Range[Length[X]], inf]; </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">=</span> Grad[dyn[[inf]], X[[inf]]]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  (<span class="sc">*</span>The jacobian of the infectious equations<span class="sc">*</span>); </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  V1 <span class="ot">=</span> <span class="sc">-</span>M <span class="sc">/</span>. Thread[X[[infc]] <span class="ot">-&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  (<span class="sc">*</span>V1 is a first guess <span class="cf">for</span> V,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  retains all gradient terms which disappear when the non infectious <span class="sc">\</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>components are null<span class="sc">*</span>); F1 <span class="ot">=</span> M <span class="sc">+</span> V1</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  (<span class="sc">*</span>F1 is a first guess <span class="cf">for</span> F,containing all other gradient terms<span class="sc">*</span>); </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  F <span class="ot">=</span> Replace[F1, _. _?Negative <span class="ot">-&gt;</span> <span class="dv">0</span>, {<span class="dv">2</span>}];</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  (<span class="sc">*</span>all terms <span class="cf">in</span> F1 containing minuses are set to <span class="dv">0</span><span class="sc">*</span>); V <span class="ot">=</span> F <span class="sc">-</span> M;</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  K <span class="ot">=</span> (F . Inverse[V]) <span class="sc">/</span>. Thread[X[[inf]] <span class="ot">-&gt;</span> <span class="dv">0</span>] <span class="sc">/</span><span class="er">/</span> FullSimplify;</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  {M, V1, F1, F, V, K}]</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>eqnsSEIR <span class="ot">=</span> {</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>b s i ,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  b s i <span class="sc">-</span> k e,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  k e <span class="sc">-</span> g i, </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  g i }</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>varsSEIR <span class="ot">=</span> {s, e, i, r}</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>modSEIR <span class="ot">=</span> {eqnsSEIR, varsSEIR}</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>NGM[modSEIR, {<span class="dv">2</span>, <span class="dv">3</span>}] <span class="sc">/</span>. s <span class="ot">-&gt;</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As in the <a href="https://www.jonghoonk.com/posts/R0-sympy/">previous post</a>, I applied the method to the model used in <a href="https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0002642">Pitzer <em>et al</em>.</a>, of which the model may be expressed in the following set of equations.</p>
 <span class="math display">\[\begin{align}
 \mathrm{d}S_1/\mathrm{d}t &amp;= B + \epsilon S_2 - (\lambda_p+\lambda_w+\mu)S_1\\
 \mathrm{d}I_1/\mathrm{d}t &amp;= (\lambda_p+\lambda_w)S_1 - (\delta+\mu) I_1 \\
@@ -226,36 +246,63 @@ g</code></pre>
 \mathrm{d}I_2/\mathrm{d}t &amp;= (\lambda_p+\lambda_w) S_2 - (\delta+\mu) I_2 \\
 \mathrm{d}W/\mathrm{d}t &amp;= \gamma(I_1+rI_2+rC) - \xi W
 \end{align}\]</span>
-<p>또한 아래와 같이 기초재감염지수도 계산 결과를 보여준다. SymPy를 통해 동일한 결과를 얻을 수 있는지 확인해보자.</p>
+<p>Following Python and Mathematica codes generates that</p>
 <span class="math display">\[\begin{align}
 R_0 = \frac{1}{\mu+\delta} \left(\beta_p +\frac{\gamma \beta_w}{\xi}\right) \left(1 +\frac{\delta\theta r}{\mu}\right)
 \end{align}\]</span>
+<p>In the following Python codes <span class="math inline">\(p, r, w, d, m, t, g, x\)</span> represent <span class="math inline">\(\beta_p, r, \beta_w, \delta, \mu, \theta, \gamma, \xi\)</span> in the equation.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>p, r, w, N, d, m, t, g, x <span class="op">=</span> symbols(<span class="st">'p r w N d m t g x'</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> Matrix([[p, r<span class="op">*</span>p, r<span class="op">*</span>p, w<span class="op">*</span>N], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>]])</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>V <span class="op">=</span> Matrix([[d<span class="op">+</span>m, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, d<span class="op">+</span>m, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="op">-</span>d<span class="op">*</span>t, <span class="op">-</span>d<span class="op">*</span>t, m, <span class="dv">0</span>], [<span class="op">-</span>g, <span class="op">-</span>r<span class="op">*</span>g, <span class="op">-</span>r<span class="op">*</span>g, x]])</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> F<span class="op">*</span>(V<span class="op">**-</span><span class="dv">1</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>eigval <span class="op">=</span> M.eigenvals(simplify<span class="op">=</span>true)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>init_printing(use_unicode<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>eigval </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>⎧      (N⋅g⋅w + p⋅x)⋅(d⋅r⋅t + m)   ⎫
-⎨0: 3, ─────────────────────────: 1⎬
-⎩             m⋅x⋅(d + m)          ⎭</code></pre>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>p, r, w, d, m, t, g, x <span class="op">=</span> symbols(<span class="st">'p r w d m t g x'</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> Matrix([[p, r<span class="op">*</span>p, r<span class="op">*</span>p, w], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>]])</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>V <span class="op">=</span> Matrix([[d<span class="op">+</span>m, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, d<span class="op">+</span>m, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="op">-</span>d<span class="op">*</span>t, <span class="op">-</span>d<span class="op">*</span>t, m, <span class="dv">0</span>], [<span class="op">-</span>g, <span class="op">-</span>r<span class="op">*</span>g, <span class="op">-</span>r<span class="op">*</span>g, x]])</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> F<span class="op">*</span>(V<span class="op">**-</span><span class="dv">1</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>eigval <span class="op">=</span> M.eigenvals(simplify<span class="op">=</span>true)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>init_printing(use_unicode<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>eigval </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>lst <span class="op">=</span> <span class="bu">list</span>(eigval.keys())</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>R0_eig <span class="op">=</span> lst[<span class="dv">1</span>]</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>R0 <span class="op">=</span> (<span class="dv">1</span><span class="op">/</span>(d<span class="op">+</span>m))<span class="op">*</span>(p<span class="op">+</span>g<span class="op">*</span>w<span class="op">/</span>x)<span class="op">*</span>(<span class="dv">1</span><span class="op">+</span>(d<span class="op">*</span>t<span class="op">*</span>r)<span class="op">/</span>m) <span class="co"># R0 from the Pitzer (2014)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>simplify(R0<span class="op">-</span>R0_eig) <span class="co"># 0 for the same expression (symbolic assessment)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>R0.equals(R0_eig) <span class="co"># True for the same expression (numerical assessment)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lst <span class="op">=</span> <span class="bu">list</span>(eigval.keys())</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>R0_eig <span class="op">=</span> lst[<span class="dv">1</span>]</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>R0 <span class="op">=</span> (<span class="dv">1</span><span class="op">/</span>(d<span class="op">+</span>m))<span class="op">*</span>(p<span class="op">+</span>N<span class="op">*</span>g<span class="op">*</span>w<span class="op">/</span>x)<span class="op">*</span>(<span class="dv">1</span><span class="op">+</span>(d<span class="op">*</span>t<span class="op">*</span>r)<span class="op">/</span>m) <span class="co"># R0 from the Pitzer (2014)</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>simplify(R0<span class="op">-</span>R0_eig) <span class="co"># 0 for the same expression (symbolic assessment)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>eqnsSIRW <span class="ot">=</span> {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  B <span class="sc">+</span> \[Epsilon] Subscript[s, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>] <span class="sc">-</span> (Subscript[\[Beta], </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>       P] (Subscript[i, <span class="dv">1</span>] <span class="sc">+</span> r Subscript[i, <span class="dv">2</span>] <span class="sc">+</span> r c) <span class="sc">+</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      Subscript[\[Beta], W] w <span class="sc">+</span> \[Mu]) Subscript[s, <span class="dv">1</span>],</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  \[Omega] R <span class="sc">-</span> \[Epsilon] Subscript[s, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>] <span class="sc">-</span> (Subscript[\[Beta], </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>       P] (Subscript[i, <span class="dv">1</span>] <span class="sc">+</span> r Subscript[i, <span class="dv">2</span>] <span class="sc">+</span> r c) <span class="sc">+</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      Subscript[\[Beta], W]  w <span class="sc">+</span> \[Mu]) Subscript[s, <span class="dv">2</span>],</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  (Subscript[\[Beta], P] (Subscript[i, <span class="dv">1</span>] <span class="sc">+</span> r Subscript[i, <span class="dv">2</span>] <span class="sc">+</span> r c) <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>       Subscript[\[Beta], W]  w) Subscript[s, </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>] \[Minus] (\[Delta] <span class="sc">+</span> \[Mu]) Subscript[i, <span class="dv">1</span>],</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  (Subscript[\[Beta], P] (Subscript[i, <span class="dv">1</span>] <span class="sc">+</span> r Subscript[i, <span class="dv">2</span>] <span class="sc">+</span> r c) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>       Subscript[\[Beta], W]  w) Subscript[s, </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>] <span class="sc">-</span> (\[Delta] <span class="sc">+</span> \[Mu]) Subscript[i, <span class="dv">2</span>],</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  \[Delta] \[Theta] (Subscript[i, <span class="dv">1</span>] <span class="sc">+</span> Subscript[i, <span class="dv">2</span>]) <span class="sc">-</span> \[Mu] c,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  \[Gamma] (Subscript[i, <span class="dv">1</span>] <span class="sc">+</span> r Subscript[i, <span class="dv">2</span>] <span class="sc">+</span> r c) <span class="sc">-</span> \[Xi] w,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  \[Delta] (<span class="dv">1</span> <span class="sc">-</span> \[Theta]) (Subscript[i, <span class="dv">1</span>] <span class="sc">+</span> Subscript[i, </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="dv">2</span>]) <span class="sc">-</span> (\[Omega] <span class="sc">+</span> \[Mu]) R}</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>varsSIRW <span class="ot">=</span> {Subscript[s, <span class="dv">1</span>], Subscript[s, <span class="dv">2</span>], Subscript[i, <span class="dv">1</span>], </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  Subscript[i, <span class="dv">2</span>], c, w, R }</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>modSIRW <span class="ot">=</span> {eqnsSIRW, varsSIRW}</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>NGM[modSIRW, Range[<span class="dv">3</span>, <span class="dv">6</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>R0.equals(R0_eig) <span class="co"># True for the same expression (numerical assessment)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>True</code></pre>
+<p>Again, manually defining <span class="math inline">\(F,V\)</span> as follows leads to the same answer</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>F <span class="ot">=</span> {{Subscript[\[Beta], P], r Subscript[\[Beta], P], </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>   r Subscript[\[Beta], P], Subscript[\[Beta], W] }, {<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>}, {<span class="dv">0</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>}, {<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>}}</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>V <span class="ot">=</span> {{\[Delta] <span class="sc">+</span> \[Mu], <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>}, {<span class="dv">0</span>, \[Delta] <span class="sc">+</span> \[Mu], <span class="dv">0</span>, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>   <span class="dv">0</span>}, {<span class="sc">-</span>\[Delta] \[Theta], <span class="sc">-</span>\[Delta] \[Theta], \[Mu], </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>   <span class="dv">0</span>}, {<span class="sc">-</span>\[Gamma], <span class="sc">-</span>r \[Gamma], <span class="sc">-</span>r \[Gamma], \[Xi]}}</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>Eigenvalues[Dot[F, Inverse[V]]] <span class="sc">/</span><span class="er">/</span> FullSimplify</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>부록에 보면 기초 재감염지수에 이르는 상세한 과정이 나와있는데 <span class="math inline">\(V_{3,3}\)</span> 에 오류가 있음을 알아냈다. <span class="math inline">\(\delta +\mu\)</span> 가 <span class="math inline">\(\mu\)</span> 로 바뀌어야 한다. 이유는 위 미분식에서 <span class="math inline">\(C\)</span> 식을 보면 알 수 있는데 이는 만성 감염자를 나타내고 따라서 회복을 의미하는 <span class="math inline">\(\delta\)</span> 가 없어야 한다. 이는 기록하는 과정에서의 오류인 듯 하고 결과로 얻어진 <span class="math inline">\(R_0\)</span> 는 우리가 계산한 결과와 동일하다. 다만, 계산 결과를 위 식에서와 같이 의미있는 구획으로 나누어서 표현하려면 SymPy 결과를 직접 수정하여야 한다.</p>
+<p><span class="math display">\[\mathcal{R}_0 = \frac{(\mu +\delta  \theta  r) \left(\xi  \beta_P+\gamma  \beta_W \right)}{\mu  \xi  (\delta +\mu )}.\]</span></p>
 
 
 
