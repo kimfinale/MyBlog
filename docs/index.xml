@@ -10,7 +10,7 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Disease modeling for public health</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Fri, 31 May 2024 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 01 Jun 2024 15:00:00 GMT</lastBuildDate>
 <item>
   <title>Basic reproduction number: An algorithmic approach</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -597,8 +597,8 @@ font-style: inherit;">/</span> FullSimplify</span></code></pre></div>
   <category>algorithmic approach</category>
   <category>next generation matrix</category>
   <guid>https://kimfinale.github.io/myblog/posts/R0_mathematica/index.html</guid>
-  <pubDate>Fri, 31 May 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/R0_mathematica/Mathematica_logo.svg.png" medium="image" type="image/png"/>
+  <pubDate>Sat, 01 Jun 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/R0_mathematica/intro-spikey.png" medium="image" type="image/png" height="147" width="144"/>
 </item>
 <item>
   <title>Claude 3</title>

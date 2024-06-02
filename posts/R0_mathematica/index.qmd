@@ -1,9 +1,9 @@
 ---
 title: "Basic reproduction number: An algorithmic approach"
 author: "Jong-Hoon Kim"
-date: "2024-06-01"
+date: "2024-06-02"
 categories: [Basic reproduction number, Mathematica, algorithmic approach, next generation matrix]
-image: "Mathematica_logo.svg.png"
+image: "intro-spikey.png"
 editor_options: 
   chunk_output_type: console
 ---
