@@ -10,7 +10,552 @@
 <atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Disease modeling for public health</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Sat, 01 Jun 2024 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 13 Jun 2024 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Parallel simulation in R</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://kimfinale.github.io/myblog/posts/parallel/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>I find that using <code>parallel</code>, <code>doParallel</code> and <code>foreach</code> provides the easiest approach. The <code>doParallel</code> <a href="https://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf">vignette</a> provides a great overview.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(doParallel)</span>
+<span id="cb1-2">ncores <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">detectCores</span>()</span>
+<span id="cb1-3">cl <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">makeCluster</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getOption</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cl.cores"</span>, ncores<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">registerDoParallel</span>(cl)</span>
+<span id="cb1-5">nruns <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ncores</span>
+<span id="cb1-6"></span>
+<span id="cb1-7">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb1-8">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.inorder=</span>F, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.combine=</span>c) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dopar%</span> { <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(i, x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) }</span>
+<span id="cb1-9"></span>
+<span id="cb1-10"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stopCluster</span>(cl)</span>
+<span id="cb1-11">res</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 4 2 4 3 4 4 4</code></pre>
+</div>
+</div>
+<p>We can export packages</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">cl <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">makeCluster</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getOption</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cl.cores"</span>, ncores<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb3-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">registerDoParallel</span>(cl)</span>
+<span id="cb3-3"></span>
+<span id="cb3-4">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> </span>
+<span id="cb3-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.packages=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.inorder=</span>F, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.combine=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'cbind'</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dopar%</span> {</span>
+<span id="cb3-6">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmean</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>)</span>
+<span id="cb3-7">  }</span>
+<span id="cb3-8"></span>
+<span id="cb3-9"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stopCluster</span>(cl)</span>
+<span id="cb3-10">res</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         result.1  result.2    result.3     result.4     result.5
+ [1,]          NA        NA          NA           NA           NA
+ [2,]          NA        NA          NA           NA           NA
+ [3,]          NA        NA          NA           NA           NA
+ [4,]          NA        NA          NA           NA           NA
+ [5,]          NA        NA          NA           NA           NA
+ [6,]          NA        NA          NA           NA           NA
+ [7,] -0.27557385 0.6927873 -0.30259468 -0.007234598 -0.074849403
+ [8,] -0.05445579 0.2443152  0.04879916  0.101810950 -0.178822807
+ [9,] -0.11666207 0.4373249  0.33421833 -0.133831252 -0.002323951
+[10,] -0.57319660 0.3139420  0.05988135  0.167636093 -0.303884513</code></pre>
+</div>
+</div>
+<p>We may want to set the same seed for each worker</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">cl <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">makeCluster</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getOption</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cl.cores"</span>, ncores<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb5-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">registerDoParallel</span>(cl)</span>
+<span id="cb5-3"></span>
+<span id="cb5-4">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> </span>
+<span id="cb5-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.packages=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.inorder=</span>F, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.combine=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'cbind'</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dopar%</span> {</span>
+<span id="cb5-6">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb5-7">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmean</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>)</span>
+<span id="cb5-8">}</span>
+<span id="cb5-9"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stopCluster</span>(cl)</span>
+<span id="cb5-10">res</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        result.1   result.2   result.3   result.4   result.5
+ [1,]         NA         NA         NA         NA         NA
+ [2,]         NA         NA         NA         NA         NA
+ [3,]         NA         NA         NA         NA         NA
+ [4,]         NA         NA         NA         NA         NA
+ [5,]         NA         NA         NA         NA         NA
+ [6,]         NA         NA         NA         NA         NA
+ [7,] -0.6236335 -0.6236335 -0.6236335 -0.6236335 -0.6236335
+ [8,] -0.5018746 -0.5018746 -0.5018746 -0.5018746 -0.5018746
+ [9,] -0.7423937 -0.7423937 -0.7423937 -0.7423937 -0.7423937
+[10,] -0.5445709 -0.5445709 -0.5445709 -0.5445709 -0.5445709</code></pre>
+</div>
+</div>
+<p><code>foreach</code> sessions are not reproducible</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">cl <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">makeCluster</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getOption</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cl.cores"</span>, ncores<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb7-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">registerDoParallel</span>(cl)</span>
+<span id="cb7-3"></span>
+<span id="cb7-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb7-5">a1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dopar%</span> { <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) }</span>
+<span id="cb7-6">b1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dopar%</span> { <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) }</span>
+<span id="cb7-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb7-8">a2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dopar%</span> { <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) }</span>
+<span id="cb7-9">b2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dopar%</span> { <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) }</span>
+<span id="cb7-10"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">identical</span>(a1, a2) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;&amp;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">identical</span>(b1, b2)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stopCluster</span>(cl)</span></code></pre></div>
+</div>
+<p>Reproducibility across different <code>foreach</code> sessions are possible using <a href="https://ftp.heanet.ie/mirrors/cran.r-project.org/web/packages/doRNG/index.html">doRNG</a> package. Examples below were adapted from the <a href="https://stackoverflow.com/questions/8358098/how-to-set-seed-for-random-simulations-with-foreach-and-domc-packages">stackoverflow post</a>.</p>
+<p><code>doRNG</code> approach</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(doRNG)</span>
+<span id="cb10-2"></span>
+<span id="cb10-3">cl <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">makeCluster</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getOption</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cl.cores"</span>, ncores<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb10-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">registerDoParallel</span>(cl)</span>
+<span id="cb10-5"></span>
+<span id="cb10-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb10-7">a1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dorng%</span> { <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) }</span>
+<span id="cb10-8">b1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dorng%</span> { <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) }</span>
+<span id="cb10-9"></span>
+<span id="cb10-10"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb10-11">a2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dorng%</span> { <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) }</span>
+<span id="cb10-12">b2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">foreach</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%dorng%</span> { <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) }</span>
+<span id="cb10-13"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">identical</span>(a1, a2) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;&amp;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">identical</span>(b1, b2)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stopCluster</span>(cl)</span></code></pre></div>
+</div>
+<p>We may want to examine the status of parallel workers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">cl <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">makeCluster</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getOption</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cl.cores"</span>, ncores<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb13-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">registerDoParallel</span>(cl)</span>
+<span id="cb13-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getDoParWorkers</span>()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getDoParName</span>()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "doParallelSNOW"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getDoParVersion</span>()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1.0.17"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stopCluster</span>(cl)</span></code></pre></div>
+</div>
+
+
+
+ ]]></description>
+  <category>parallelism</category>
+  <category>foreach</category>
+  <category>doParallel</category>
+  <guid>https://kimfinale.github.io/myblog/posts/parallel/index.html</guid>
+  <pubDate>Thu, 13 Jun 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://kimfinale.github.io/myblog/posts/parallel/right_trunc2.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
 <item>
   <title>Basic reproduction number: An algorithmic approach</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -15858,423 +16403,6 @@ font-style: inherit;">2</span>)</span></code></pre></div>
   <guid>https://kimfinale.github.io/myblog/posts/density_frequency/index.html</guid>
   <pubDate>Sun, 18 Feb 2024 15:00:00 GMT</pubDate>
   <media:content url="https://kimfinale.github.io/myblog/posts/density_frequency/interval_censor.png" medium="image" type="image/png" height="114" width="144"/>
-</item>
-<item>
-  <title>LabelledArrays and NamedTupleTools make it easy to use the ODE model in Julia</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/julia_labelledarrays_namedtupletools/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="seir-model-using-labelledarrays" class="level3">
-<h3 class="anchored" data-anchor-id="seir-model-using-labelledarrays">SEIR model using LabelledArrays</h3>
-<p>The <a href="https://github.com/SciML/LabelledArrays.jl">LabelledArrays</a> package makes it easy to use the ODE model in Julia. It offers a method to manage variables via keys instead of indices. Variables can be constructed using the <code>@LArray</code> macro or <code>LVector</code>.</p>
-<p>However, using arrays to store a mix of information types is not optimal for performance. I frequently need to store different variable types within a single parameter, which prompts a warning, highlighting that combining variable types in an array could reduce performance and suggesting tuples as a more efficient alternative.</p>
-<blockquote class="blockquote">
-<p>┌ Warning: Utilizing arrays or dictionaries to store parameters of diverse types can compromise performance. │ Using tuples is advised for better efficiency. └ @ SciMLBase C:.kim.julia_warnings.jl:32</p>
-</blockquote>
-<p>Tuples, being essentially immutable, presents a challenge since some of model parameters that must be adjustible or estimated. The <a href="https://github.com/JeffreySarnoff/NamedTupleTools.jl">NamedTupleTools</a> package offers a convenient solution with its <code>merge</code> function, enabling easy updates to the values within a Tuple.</p>
-<p>In conclusion, the best approach seems to be leveraging LabelledArrays for state variables and NamedTupleTools for parameters. Let’s delve into this approach using the SEIR model as a case study.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">using</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">LabelledArrays</span>, <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">OrdinaryDiffEq</span>, <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">Plots</span>, <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">NamedTupleTools</span>, <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">BenchmarkTools</span></span>
-<span id="cb1-2"></span>
-<span id="cb1-3"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seir</span>(du, u, p, t)</span>
-<span id="cb1-4">    N <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(u)</span>
-<span id="cb1-5">    du.S <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> p.β <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> u.S <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> u.I <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> N</span>
-<span id="cb1-6">    du.E <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> p.β <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> u.S <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> u.I <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> N <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> p.ϵ <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> u.E</span>
-<span id="cb1-7">    du.I <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> p.ϵ <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> u.E <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> p.γ<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> u.I</span>
-<span id="cb1-8">    du.R <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> p.γ<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> u.I </span>
-<span id="cb1-9"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">end</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>seir (generic function with 1 method)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"></span>
-<span id="cb3-2">u0 <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">@LArray</span> [<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.99</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.01</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.0</span>] (<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>S, <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>E, <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>I, <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>R);</span>
-<span id="cb3-3">p_la <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">@LArray</span> [<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>] (<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>β, <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>ϵ, <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>γ);</span>
-<span id="cb3-4">p_la <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">LVector</span>(p_la, β<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.8</span>, str<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"string"</span>, int<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9</span>, la<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">LVector</span>(a<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,b<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,c<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>), tp<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>(a<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,b<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,c<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>));</span>
-<span id="cb3-5">tspan <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> (<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100.0</span>);</span>
-<span id="cb3-6">prob <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ODEProblem</span>(seir, u0, tspan, p_la);</span>
-<span id="cb3-7">sol <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">solve</span>(prob, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">Tsit5</span>(), saveat<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>);</span>
-<span id="cb3-8"></span>
-<span id="cb3-9">s <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [sol[i].S for i <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">101</span>];</span>
-<span id="cb3-10"><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">e</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [sol[i].E for i <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">101</span>];</span>
-<span id="cb3-11">i <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [sol[i].I for i <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">101</span>];</span>
-<span id="cb3-12">r <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [sol[i].R for i <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">101</span>];</span>
-<span id="cb3-13"></span>
-<span id="cb3-14"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(sol.t, [s <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">e</span> i r])</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/julia_labelledarrays_namedtupletools/index_files/figure-html/unnamed-chunk-1-J1.png" class="img-fluid" width="300"></p>
-</div>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"></span>
-<span id="cb4-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># NamedTupleTools approach</span></span>
-<span id="cb4-3">p_nt <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> (β<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>, ϵ<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>, γ<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>);</span>
-<span id="cb4-4">p_nt <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">merge</span>(p_nt, (β<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.8</span>, str<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"string"</span>, int<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9</span>, la<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">LVector</span>(a<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,b<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,c<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>), tp<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>(a<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,b<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,c<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>)));</span>
-<span id="cb4-5"></span>
-<span id="cb4-6"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">using</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">BenchmarkTools</span></span>
-<span id="cb4-7">time_la <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">@benchmark</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">solve</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ODEProblem</span>(seir, u0, tspan, p_la), <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">Tsit5</span>(), saveat<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>);</span>
-<span id="cb4-8">time_nt <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">@benchmark</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">solve</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ODEProblem</span>(seir, u0, tspan, p_nt), <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">Tsit5</span>(), saveat<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>);</span>
-<span id="cb4-9">time_la</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  118.300 μs …  1.065 ms  ┊ GC (min … max): 0.00% … 85.42%
- Time  (median):     123.800 μs              ┊ GC (median):    0.00%
- Time  (mean ± σ):   127.737 μs ± 39.266 μs  ┊ GC (mean ± σ):  1.42% ±  4.10%
-
-  ▁▃▂▄██▇▄▃▂▂▁            ▁▂▁                                  ▂
-  █████████████▇█▇▆▆▇▇▆▅▆█████▇▇▆▄▅▅▅▄▄▅▅▆▅▄▅▆▅▅▄▄▅▄▁▅▄▆▅▄▅▆▅▆ █
-  118 μs        Histogram: log(frequency) by time       180 μs &lt;
-
- Memory estimate: 106.75 KiB, allocs estimate: 5727.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1">time_nt</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  37.400 μs …  1.306 ms  ┊ GC (min … max): 0.00% … 94.58%
- Time  (median):     39.700 μs              ┊ GC (median):    0.00%
- Time  (mean ± σ):   41.141 μs ± 28.101 μs  ┊ GC (mean ± σ):  1.49% ±  2.13%
-
-   ▁▄▆██▇▆▄▃▂▁▁▁▁▁▁▁▁▁                                        ▂
-  ▅██████████████████████▇▇▆▆▆▆▆▆▅▆▇▆▆▆▆▅▅▅▁▄▃▃▅▄▁▅▃▄▃▁▁▄▄▄▃▅ █
-  37.4 μs      Histogram: log(frequency) by time      62.3 μs &lt;
-
- Memory estimate: 28.64 KiB, allocs estimate: 685.</code></pre>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>julia</category>
-  <category>ODE</category>
-  <category>LabelledArrays</category>
-  <category>NamedTupleTools</category>
-  <category>SEIR</category>
-  <guid>https://kimfinale.github.io/myblog/posts/julia_labelledarrays_namedtupletools/index.html</guid>
-  <pubDate>Thu, 25 Jan 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/julia_labelledarrays_namedtupletools/sciml.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 </channel>
 </rss>

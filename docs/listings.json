@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/parallel/index.html",
       "/posts/R0_mathematica/index.html",
       "/posts/claude_api/index.html",
       "/posts/learning_ChatGPT_2/index.html",

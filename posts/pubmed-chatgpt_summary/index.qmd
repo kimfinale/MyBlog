@@ -51,14 +51,13 @@ saveRDS(gmail_appkey, "gmail_app_key.rds")
 view_credential_keys()
 ```
 
-
 1.  Search the PubMed database Use the entrez_search function from the rentrez package to search the PubMed database
 
 ```{r, eval=FALSE}
 library(rentrez)
 
-date_start <- gsub("-", "/", Sys.Date()-7)
-date_end <- gsub("-", "/", Sys.Date())
+date_start <- gsub("-", "/", Sys.Date()-2)
+date_end <- gsub("-", "/", Sys.Date()-1)
 search_query <- paste0("(typhoid OR cholera) AND ", date_start,":", date_end, "[dp]") # the search query
 search_results <- entrez_search(db="pubmed", term=search_query) # any other useful parameters?
 ```
@@ -83,9 +82,7 @@ abstracts <- xml_text(xml_find_all(doc, "//Abstract"))
 dois <- xml_text(xml_find_all(doc, ".//PubmedData/ArticleIdList/ArticleId[@IdType='doi']")) # to get the doi's
 ```
 
-4. Call ChatGPT to summarize the abstract in 1-2 sentences 
-This is a subscription-based service. 
-You must have a ChatGPT API key and must have signed up for their paid service.
+4.  Call ChatGPT to summarize the abstract in 1-2 sentences This is a subscription-based service. You must have a ChatGPT API key and must have signed up for their paid service.
 
 ```{r, eval=FALSE}
 # gpt-4o
@@ -136,10 +133,9 @@ email %>%
 
 6.  Save all as a single R script
 
-
 ```{r, eval=FALSE}
-date_start <- gsub("-", "/", Sys.Date()-7)
-date_end <- gsub("-", "/", Sys.Date())
+date_start <- gsub("-", "/", Sys.Date()-2)
+date_end <- gsub("-", "/", Sys.Date()-1)
 search_query <- paste0("(typhoid OR cholera OR transmission OR modeling) AND ", date_start,":", date_end, "[dp]") 
  
 chatgpt_api_key <- Sys.getenv("CHATGPT_API_KEY")

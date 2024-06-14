@@ -15,6 +15,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 The [blog post by Stephen Wolfram](https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/) discusses a neural network for approximating some sort of a step function. This post is my attempt to reproduce it.
 
 ### Data
+
 ```{r}
 library(torch)
 x <- seq(0, 3,by=0.01)
@@ -27,8 +28,8 @@ plot(x, y, xlab="X", type="l", ylab="Y", lty="dashed", lwd=2)
 
 ### Neural network
 
-One simple way to create a neural network is to use `nn_sequential` function of the `torch` package.
-[Rectified linear unit (ReLU)](https://en.wikipedia.org/wiki/Rectifier_(neural_networks)) is used for an activation function.
+One simple way to create a neural network is to use `nn_sequential` function of the `torch` package. [Rectified linear unit (ReLU)](https://en.wikipedia.org/wiki/Rectifier_(neural_networks)) is used for an activation function.
+
 ```{r}
 dim_in <- 1
 dim_out <- 1
@@ -41,8 +42,8 @@ net <- nn_sequential(
 )
 ```
 
-
 ### Traing a neural network
+
 The [Adam optimizer](https://arxiv.org/abs/1412.6980), which a popular choice, is used.
 
 ```{r}
@@ -86,7 +87,9 @@ legend("topright",
 ```
 
 ### Enlarge the neural network
+
 Let's repeat an experiment using a larger network - more nodes and layers
+
 ```{r}
 dim_hidden <- 64
 
@@ -141,4 +144,3 @@ legend("topright",
   inset = c(0.02,0.02))
 # dev.off()
 ```
-

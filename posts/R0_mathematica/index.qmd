@@ -12,10 +12,9 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo=TRUE) 
 ```
 
-A [recent article](https://www.mdpi.com/2227-7390/12/1/27) published in Mathematics 
-discusses an approach to calculating $\mathcal{R}_0$. Since I have previously written a [post](https://www.jonghoonk.com/posts/R0-sympy/) about calculating $\mathcal{R}_0$ using Sympy, I wanted explore a new algorithmic approach proposed by the article. 
+A [recent article](https://www.mdpi.com/2227-7390/12/1/27) published in Mathematics discusses an approach to calculating $\mathcal{R}_0$. Since I have previously written a [post](https://www.jonghoonk.com/posts/R0-sympy/) about calculating $\mathcal{R}_0$ using Sympy, I wanted to explore a new approach proposed by the article.
 
-The article claims that $\mathcal{R}_0$ is a not function of the original set of ordinary differential equation because $(F, V)$ gradient decomposition may not be unique for a given set of ODE. As a reminder, [Diekmann *et al.*](https://link.springer.com/article/10.1007/BF00178324) showed that $\mathcal{R}_0$ is the spectral radius, or Perron–Frobenius eigenvalue, of the next generation operator. 
+The article claims that $\mathcal{R}_0$ is a not function of the original set of ordinary differential equations (ODEs) because $(F, V)$ gradient decomposition may not be unique for a given set of ODEs. As a reminder, [Diekmann *et al.*](https://link.springer.com/article/10.1007/BF00178324) showed that $\mathcal{R}_0$ is the spectral radius, or Perron–Frobenius eigenvalue, of the next generation operator.
 
 ```{=tex}
 \begin{align}
@@ -24,10 +23,8 @@ The article claims that $\mathcal{R}_0$ is a not function of the original set of
 \mathrm{d}R/\mathrm{d}t &= \gamma I
 \end{align}
 ```
+Following Python and Mathematica codes generate that $$\mathcal{R}_0 = \frac{\beta}{\gamma}.$$ if $\beta$ and $\gamma$ are replaced with $b$ and $g$, respectively.
 
-Following Python and Mathematica codes generates that
-$$\mathcal{R}_0 = \frac{\beta}{\gamma}.$$ 
-if $\beta$ and $\gamma$ are replaced with $b$ and $g$, respectively.
 ```{python}
 from sympy import *
 b, k, g, = symbols('b k g')
@@ -82,15 +79,13 @@ As in the [previous post](https://www.jonghoonk.com/posts/R0-sympy/), I applied 
 \mathrm{d}W/\mathrm{d}t &= \gamma(I_1+rI_2+rC) - \xi W
 \end{align}
 ```
-
 Following Python and Mathematica codes generates that
 
 ```{=tex}
 \begin{align}
-R_0 = \frac{1}{\mu+\delta} \left(\beta_p +\frac{\gamma \beta_w}{\xi}\right) \left(1 +\frac{\delta\theta r}{\mu}\right)
+\mathcal{R}_0 = \frac{1}{\mu+\delta} \left(\beta_p +\frac{\gamma \beta_w}{\xi}\right) \left(1 +\frac{\delta\theta r}{\mu}\right)
 \end{align}
 ```
-
 In the following Python codes $p, r, w, d, m, t, g, x$ represent $\beta_p, r, \beta_w, \delta, \mu, \theta, \gamma, \xi$ in the equation.
 
 ```{python, eval=FALSE}
@@ -137,6 +132,7 @@ NGM[modSIRW, Range[3, 6]]
 ```
 
 Again, manually defining $F,V$ as follows leads to the same answer
+
 ```{r, eval=FALSE}
 F = {{Subscript[\[Beta], P], r Subscript[\[Beta], P], 
    r Subscript[\[Beta], P], Subscript[\[Beta], W] }, {0, 0, 0, 0}, {0,
