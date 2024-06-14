@@ -83,7 +83,7 @@ Reproducibility across different `foreach` sessions are possible using
 [doRNG](https://ftp.heanet.ie/mirrors/cran.r-project.org/web/packages/doRNG/index.html) package.
 Examples below were adapted from the [stackoverflow post](https://stackoverflow.com/questions/8358098/how-to-set-seed-for-random-simulations-with-foreach-and-domc-packages).
 
-`doRNG` approach 
+You use `%dorng%` instead of `%dopar%` in the `doRNG` approach 
 ```{r}
 library(doRNG)
 

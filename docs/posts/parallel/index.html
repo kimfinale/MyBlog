@@ -212,17 +212,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">stopCluster</span>(cl)</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         result.1  result.2    result.3     result.4     result.5
- [1,]          NA        NA          NA           NA           NA
- [2,]          NA        NA          NA           NA           NA
- [3,]          NA        NA          NA           NA           NA
- [4,]          NA        NA          NA           NA           NA
- [5,]          NA        NA          NA           NA           NA
- [6,]          NA        NA          NA           NA           NA
- [7,] -0.27557385 0.6927873 -0.30259468 -0.007234598 -0.074849403
- [8,] -0.05445579 0.2443152  0.04879916  0.101810950 -0.178822807
- [9,] -0.11666207 0.4373249  0.33421833 -0.133831252 -0.002323951
-[10,] -0.57319660 0.3139420  0.05988135  0.167636093 -0.303884513</code></pre>
+<pre><code>        result.1    result.2    result.3    result.4    result.5
+ [1,]         NA          NA          NA          NA          NA
+ [2,]         NA          NA          NA          NA          NA
+ [3,]         NA          NA          NA          NA          NA
+ [4,]         NA          NA          NA          NA          NA
+ [5,]         NA          NA          NA          NA          NA
+ [6,]         NA          NA          NA          NA          NA
+ [7,] -0.3526271 -0.16103108  0.35833688  0.11674132 -0.36917712
+ [8,]  0.4633662 -0.37779508 -0.04679766  0.18956330 -0.27035085
+ [9,]  0.3389059 -0.07698994 -0.26160093 -0.05230764 -0.03755304
+[10,]  0.3852647  0.13218354 -0.14479009 -0.11444864  0.28247643</code></pre>
 </div>
 </div>
 <p>We may want to set the same seed for each worker</p>
@@ -269,7 +269,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stopCluster</span>(cl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Reproducibility across different <code>foreach</code> sessions are possible using <a href="https://ftp.heanet.ie/mirrors/cran.r-project.org/web/packages/doRNG/index.html">doRNG</a> package. Examples below were adapted from the <a href="https://stackoverflow.com/questions/8358098/how-to-set-seed-for-random-simulations-with-foreach-and-domc-packages">stackoverflow post</a>.</p>
-<p><code>doRNG</code> approach</p>
+<p>You use <code>%dorng%</code> instead of <code>%dopar%</code> in the <code>doRNG</code> approach</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(doRNG)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
