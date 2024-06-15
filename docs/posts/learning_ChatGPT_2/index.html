@@ -9,7 +9,7 @@
 <meta name="author" content="Jong-Hoon Kim">
 <meta name="dcterms.date" content="2024-05-28">
 
-<title>Disease modeling for public health - Learning ChatGPT 2: Approximating a step function using a neural net</title>
+<title>Disease modeling for public health - Learning ChatGPT 2: Approximating a tower function using a neural net</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -142,7 +142,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Learning ChatGPT 2: Approximating a step function using a neural net</h1>
+      <h1 class="title">Learning ChatGPT 2: Approximating a tower function using a neural net</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Neural network</div>
                 <div class="quarto-category">Adam</div>
@@ -182,7 +182,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>The <a href="https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/">blog post by Stephen Wolfram</a> discusses a neural network for approximating some sort of a step function. This post is my attempt to reproduce it.</p>
+<p>The <a href="https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/">blog post by Stephen Wolfram</a> discusses a neural network for approximating some sort of a step function. This post is my attempt to reproduce it. A <a href="https://www.youtube.com/watch?v=Ijqkc7OLenI">YouTube video</a> and a <a href="http://neuralnetworksanddeeplearning.com/chap4.html">book chapter</a> by Michael Nielsen beautifully explain how a neural network can approximate a tower function while explaining the <a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">Universal Approximation Theorem</a>.</p>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <div class="cell">
@@ -234,16 +234,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  opt<span class="sc">$</span><span class="fu">step</span>()  <span class="co"># update weights</span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch:  100 , Loss:  0.05357342 
-Epoch:  200 , Loss:  0.04297379 
-Epoch:  300 , Loss:  0.03023487 
-Epoch:  400 , Loss:  0.02055639 
-Epoch:  500 , Loss:  0.01431756 
-Epoch:  600 , Loss:  0.01079961 
-Epoch:  700 , Loss:  0.008883039 
-Epoch:  800 , Loss:  0.007704242 
-Epoch:  900 , Loss:  0.006832627 
-Epoch:  1000 , Loss:  0.006176351 </code></pre>
+<pre><code>Epoch:  100 , Loss:  0.08749005 
+Epoch:  200 , Loss:  0.04512803 
+Epoch:  300 , Loss:  0.03153745 
+Epoch:  400 , Loss:  0.0227194 
+Epoch:  500 , Loss:  0.0177248 
+Epoch:  600 , Loss:  0.01544381 
+Epoch:  700 , Loss:  0.01454272 
+Epoch:  800 , Loss:  0.01405807 
+Epoch:  900 , Loss:  0.01362684 
+Epoch:  1000 , Loss:  0.01329494 </code></pre>
 </div>
 </div>
 <p>Compare the data and the model predictions</p>
@@ -251,7 +251,7 @@ Epoch:  1000 , Loss:  0.006176351 </code></pre>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ypred <span class="ot">&lt;-</span> <span class="fu">net</span>(x)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">"L2 loss: %.4f"</span>, <span class="fu">sum</span>((ypred<span class="sc">-</span>y)<span class="sc">^</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "L2 loss: 1.8573"</code></pre>
+<pre><code>[1] "L2 loss: 4.0009"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"X"</span>, <span class="at">ylab=</span><span class="st">"Y"</span>, <span class="at">lty=</span><span class="st">"dashed"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x, ypred, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"firebrick"</span>)</span>
@@ -303,16 +303,16 @@ Epoch:  1000 , Loss:  0.006176351 </code></pre>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  opt<span class="sc">$</span><span class="fu">step</span>()  <span class="co"># update weights</span></span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch:  100 , Loss:  0.01935568 
-Epoch:  200 , Loss:  0.006153167 
-Epoch:  300 , Loss:  0.003681945 
-Epoch:  400 , Loss:  0.002698184 
-Epoch:  500 , Loss:  0.002069614 
-Epoch:  600 , Loss:  0.001628736 
-Epoch:  700 , Loss:  0.001323509 
-Epoch:  800 , Loss:  0.001109047 
-Epoch:  900 , Loss:  0.0009633562 
-Epoch:  1000 , Loss:  0.0008408494 </code></pre>
+<pre><code>Epoch:  100 , Loss:  0.01606761 
+Epoch:  200 , Loss:  0.005057474 
+Epoch:  300 , Loss:  0.003024375 
+Epoch:  400 , Loss:  0.002102263 
+Epoch:  500 , Loss:  0.00159192 
+Epoch:  600 , Loss:  0.001272134 
+Epoch:  700 , Loss:  0.001058556 
+Epoch:  800 , Loss:  0.000919128 
+Epoch:  900 , Loss:  0.0007862431 
+Epoch:  1000 , Loss:  0.0007142351 </code></pre>
 </div>
 </div>
 <p>Compare the data and the model predictions</p>
@@ -320,7 +320,7 @@ Epoch:  1000 , Loss:  0.0008408494 </code></pre>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ypred <span class="ot">&lt;-</span> <span class="fu">net</span>(x)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">"L2 loss: %.4f"</span>, <span class="fu">sum</span>((ypred<span class="sc">-</span>y)<span class="sc">^</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "L2 loss: 0.2529"</code></pre>
+<pre><code>[1] "L2 loss: 0.2133"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># png("stepfunc_nn.png")</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"X"</span>, <span class="at">ylab=</span><span class="st">"Y"</span>, <span class="at">lty=</span><span class="st">"dashed"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>

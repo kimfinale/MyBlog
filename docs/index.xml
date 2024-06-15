@@ -20,7 +20,7 @@
 
 
 
-<p>I find that using <code>parallel</code>, <code>doParallel</code> and <code>foreach</code> provides the easiest approach. The <code>doParallel</code> <a href="https://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf">vignette</a> provides a great overview.</p>
+<p>I find that <code>parallel</code>, <code>doParallel</code> and <code>foreach</code> packages provide the easiest approach for parallel computing in R. The <code>doParallel</code> <a href="https://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf">vignette</a> provides a great overview. <code>library(doParallel)</code> command automatically loads required packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -69,8 +69,6 @@ font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">4</span>, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">.inorder=</span>F, <span class="at" style="color: #657422;
-background-color: null;
 font-style: inherit;">.combine=</span>c) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">%dopar%</span> { <span class="fu" style="color: #4758AB;
@@ -89,7 +87,7 @@ font-style: inherit;">stopCluster</span>(cl)</span>
 <pre><code>[1] 1 4 2 4 3 4 4 4</code></pre>
 </div>
 </div>
-<p>We can export packages</p>
+<p>We can export packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">cl <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -129,11 +127,7 @@ font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"data.table"</span>), <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">.inorder=</span>F, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">.combine=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'cbind'</span>) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">.combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">%dopar%</span> {</span>
 <span id="cb3-6">    <span class="fu" style="color: #4758AB;
@@ -152,20 +146,20 @@ background-color: null;
 font-style: inherit;">stopCluster</span>(cl)</span>
 <span id="cb3-10">res</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        result.1    result.2    result.3    result.4    result.5
- [1,]         NA          NA          NA          NA          NA
- [2,]         NA          NA          NA          NA          NA
- [3,]         NA          NA          NA          NA          NA
- [4,]         NA          NA          NA          NA          NA
- [5,]         NA          NA          NA          NA          NA
- [6,]         NA          NA          NA          NA          NA
- [7,] -0.3526271 -0.16103108  0.35833688  0.11674132 -0.36917712
- [8,]  0.4633662 -0.37779508 -0.04679766  0.18956330 -0.27035085
- [9,]  0.3389059 -0.07698994 -0.26160093 -0.05230764 -0.03755304
-[10,]  0.3852647  0.13218354 -0.14479009 -0.11444864  0.28247643</code></pre>
+<pre><code>        result.1     result.2  result.3   result.4    result.5
+ [1,]         NA           NA        NA         NA          NA
+ [2,]         NA           NA        NA         NA          NA
+ [3,]         NA           NA        NA         NA          NA
+ [4,]         NA           NA        NA         NA          NA
+ [5,]         NA           NA        NA         NA          NA
+ [6,]         NA           NA        NA         NA          NA
+ [7,] 0.01789169  0.064330938 0.4220557 -0.3799790 -0.00590606
+ [8,] 0.28619933  0.167325961 0.4594623 -0.4416196 -0.34045218
+ [9,] 0.45915538 -0.159068812 0.5219243 -0.4827696 -0.05653235
+[10,] 0.26106915 -0.008650928 0.6428977 -0.7384165  0.15251370</code></pre>
 </div>
 </div>
-<p>We may want to set the same seed for each worker</p>
+<p>We may want to set the same seed for each worker.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">cl <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -205,11 +199,7 @@ font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"data.table"</span>), <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">.inorder=</span>F, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">.combine=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'cbind'</span>) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">.combine=</span>cbind) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">%dopar%</span> {</span>
 <span id="cb5-6">    <span class="fu" style="color: #4758AB;
@@ -245,7 +235,7 @@ font-style: inherit;">stopCluster</span>(cl)</span>
 [10,] -0.5445709 -0.5445709 -0.5445709 -0.5445709 -0.5445709</code></pre>
 </div>
 </div>
-<p><code>foreach</code> sessions are not reproducible</p>
+<p>Different <code>foreach</code> sessions with the same random seed are not reproducible.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">cl <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -505,7 +495,7 @@ font-style: inherit;">identical</span>(b1, b2)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">stopCluster</span>(cl)</span></code></pre></div>
 </div>
-<p>We may want to examine the status of parallel workers.</p>
+<p>We may want to examine parallel workers.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">cl <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1394,7 +1384,7 @@ font-style: inherit;">cat</span>(res)</span></code></pre></div>
   <media:content url="https://kimfinale.github.io/myblog/posts/claude_api/anthropic.png" medium="image" type="image/png" height="136" width="144"/>
 </item>
 <item>
-  <title>Learning ChatGPT 2: Approximating a step function using a neural net</title>
+  <title>Learning ChatGPT 2: Approximating a tower function using a neural net</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
   <link>https://kimfinale.github.io/myblog/posts/learning_ChatGPT_2/index.html</link>
   <description><![CDATA[ 
@@ -1402,7 +1392,7 @@ font-style: inherit;">cat</span>(res)</span></code></pre></div>
 
 
 
-<p>The <a href="https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/">blog post by Stephen Wolfram</a> discusses a neural network for approximating some sort of a step function. This post is my attempt to reproduce it.</p>
+<p>The <a href="https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/">blog post by Stephen Wolfram</a> discusses a neural network for approximating some sort of a step function. This post is my attempt to reproduce it. A <a href="https://www.youtube.com/watch?v=Ijqkc7OLenI">YouTube video</a> and a <a href="http://neuralnetworksanddeeplearning.com/chap4.html">book chapter</a> by Michael Nielsen beautifully explain how a neural network can approximate a tower function while explaining the <a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">Universal Approximation Theorem</a>.</p>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <div class="cell">
@@ -1628,16 +1618,16 @@ background-color: null;
 font-style: inherit;"># update weights</span></span>
 <span id="cb4-12">}</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch:  100 , Loss:  0.05357342 
-Epoch:  200 , Loss:  0.04297379 
-Epoch:  300 , Loss:  0.03023487 
-Epoch:  400 , Loss:  0.02055639 
-Epoch:  500 , Loss:  0.01431756 
-Epoch:  600 , Loss:  0.01079961 
-Epoch:  700 , Loss:  0.008883039 
-Epoch:  800 , Loss:  0.007704242 
-Epoch:  900 , Loss:  0.006832627 
-Epoch:  1000 , Loss:  0.006176351 </code></pre>
+<pre><code>Epoch:  100 , Loss:  0.08749005 
+Epoch:  200 , Loss:  0.04512803 
+Epoch:  300 , Loss:  0.03153745 
+Epoch:  400 , Loss:  0.0227194 
+Epoch:  500 , Loss:  0.0177248 
+Epoch:  600 , Loss:  0.01544381 
+Epoch:  700 , Loss:  0.01454272 
+Epoch:  800 , Loss:  0.01405807 
+Epoch:  900 , Loss:  0.01362684 
+Epoch:  1000 , Loss:  0.01329494 </code></pre>
 </div>
 </div>
 <p>Compare the data and the model predictions</p>
@@ -1661,7 +1651,7 @@ font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "L2 loss: 1.8573"</code></pre>
+<pre><code>[1] "L2 loss: 4.0009"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1893,16 +1883,16 @@ background-color: null;
 font-style: inherit;"># update weights</span></span>
 <span id="cb11-12">}</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch:  100 , Loss:  0.01935568 
-Epoch:  200 , Loss:  0.006153167 
-Epoch:  300 , Loss:  0.003681945 
-Epoch:  400 , Loss:  0.002698184 
-Epoch:  500 , Loss:  0.002069614 
-Epoch:  600 , Loss:  0.001628736 
-Epoch:  700 , Loss:  0.001323509 
-Epoch:  800 , Loss:  0.001109047 
-Epoch:  900 , Loss:  0.0009633562 
-Epoch:  1000 , Loss:  0.0008408494 </code></pre>
+<pre><code>Epoch:  100 , Loss:  0.01606761 
+Epoch:  200 , Loss:  0.005057474 
+Epoch:  300 , Loss:  0.003024375 
+Epoch:  400 , Loss:  0.002102263 
+Epoch:  500 , Loss:  0.00159192 
+Epoch:  600 , Loss:  0.001272134 
+Epoch:  700 , Loss:  0.001058556 
+Epoch:  800 , Loss:  0.000919128 
+Epoch:  900 , Loss:  0.0007862431 
+Epoch:  1000 , Loss:  0.0007142351 </code></pre>
 </div>
 </div>
 <p>Compare the data and the model predictions</p>
@@ -1926,7 +1916,7 @@ font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "L2 loss: 0.2529"</code></pre>
+<pre><code>[1] "L2 loss: 0.2133"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="co" style="color: #5E5E5E;
 background-color: null;

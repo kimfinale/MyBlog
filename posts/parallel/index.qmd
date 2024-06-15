@@ -12,9 +12,7 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
-
-I find that using `parallel`, `doParallel` and `foreach` provides the easiest approach.
-The `doParallel` [vignette](https://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf) provides a great overview.  
+I find that `parallel`, `doParallel` and `foreach` packages provide the easiest approach for parallel computing in R. The `doParallel` [vignette](https://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf) provides a great overview. `library(doParallel)` command automatically loads required packages.
 
 ```{r}
 library(doParallel)
@@ -24,21 +22,20 @@ registerDoParallel(cl)
 nruns <- ncores
 
 x <- 2
-res <- foreach(i=1:4, .inorder=F, .combine=c) %dopar% { c(i, x^2) }
+res <- foreach(i=1:4, .combine=c) %dopar% { c(i, x^2) }
 
 stopCluster(cl)
 res
 ```
 
-
-We can export packages
+We can export packages.
 
 ```{r}
 cl <- makeCluster(getOption("cl.cores", ncores/2))
 registerDoParallel(cl)
 
 res <- 
-  foreach(i=1:5, .packages=c("data.table"), .inorder=F, .combine='cbind') %dopar% {
+  foreach(i=1:5, .packages=c("data.table"), .combine=cbind) %dopar% {
     frollmean(rnorm(10), 7)
   }
 
@@ -46,15 +43,14 @@ stopCluster(cl)
 res
 ```
 
-
-We may want to set the same seed for each worker
+We may want to set the same seed for each worker.
 
 ```{r}
 cl <- makeCluster(getOption("cl.cores", ncores/2))
 registerDoParallel(cl)
 
 res <- 
-  foreach(i=1:5, .packages=c("data.table"), .inorder=F, .combine='cbind') %dopar% {
+  foreach(i=1:5, .packages=c("data.table"), .combine=cbind) %dopar% {
     set.seed(12)
     frollmean(rnorm(10), 7)
 }
@@ -62,7 +58,7 @@ stopCluster(cl)
 res
 ```
 
-`foreach` sessions are not reproducible
+Different `foreach` sessions with the same random seed are not reproducible.
 
 ```{r}
 cl <- makeCluster(getOption("cl.cores", ncores/2))
@@ -102,8 +98,7 @@ identical(a1, a2) && identical(b1, b2)
 stopCluster(cl)
 ```
 
-
-We may want to examine the status of parallel workers.
+We may want to examine parallel workers.
 
 ```{r}
 cl <- makeCluster(getOption("cl.cores", ncores/2))
