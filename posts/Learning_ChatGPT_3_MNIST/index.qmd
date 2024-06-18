@@ -27,10 +27,10 @@ library(reshape2) # melt function
 
 ### Data
 
-Data were downloaded using the following command: `torchvision::mnist_dataset("./data", download=T)`.
+Data were downloaded using the following command: `torchvision::mnist_dataset(".", download=T)`.
 ```{r}
-train = readRDS("C:/Users/jonghoon.kim/Documents/myblog/data/mnist/processed/training.rds")
-test = readRDS("C:/Users/jonghoon.kim/Documents/myblog/data/mnist/processed/test.rds")
+train = readRDS("training.rds")
+test = readRDS("test.rds")
 # train[[1]] indicate numeric values for the image and train[[2]] indicate the correct number
 dim(train[[1]])
 dim(test[[1]])
@@ -159,7 +159,7 @@ optimizer = optim_adam(model$parameters, lr=0.001)
 ```
 
 Train the network
-```{r, eval=FALSE}
+```{r}
 epoch = 10
 train_loss = vector()
 test_loss = vector()
@@ -187,8 +187,8 @@ for (i in 1:epoch) {
 Plot the loss
 
 ```{r}
-train_loss <- readRDS("train_loss.rds")
-test_loss <- readRDS("test_loss.rds")
+# train_loss <- readRDS("train_loss.rds")
+# test_loss <- readRDS("test_loss.rds")
 
 tibble(i = seq(1, length(train_loss)), train = train_loss) %>% 
   ggplot()+
