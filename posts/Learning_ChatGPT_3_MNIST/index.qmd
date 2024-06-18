@@ -13,8 +13,9 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 ```
 
 
-The following contents were adapted based on  [this](https://jtr13.github.io/cc21fall2/tutorial-on-r-torch-package.html) and 
-[this](https://blog.naver.com/flynt1/222419808861) pages.
+This post is about using [convolutional neural network](https://en.wikipedia.org/wiki/Convolutional_neural_network) to recognize hand-written digits, [MNIST](https://en.wikipedia.org/wiki/MNIST_database) data set. The following contents were adapted based on  [this](https://jtr13.github.io/cc21fall2/tutorial-on-r-torch-package.html) and 
+[this](https://blog.naver.com/flynt1/222419808861) pages. 
+
 
 ```{r}
 library(torch)
@@ -117,21 +118,21 @@ Network
 ```{r}
 network = nn_module(
   classname = "cnn.model",
-  initialize= function(){
-    self$cv1= nn_conv2d(in_channels = 1,
-                        out_channels =32,
+  initialize = function(){
+    self$cv1 = nn_conv2d(in_channels = 1,
+                        out_channels = 32,
                         kernel_size = 5,
                         padding = 2)
-    self$cv2= nn_conv2d(in_channels = 32,
+    self$cv2 = nn_conv2d(in_channels = 32,
                         out_channels = 64,
                         kernel_size = 5,
                         padding = 2)
-    self$pool= nn_max_pool2d(kernel_size = 2,
+    self$pool = nn_max_pool2d(kernel_size = 2,
                              stride = 2)
-    self$fc1= nn_linear(64*7*7, 100)
-    self$fc2= nn_linear(100, 10)
+    self$fc1 = nn_linear(64*7*7, 100)
+    self$fc2 = nn_linear(100, 10)
   },
-  forward= function(M){
+  forward = function(M){
     M %>%               # [batch.size, 1, 28, 28]
       self$cv1() %>%    # [batch.size, 32, 28, 28]
       nnf_relu() %>% 
@@ -187,9 +188,6 @@ for (i in 1:epoch) {
 Plot the loss
 
 ```{r}
-# train_loss <- readRDS("train_loss.rds")
-# test_loss <- readRDS("test_loss.rds")
-
 tibble(i = seq(1, length(train_loss)), train = train_loss) %>% 
   ggplot()+
   geom_line(aes(i, train), color="gray", size=0.1)+
