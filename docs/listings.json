@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Learning_ChatGPT_3_MNIST/index.html",
       "/posts/parallel/index.html",
       "/posts/R0_mathematica/index.html",
       "/posts/claude_api/index.html",

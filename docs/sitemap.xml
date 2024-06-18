@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kimfinale.github.io/myblog/index.html</loc>
-    <lastmod>2024-06-15T22:46:09.739Z</lastmod>
+    <lastmod>2024-06-18T04:53:13.817Z</lastmod>
   </url>
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/climate-disaster/index.html</loc>
@@ -347,5 +347,9 @@
   <url>
     <loc>https://kimfinale.github.io/myblog/posts/parallel/index.html</loc>
     <lastmod>2024-06-14T04:03:11.962Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kimfinale.github.io/myblog/posts/Learning_ChatGPT_3_MNIST/index.html</loc>
+    <lastmod>2024-06-18T04:53:21.075Z</lastmod>
   </url>
 </urlset>
