@@ -22,7 +22,7 @@
 
 <p>Neural networks can approximate any function according to the <a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">Universal Approximation Theorem</a>. A more precise statement of the theorem is that neural networks with a single hidden layer can be used to approximate any continuous function to any desired precision by the <a href="http://neuralnetworksanddeeplearning.com/chap4.html">e-book</a> by Michael Nielsen. This e-book provides intuitive explanations about the proof.</p>
 <p>In what follows, I recorded what I was able to understand based on those materials and added a few R codes to supplement my explanations. For a simple network with one hidden layer of two neurons, n1 and n2, what is being computed in a hidden neuron is <img src="https://latex.codecogs.com/png.latex?%5Csigma(w%20x%20+%20b)">, where <img src="https://latex.codecogs.com/png.latex?%5Csigma%20(z)%20%5Cequiv%201/(1+e%5E%7B-z%7D)"> is the sigmoid function. And what happens in the output neuron is <img src="https://latex.codecogs.com/png.latex?w_%7B31%7D%20n1%20+%20w_%7B32%7D%20n2%20+%20b">. Here, <img src="https://latex.codecogs.com/png.latex?w_%7B31%7D%20%5Ctext%7Band%7D%20w_%7B32%7D"> refer to weights that correspond to two neurons, n1 and n2, respectively.</p>
-<p>So the basic idea of the theorem is that weighted sum of outputs of neurons can approximate any functions. This can be visualized by studying a special case in which output from each neuron is close to a step function and weighted sum of a pair of step functions can create a bump of any height and weight, which can approximate any continuous function at any desired precision.</p>
+<p>So the basic idea of the theorem is that weighted sum of outputs of neurons can approximate any functions. This can be visualized by studying a special case in which output from each neuron is close to a step function and weighted sum of a pair of step functions can create a bump of any height and width, which can approximate any continuous function at any desired precision.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -164,7 +164,7 @@ font-style: inherit;">"n1"</span>)</span></code></pre></div>
 <p><img src="https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>One can you the following codes to have a feel for how the weight and bias change the value in the neuron.</p>
+<p>One can use the following codes to have a feel for how the weight and bias change the value in the neuron.</p>
 <div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(manipulate)</span>
