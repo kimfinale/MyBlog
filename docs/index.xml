@@ -6,15 +6,464 @@
       version="2.0">
 <channel>
 <title>Disease modeling for public health</title>
-<link>https://kimfinale.github.io/myblog/index.html</link>
-<atom:link href="https://kimfinale.github.io/myblog/index.xml" rel="self" type="application/rss+xml"/>
+<link>https://www.jonghoonk.com/index.html</link>
+<atom:link href="https://www.jonghoonk.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>Disease modeling for public health</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Sat, 15 Jun 2024 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 23 Jun 2024 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Learning ChatGPT 4: Universal Approximation Theorem</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Neural networks can approximate any function according to the <a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">Universal Approximation Theorem</a>. A more precise statement of the theorem is that neural networks with a single hidden layer can be used to approximate any continuous function to any desired precision by the <a href="http://neuralnetworksanddeeplearning.com/chap4.html">e-book</a> by Michael Nielsen. This e-book provides intuitive explanations about the proof.</p>
+<p>In what follows, I recorded what I was able to understand based on those materials and added a few R codes to supplement my explanations. For a simple network with one hidden layer of two neurons, n1 and n2, what is being computed in a hidden neuron is <img src="https://latex.codecogs.com/png.latex?%5Csigma(w%20x%20+%20b)">, where <img src="https://latex.codecogs.com/png.latex?%5Csigma%20(z)%20%5Cequiv%201/(1+e%5E%7B-z%7D)"> is the sigmoid function. And what happens in the output neuron is <img src="https://latex.codecogs.com/png.latex?w_%7B31%7D%20n1%20+%20w_%7B32%7D%20n2%20+%20b">. Here, <img src="https://latex.codecogs.com/png.latex?w_%7B31%7D%20%5Ctext%7Band%7D%20w_%7B32%7D"> refer to weights that correspond to two neurons, n1 and n2, respectively.</p>
+<p>So the basic idea of the theorem is that weighted sum of outputs of neurons can approximate any functions. This can be visualized by studying a special case in which output from each neuron is close to a step function and weighted sum of a pair of step functions can create a bump of any height and weight, which can approximate any continuous function at any desired precision.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(igraph)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">graph_from_literal</span>(Input<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">--+</span>n1, Input<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">--+</span>n2, n1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">--+</span>Output, n2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">--+</span>Output))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>In what follows, I will explain how a neural network can create a bump. Before that, let’s get familiar with what is being computed in a single neuron. In the following codes, some combination of weight, <img src="https://latex.codecogs.com/png.latex?w"> , and bias, <img src="https://latex.codecogs.com/png.latex?b">, generate a typical sigmoid function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>)</span>
+<span id="cb2-2">w <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span></span>
+<span id="cb2-3">b <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span></span>
+<span id="cb2-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>(w<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>b))), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Input"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n1"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>With high values for <img src="https://latex.codecogs.com/png.latex?w">, the output becomes close to a step function and the change point occurs at <img src="https://latex.codecogs.com/png.latex?-b/w">. For instance, let’s look at the plot for <img src="https://latex.codecogs.com/png.latex?w=1000,%20b=-300">.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>)</span>
+<span id="cb3-2">w <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span></span>
+<span id="cb3-3">b <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">300</span></span>
+<span id="cb3-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>(w<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>b))), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Input"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n1"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>One can you the following codes to have a feel for how the weight and bias change the value in the neuron.</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(manipulate)</span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">manipulate</span>(</span>
+<span id="cb4-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>(w<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>b))), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Input"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n1"</span>),</span>
+<span id="cb4-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slider</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">initial =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>), </span>
+<span id="cb4-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slider</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">initial =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span></code></pre></div>
+<p>Now let’s create another step function in which the change point occurs at 0.4</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>)</span>
+<span id="cb5-2">w1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span></span>
+<span id="cb5-3">b1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">300</span></span>
+<span id="cb5-4">y1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>(w1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>b1)))</span>
+<span id="cb5-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(x, y1, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>)</span>
+<span id="cb5-6"></span>
+<span id="cb5-7">w2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span></span>
+<span id="cb5-8">b2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">400</span></span>
+<span id="cb5-9">y2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>(w2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>b2)))</span>
+<span id="cb5-10"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lines</span>(x, y2, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>What happens in the Output node is <img src="https://latex.codecogs.com/png.latex?%5Comega_%7B31%7D%20n1%20+%20%5Comega_%7B32%7D%20n2%20+%20b">. By setting <img src="https://latex.codecogs.com/png.latex?w1"> and <img src="https://latex.codecogs.com/png.latex?w2"> at different sign, we can create a bump.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">w31 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>        </span>
+<span id="cb6-2">w32 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>       </span>
+<span id="cb6-3">b3 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb6-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(x, y2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>w32 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> y1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>w31 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b3, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Output"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Again, one may use the following codes to have a feel for how two weights and the bias change the output in the Output.</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">manipulate</span>(</span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(x, y2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>w32 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> y1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>w31 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b3, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Output"</span>),</span>
+<span id="cb7-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w31 =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slider</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e2</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">initial =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), </span>
+<span id="cb7-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w32 =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slider</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e2</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">initial =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb7-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b3 =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slider</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e2</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">initial =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>))</span></code></pre></div>
+
+
+
+ ]]></description>
+  <category>Universal Approximation Theorem</category>
+  <category>Neural network</category>
+  <category>Arbitrary-Width</category>
+  <category>Arbitrary-Depth</category>
+  <guid>https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index.html</guid>
+  <pubDate>Sun, 23 Jun 2024 15:00:00 GMT</pubDate>
+  <media:content url="https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/UAT.png" medium="image" type="image/png" height="55" width="144"/>
+</item>
 <item>
   <title>Learning ChatGPT 3: MNIST</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/Learning_ChatGPT_3_MNIST/index.html</link>
+  <link>https://www.jonghoonk.com/posts/Learning_ChatGPT_3_MNIST/index.html</link>
   <description><![CDATA[ 
 
 
@@ -237,7 +686,7 @@ font-style: inherit;">plot.background=</span><span class="fu" style="color: #475
 background-color: null;
 font-style: inherit;">element_blank</span>())</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/Learning_ChatGPT_3_MNIST/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/Learning_ChatGPT_3_MNIST/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">train[[<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -849,7 +1298,7 @@ font-style: inherit;">+</span></span>
 background-color: null;
 font-style: inherit;">theme_bw</span>()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/Learning_ChatGPT_3_MNIST/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/Learning_ChatGPT_3_MNIST/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -890,7 +1339,7 @@ font-style: inherit;">+</span></span>
 background-color: null;
 font-style: inherit;">theme_bw</span>()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/Learning_ChatGPT_3_MNIST/index_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/Learning_ChatGPT_3_MNIST/index_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Accuracy</p>
@@ -1039,14 +1488,14 @@ Balanced Accuracy      0.9889   0.9886   0.9930    0.9963</code></pre>
   <category>Neural network</category>
   <category>MNIST</category>
   <category>CNN</category>
-  <guid>https://kimfinale.github.io/myblog/posts/Learning_ChatGPT_3_MNIST/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/Learning_ChatGPT_3_MNIST/index.html</guid>
   <pubDate>Sat, 15 Jun 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/Learning_ChatGPT_3_MNIST/mnist_five.png" medium="image" type="image/png" height="137" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/Learning_ChatGPT_3_MNIST/mnist_five.png" medium="image" type="image/png" height="137" width="144"/>
 </item>
 <item>
   <title>Parallel simulation in R</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/parallel/index.html</link>
+  <link>https://www.jonghoonk.com/posts/parallel/index.html</link>
   <description><![CDATA[ 
 
 
@@ -1574,14 +2023,14 @@ font-style: inherit;">stopCluster</span>(cl)</span></code></pre></div>
   <category>parallelism</category>
   <category>foreach</category>
   <category>doParallel</category>
-  <guid>https://kimfinale.github.io/myblog/posts/parallel/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/parallel/index.html</guid>
   <pubDate>Thu, 13 Jun 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/parallel/right_trunc2.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/parallel/right_trunc2.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Basic reproduction number: An algorithmic approach</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/R0_mathematica/index.html</link>
+  <link>https://www.jonghoonk.com/posts/R0_mathematica/index.html</link>
   <description><![CDATA[ 
 
 
@@ -2163,14 +2612,14 @@ font-style: inherit;">/</span> FullSimplify</span></code></pre></div>
   <category>Mathematica</category>
   <category>algorithmic approach</category>
   <category>next generation matrix</category>
-  <guid>https://kimfinale.github.io/myblog/posts/R0_mathematica/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/R0_mathematica/index.html</guid>
   <pubDate>Sat, 01 Jun 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/R0_mathematica/intro-spikey.png" medium="image" type="image/png" height="147" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/R0_mathematica/intro-spikey.png" medium="image" type="image/png" height="147" width="144"/>
 </item>
 <item>
   <title>Claude 3</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/claude_api/index.html</link>
+  <link>https://www.jonghoonk.com/posts/claude_api/index.html</link>
   <description><![CDATA[ 
 
 
@@ -2411,14 +2860,14 @@ font-style: inherit;">cat</span>(res)</span></code></pre></div>
  ]]></description>
   <category>LLM</category>
   <category>Claude</category>
-  <guid>https://kimfinale.github.io/myblog/posts/claude_api/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/claude_api/index.html</guid>
   <pubDate>Wed, 29 May 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/claude_api/anthropic.png" medium="image" type="image/png" height="136" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/claude_api/anthropic.png" medium="image" type="image/png" height="136" width="144"/>
 </item>
 <item>
   <title>Learning ChatGPT 2: Approximating a tower function using a neural net</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/learning_ChatGPT_2/index.html</link>
+  <link>https://www.jonghoonk.com/posts/learning_ChatGPT_2/index.html</link>
   <description><![CDATA[ 
 
 
@@ -2514,7 +2963,7 @@ font-style: inherit;">lwd=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/learning_ChatGPT_2/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/learning_ChatGPT_2/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -2784,7 +3233,7 @@ font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/learning_ChatGPT_2/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/learning_ChatGPT_2/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -3052,7 +3501,7 @@ font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/learning_ChatGPT_2/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/learning_ChatGPT_2/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -3066,14 +3515,14 @@ font-style: inherit;"># dev.off()</span></span></code></pre></div>
   <category>Neural network</category>
   <category>Adam</category>
   <category>matrix</category>
-  <guid>https://kimfinale.github.io/myblog/posts/learning_ChatGPT_2/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/learning_ChatGPT_2/index.html</guid>
   <pubDate>Mon, 27 May 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/learning_ChatGPT_2/stepfunc_nn.png" medium="image" type="image/png" height="144" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/learning_ChatGPT_2/stepfunc_nn.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>A very basic implementation of a neural network</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/neural_network_basic/index.html</link>
+  <link>https://www.jonghoonk.com/posts/neural_network_basic/index.html</link>
   <description><![CDATA[ 
 
 
@@ -3556,7 +4005,7 @@ font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"red"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/neural_network_basic/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/neural_network_basic/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -3754,7 +4203,7 @@ font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"red"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/neural_network_basic/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/neural_network_basic/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -3878,7 +4327,7 @@ font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"red"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/neural_network_basic/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/neural_network_basic/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -3906,14 +4355,14 @@ font-style: inherit;">2</span>)</span></code></pre></div>
   <category>GPT-2</category>
   <category>ChatGPT</category>
   <category>Wolfram</category>
-  <guid>https://kimfinale.github.io/myblog/posts/neural_network_basic/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/neural_network_basic/index.html</guid>
   <pubDate>Sun, 26 May 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/neural_network_basic/obs_pred.png" medium="image" type="image/png" height="144" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/neural_network_basic/obs_pred.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Variables selection in statistical models</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/variable_selection/index.html</link>
+  <link>https://www.jonghoonk.com/posts/variable_selection/index.html</link>
   <description><![CDATA[ 
 
 
@@ -3997,14 +4446,14 @@ font-style: inherit;">2</span>)</span></code></pre></div>
   <category>R</category>
   <category>variable selection</category>
   <category>generalized linear model</category>
-  <guid>https://kimfinale.github.io/myblog/posts/variable_selection/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/variable_selection/index.html</guid>
   <pubDate>Fri, 17 May 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/variable_selection/chatgpt.png" medium="image" type="image/png"/>
+  <media:content url="https://www.jonghoonk.com/posts/variable_selection/chatgpt.png" medium="image" type="image/png"/>
 </item>
 <item>
   <title>Learning ChatGPT 1: Top 5 probabilities for the next word</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/learning_ChatGPT_1/index.html</link>
+  <link>https://www.jonghoonk.com/posts/learning_ChatGPT_1/index.html</link>
   <description><![CDATA[ 
 
 
@@ -4415,14 +4864,14 @@ font-style: inherit;">kable</span>(df)</span></code></pre></div>
   <category>GPT-2</category>
   <category>ChatGPT</category>
   <category>Wolfram</category>
-  <guid>https://kimfinale.github.io/myblog/posts/learning_ChatGPT_1/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/learning_ChatGPT_1/index.html</guid>
   <pubDate>Tue, 30 Apr 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/learning_ChatGPT_1/top5_prob.png" medium="image" type="image/png" height="44" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/learning_ChatGPT_1/top5_prob.png" medium="image" type="image/png" height="44" width="144"/>
 </item>
 <item>
   <title>Logistic function in R</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/index.html</link>
+  <link>https://www.jonghoonk.com/posts/logistic_indirect_ve/index.html</link>
   <description><![CDATA[ 
 
 
@@ -4442,7 +4891,7 @@ font-style: inherit;">kable</span>(df)</span></code></pre></div>
 <p>In particular, we use the IVE analyzed based on clinical trials of oral cholera vaccines in <a href="https://pubmed.ncbi.nlm.nih.gov/15993232/">Bangladesh</a> and in <a href="https://pubmed.ncbi.nlm.nih.gov/23362293/">India</a>. In Table 1 below, we analyze the relationship between “Level of vaccine coverage” and the incidence rates among placebo recipients. The presence of IVE is evident as the risk of illness among placebo recipients diminishes with increasing vaccine coverage levels.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/ali2005_table1_ive.png" class="img-fluid figure-img"></p>
+<p><img src="https://www.jonghoonk.com/posts/logistic_indirect_ve/ali2005_table1_ive.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Table 1</figcaption>
 </figure>
 </div>
@@ -5174,7 +5623,7 @@ font-style: inherit;">color=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">""</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/logistic_indirect_ve/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"> <span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -5188,14 +5637,14 @@ font-style: inherit;"># ggsave("ive_vacc_cov.png")</span></span></code></pre></d
   <category>Logistic function</category>
   <category>indirect vaccine effectiveness</category>
   <category>oral cholera vaccine</category>
-  <guid>https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/logistic_indirect_ve/index.html</guid>
   <pubDate>Thu, 18 Apr 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/logistic_indirect_ve/ali2005_table1_ive.png" medium="image" type="image/png" height="33" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/logistic_indirect_ve/ali2005_table1_ive.png" medium="image" type="image/png" height="33" width="144"/>
 </item>
 <item>
   <title>Waning vaccine efficacy on susceptibility</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index.html</link>
+  <link>https://www.jonghoonk.com/posts/vacc_eff_waining_multiple_stages/index.html</link>
   <description><![CDATA[ 
 
 
@@ -6748,7 +7197,7 @@ font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"year"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Direct vaccine efficacy in case vaccine-derived immunity wanes over time with the average waiting time of 10 years</p>
@@ -6902,7 +7351,7 @@ font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"year"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Function to measure vaccine effectiveness over time.</p>
@@ -7479,7 +7928,7 @@ font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vacc_eff_waining_multiple_stages/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -7494,14 +7943,14 @@ font-style: inherit;"># dev.off()</span></span></code></pre></div>
   <category>waning</category>
   <category>SEIR</category>
   <category>Erlang distribution</category>
-  <guid>https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/vacc_eff_waining_multiple_stages/index.html</guid>
   <pubDate>Sun, 07 Apr 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/vacc_eff_waining_multiple_stages/vacc_eff_obs_sim.png" medium="image" type="image/png" height="144" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/vacc_eff_waining_multiple_stages/vacc_eff_obs_sim.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>SEIR model with varying number of compartments</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/seir_varying_number_compartments/index.html</link>
+  <link>https://www.jonghoonk.com/posts/seir_varying_number_compartments/index.html</link>
   <description><![CDATA[ 
 
 
@@ -8670,7 +9119,7 @@ font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/seir_varying_number_compartments/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/seir_varying_number_compartments/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -8683,14 +9132,14 @@ font-style: inherit;"># dev.off()</span></span></code></pre></div>
  ]]></description>
   <category>SEIR</category>
   <category>Erlang distribution</category>
-  <guid>https://kimfinale.github.io/myblog/posts/seir_varying_number_compartments/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/seir_varying_number_compartments/index.html</guid>
   <pubDate>Thu, 04 Apr 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/seir_varying_number_compartments/seir_multi_comp.png" medium="image" type="image/png" height="144" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/seir_varying_number_compartments/seir_multi_comp.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Waning of vaccine effectiveness</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index.html</link>
+  <link>https://www.jonghoonk.com/posts/vaccine_effectiveness_waning/index.html</link>
   <description><![CDATA[ 
 
 
@@ -9492,7 +9941,7 @@ font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vaccine_effectiveness_waning/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Measure vaccine impact</p>
@@ -9595,7 +10044,7 @@ font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"year"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vaccine_effectiveness_waning/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -10207,7 +10656,7 @@ font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vaccine_effectiveness_waning/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -10221,14 +10670,14 @@ font-style: inherit;"># dev.off()</span></span></code></pre></div>
   <category>vaccine efficacy</category>
   <category>clinical trial</category>
   <category>SEIR</category>
-  <guid>https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/vaccine_effectiveness_waning/index.html</guid>
   <pubDate>Wed, 03 Apr 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness_waning/vacc_eff_waning.png" medium="image" type="image/png" height="144" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/vaccine_effectiveness_waning/vacc_eff_waning.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Solutions for the steady states of the SEIR model</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/cholera_seir_eqn/index.html</link>
+  <link>https://www.jonghoonk.com/posts/cholera_seir_eqn/index.html</link>
   <description><![CDATA[ 
 
 
@@ -12800,14 +13249,14 @@ font-style: inherit;">1</span>)</span></code></pre></div>
   <category>ODE</category>
   <category>deSolve</category>
   <category>Mathematica</category>
-  <guid>https://kimfinale.github.io/myblog/posts/cholera_seir_eqn/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/cholera_seir_eqn/index.html</guid>
   <pubDate>Wed, 27 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/cholera_seir_eqn/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/cholera_seir_eqn/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Vaccine effectiveness</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/vaccine_effectiveness/index.html</link>
+  <link>https://www.jonghoonk.com/posts/vaccine_effectiveness/index.html</link>
   <description><![CDATA[ 
 
 
@@ -12818,7 +13267,7 @@ font-style: inherit;">1</span>)</span></code></pre></div>
 <p>Vaccine efficacy and effectiveness (VE) is generally estimated as one minus some measure of relative risk (RR) in the vaccinated group compared with the unvaccinated group <a href="https://pubmed.ncbi.nlm.nih.gov/10520474/">Halloran <em>et al</em>.</a>:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BVE%7D%20=%201%20-%20%5Ctext%7BRR%7D%0A"></p>
 <p>RR measures may relative infection probability given exposure, hazard ratio, or the ratio of cumulative incidence (or attack rate). I will explain different effects of the vaccine using the cumulative incidence (<img src="https://latex.codecogs.com/png.latex?C">) measure based on the notations from the <a href="https://pubmed.ncbi.nlm.nih.gov/1742381/">Study design for dependent happenings</a>.</p>
-<p><img src="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness/study_design.png" class="img-fluid"></p>
+<p><img src="https://www.jonghoonk.com/posts/vaccine_effectiveness/study_design.png" class="img-fluid"></p>
 <p>In population <img src="https://latex.codecogs.com/png.latex?A">, a fraction, <img src="https://latex.codecogs.com/png.latex?f">, of the population was vaccinated (denoted with <img src="https://latex.codecogs.com/png.latex?1">) and the rest, <img src="https://latex.codecogs.com/png.latex?1-f">, of the Population A remains unvaccinated (denoted with <img src="https://latex.codecogs.com/png.latex?0">). In Population <img src="https://latex.codecogs.com/png.latex?B">, no one was vaccinated. I can now use <img src="https://latex.codecogs.com/png.latex?C_%7BA0%7D"> and <img src="https://latex.codecogs.com/png.latex?C_%7BA1%7D"> to denote cumulative incidence, <img src="https://latex.codecogs.com/png.latex?C">, in the unvaccinated and vaccinated individuals of Population <img src="https://latex.codecogs.com/png.latex?A">. Similarly, I can use <img src="https://latex.codecogs.com/png.latex?C_%7BB0%7D"> to denote the cumulative incidence in the (unvaccinated) population <img src="https://latex.codecogs.com/png.latex?B">.</p>
 <p>The VE can be divided into four different measures and they are direct, indirect, total, and overall VE, which are noted as DVE, IVE, TVE, and OVE, respectively.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BDVE%7D%20=%201%20-%20%5Cfrac%7BC_%7BA1%7D%7D%7BC_%7BA0%7D%7D,~%0A%5Ctext%7BIVE%7D%20=%201%20-%20%5Cfrac%7BC_%7BA0%7D%7D%7BC_%7BB0%7D%7D,~%0A%5Ctext%7BTVE%7D%20=%201%20-%20%5Cfrac%7BC_%7BA1%7D%7D%7BC_%7BB0%7D%7D,~%0A%5Ctext%7BOVE%7D%20=%201%20-%20%5Cfrac%7Bf%20C_%7BA1%7D+(1-f)%20C_%7BA0%7D%7D%7BC_%7BB0%7D%7D.%0A"></p>
@@ -13486,14 +13935,14 @@ font-style: inherit;">-</span>IVE))</span></code></pre></div>
   <category>indirect</category>
   <category>total</category>
   <category>overall</category>
-  <guid>https://kimfinale.github.io/myblog/posts/vaccine_effectiveness/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/vaccine_effectiveness/index.html</guid>
   <pubDate>Mon, 25 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/vaccine_effectiveness/study_design.png" medium="image" type="image/png" height="130" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/vaccine_effectiveness/study_design.png" medium="image" type="image/png" height="130" width="144"/>
 </item>
 <item>
   <title>Counterintuitive effects in disease transmission dynamics</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/counterintuitive/index.html</link>
+  <link>https://www.jonghoonk.com/posts/counterintuitive/index.html</link>
   <description><![CDATA[ 
 
 
@@ -13637,7 +14086,7 @@ font-style: inherit;">y=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Prevalence"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/counterintuitive/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/counterintuitive/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -13651,14 +14100,14 @@ font-style: inherit;"># ggsave("R0_prevalence.png")</span></span></code></pre></
   <category>Infectious diseases</category>
   <category>nonlinearity</category>
   <category>transmission dynamics</category>
-  <guid>https://kimfinale.github.io/myblog/posts/counterintuitive/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/counterintuitive/index.html</guid>
   <pubDate>Tue, 19 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/counterintuitive/R0_prevalence.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/counterintuitive/R0_prevalence.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Prevalence vs. incidence for the SIR model</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/prevalence_incidence_sirmodel/index.html</link>
+  <link>https://www.jonghoonk.com/posts/prevalence_incidence_sirmodel/index.html</link>
   <description><![CDATA[ 
 
 
@@ -14004,7 +14453,7 @@ font-style: inherit;">color=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">""</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/prevalence_incidence_sirmodel/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/prevalence_incidence_sirmodel/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -14103,14 +14552,14 @@ font-style: inherit;"># FullSimplify[Solve[{\[Mu]*(S+Y+R)-(r +\[Mu]) *S + \[Omeg
   <category>prevalence</category>
   <category>incidence</category>
   <category>deSolve</category>
-  <guid>https://kimfinale.github.io/myblog/posts/prevalence_incidence_sirmodel/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/prevalence_incidence_sirmodel/index.html</guid>
   <pubDate>Mon, 11 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/prevalence_incidence_sirmodel/diffeqr_sir.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/prevalence_incidence_sirmodel/diffeqr_sir.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>감염병의 대유행 가능성 계산하기</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/Probabily_outbreak/index.html</link>
+  <link>https://www.jonghoonk.com/posts/Probabily_outbreak/index.html</link>
   <description><![CDATA[ 
 
 
@@ -14391,7 +14840,7 @@ font-style: inherit;">color=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">""</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/Probabily_outbreak/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/Probabily_outbreak/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -14517,14 +14966,14 @@ font-style: inherit;">0.1</span>}] </span></code></pre></div>
  ]]></description>
   <category>probability of a large outbreak</category>
   <category>reproduction number</category>
-  <guid>https://kimfinale.github.io/myblog/posts/Probabily_outbreak/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/Probabily_outbreak/index.html</guid>
   <pubDate>Sun, 03 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/Probabily_outbreak/outbreak_prob.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/Probabily_outbreak/outbreak_prob.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Modeling the waning of the vaccine-derived immunity in the ODE model</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/index.html</link>
+  <link>https://www.jonghoonk.com/posts/vacc_waning_nls_erlang/index.html</link>
   <description><![CDATA[ 
 
 
@@ -15387,7 +15836,7 @@ font-style: inherit;">color=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">""</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vacc_waning_nls_erlang/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -15571,7 +16020,7 @@ font-style: inherit;">color=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">""</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vacc_waning_nls_erlang/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -15755,7 +16204,7 @@ font-style: inherit;">color=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">""</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vacc_waning_nls_erlang/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Given that the data for adults following a two-dose regimen seem to be the most reliable, we evaluated the model’s residual errors in comparison to this data. The analysis of residual errors indicates that a gamma distribution with a shape parameter of 3 presents the optimal fit.</p>
@@ -16198,7 +16647,7 @@ font-style: inherit;">legend.position =</span> <span class="st" style="color: #2
 background-color: null;
 font-style: inherit;">"bottom"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/posts/vacc_waning_nls_erlang/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
@@ -16213,14 +16662,14 @@ font-style: inherit;">"bottom"</span>)</span></code></pre></div>
   <category>ODE</category>
   <category>exponential</category>
   <category>Gamma</category>
-  <guid>https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/vacc_waning_nls_erlang/index.html</guid>
   <pubDate>Mon, 26 Feb 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/vacc_waning_nls_erlang/vacc_wane_exp_erlang.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/vacc_waning_nls_erlang/vacc_wane_exp_erlang.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>Incremental Cost-Effectiveness Ratio (ICER)</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/ICER/index.html</link>
+  <link>https://www.jonghoonk.com/posts/ICER/index.html</link>
   <description><![CDATA[ 
 
 
@@ -16296,424 +16745,9 @@ font-style: inherit;">/</span> incremental_effectiveness</span></code></pre></di
  ]]></description>
   <category>cholera</category>
   <category>sub-Saharan Africa</category>
-  <guid>https://kimfinale.github.io/myblog/posts/ICER/index.html</guid>
+  <guid>https://www.jonghoonk.com/posts/ICER/index.html</guid>
   <pubDate>Sat, 24 Feb 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/ICER/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
-</item>
-<item>
-  <title>Implementing incubation period of cholera in the ODE model</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="modeling-incubation-period-in-the-ode-model" class="level3">
-<h3 class="anchored" data-anchor-id="modeling-incubation-period-in-the-ode-model">Modeling incubation period in the ODE model</h3>
-<p>In the realm of infectious disease modeling, accurately simulating the incubation period–the time between exposure to a pathogen and the onset of symptoms–is crucial for understanding and predicting the spread of diseases. Classic ordinary differential equation (ODE) models often employ the exponential distribution to represent this incubation period mostly for the sake of convenience. However, the exponential distribution is not an optimal distribution to model the waiting time for the incubation period, which is often modeled as a log-normal distribution as shown in the <a href="https://pubmed.ncbi.nlm.nih.gov/19393959/">study by Lessler <em>et al</em>.</a>. In this post, I show that waiting time may be modeled more realistically by adding an extra compartment (e.g., <img src="https://latex.codecogs.com/png.latex?SE_1E_2IR"> rather than <img src="https://latex.codecogs.com/png.latex?SEIR">) and thus making the waiting time Erlang-distributed.</p>
-<p>In particular, in the following R codes, I explored the incubation period of cholera from the <a href="https://www.sciencedirect.com/science/article/abs/pii/S0163445312003477#:~:text=We%20estimate%20the%20median%20incubation,CI%2C%201.3%E2%80%931.6">study by Azman <em>et al</em>.</a>. Azman writes: We estimate the median incubation period of toxigenic cholera to be 1.4 days (95% Credible Interval (CI), 1.3-1.6) with a dispersion of 1.98 (95% CI 1.87-2.11). Five percent of cholera cases will develop symptoms by 0.5 days (95% CI 0.4-0.5), and 95% by 4.4 days (95% CI 3.9-5.0) after infection.</p>
-<p>Based on the description, I set the parameters for the log-normal distribution as follows.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">a <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.40</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># median</span></span>
-<span id="cb1-2">b <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.98</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># disperson</span></span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">qlnorm</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.05</span>,<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.95</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">meanlog =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(a), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sdlog =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(b)), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5 4.3</code></pre>
-</div>
-</div>
-<p>There is a slight mismatch for the 95th percentile (4.3 vs 4.4 [reported]). This is, however, possible considering that the estimates are from Bayesian posterior samples and I can’t account for the correlation between the parameter estimates.</p>
-<p>Using this log-normal distribution, I generate samples (<img src="https://latex.codecogs.com/png.latex?n=1000">), to which exponential and Erlang distributions are fit.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">dat <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rlnorm</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1e3</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">meanlog =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(a), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sdlog =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(b))</span>
-<span id="cb3-2"></span>
-<span id="cb3-3">fit_exp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> fitdistrplus<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fitdist</span>(dat, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">distr=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"exp"</span>)</span>
-<span id="cb3-4">fit_gam <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> fitdistrplus<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">fitdist</span>(dat, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">distr=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gamma"</span>)</span>
-<span id="cb3-5"></span>
-<span id="cb3-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">qexp</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.05</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.95</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">rate=</span>fit_exp<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>estimate[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]]), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1 5.1</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">qgamma</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.05</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.95</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">shape=</span>fit_gam<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>estimate[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">rate=</span>fit_gam<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>estimate[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]]), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">digits=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4 3.9</code></pre>
-</div>
-</div>
-<p>By examining <img src="https://latex.codecogs.com/png.latex?5%5E%7Bth%7D"> and <img src="https://latex.codecogs.com/png.latex?95%5E%7Bth%7D"> percentiles, we realize that the best-fit exponential distribution is too wide compared with the log-normal distribution whereas the Gamma distribution looks better.</p>
-<p>However, in the context of ODE models, Gamma distribution is not easy to implement except for a subset in which the shape parameter is an integer (i.e., Erlang distribution). Therefore, I fit the rate parameter of the Gamma distribution while the shape parameter is set to an integer. Based on the previous fitting results (shape parameter = 2.348677), I only test the cases where the shape parameter is 2 or 3.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">erlang_nll <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(p, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">shp=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>){</span>
-<span id="cb7-2">  <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sum</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dgamma</span>(dat, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">shape=</span>shp, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">rate=</span>p, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">log=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>))</span>
-<span id="cb7-3">}</span>
-<span id="cb7-4">er_shp2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">optimize</span>(erlang_nll, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1e-6</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">shp=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)</span>
-<span id="cb7-5">er_shp3 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">optimize</span>(erlang_nll, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1e-6</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">shp=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>)</span></code></pre></div>
-</div>
-<p>Considering the negative log likelihood values, we realize that the Gamma distribution with shape of 2 provides a better fit than the one with shape of 3.</p>
-<p>We plot the results as a visual summary.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">n <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1000</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># the number of</span></span>
-<span id="cb8-2">x <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">12</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">length.out=</span>n)</span>
-<span id="cb8-3">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(</span>
-<span id="cb8-4">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">val =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(x, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>),</span>
-<span id="cb8-5">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">dist =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Log-normal"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Exponential"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Gamma"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Erlang (shape=2)"</span>), </span>
-<span id="cb8-6">             <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">each=</span>n), </span>
-<span id="cb8-7">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">density =</span> </span>
-<span id="cb8-8">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dlnorm</span>(x, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">meanlog=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.4</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sdlog=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">log</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.98</span>)), </span>
-<span id="cb8-9">      <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dexp</span>(x, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">rate=</span>fit_exp<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>estimate[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]]), </span>
-<span id="cb8-10">      <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dgamma</span>(x, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">shape=</span>fit_gam<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>estimate[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]], </span>
-<span id="cb8-11">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">rate=</span>fit_gam<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>estimate[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]]), </span>
-<span id="cb8-12">      <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dgamma</span>(x, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">shape=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">rate=</span>er_shp2<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>minimum)))</span>
-<span id="cb8-13"></span>
-<span id="cb8-14"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb8-15">extrafont<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">loadfonts</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"win"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">quiet=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb8-16"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">12</span>))</span>
-<span id="cb8-17"></span>
-<span id="cb8-18"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(df)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb8-19">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x=</span>val, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>density, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span>dist))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb8-20">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Density"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb8-21">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"bottom"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>The above figure clearly shows that the Erlang distribution has a better representation of reality (in this case, the log-normal distributed incubation period) than the commonly used exponential distribution.</p>
-
-
-</section>
-
- ]]></description>
-  <category>incubation period</category>
-  <category>ODE</category>
-  <category>cholera</category>
-  <category>exponential</category>
-  <category>Erlang</category>
-  <guid>https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/index.html</guid>
-  <pubDate>Wed, 21 Feb 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://kimfinale.github.io/myblog/posts/exp_erlang_lognormal/lnorm_exp_erlang.png" medium="image" type="image/png" height="114" width="144"/>
+  <media:content url="https://www.jonghoonk.com/posts/ICER/sample_figure.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 </channel>
 </rss>
