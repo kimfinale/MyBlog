@@ -18,7 +18,7 @@ Approximation Theorem](https://en.wikipedia.org/wiki/Universal_approximation_the
 In what follows, I recorded what I was able to understand based on those materials and added a few R codes to supplement my explanations. For a simple network with one hidden layer of two neurons, n1 and n2, what is being computed in a hidden neuron is
 $\sigma(w x + b)$, where $\sigma (z) \equiv 1/(1+e^{-z})$ is the sigmoid function. And what happens in the output neuron is $w_{31} n1 + w_{32} n2 + b$. Here, $w_{31} \text{and} w_{32}$ refer to weights that correspond to two neurons, n1 and n2, respectively.
 
-So the basic idea of the theorem is that weighted sum of outputs of neurons can approximate any functions. This can be visualized by studying a special case in which output from each neuron is close to a step function and weighted sum of a pair of step functions can create a bump of any height and weight, which can approximate any continuous function at any desired precision. 
+So the basic idea of the theorem is that weighted sum of outputs of neurons can approximate any functions. This can be visualized by studying a special case in which output from each neuron is close to a step function and weighted sum of a pair of step functions can create a bump of any height and width, which can approximate any continuous function at any desired precision. 
 
 
 ```{r}
