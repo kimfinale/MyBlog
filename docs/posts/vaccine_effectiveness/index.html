@@ -273,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> deSolve<span class="sc">::</span><span class="fu">ode</span>(<span class="at">y=</span>y0_A, <span class="at">times=</span>times, <span class="at">func=</span>seir_2grp, <span class="at">parms=</span>params)</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>pop_A_out <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s compute the four VE measures.</p>
+<p>Let’s compute the four VE measures at the end of the simulation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(DVE <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (pop_A_out[tend,<span class="st">"C1"</span>]<span class="sc">/</span>pop_A[[<span class="st">"N1"</span>]])<span class="sc">/</span>(pop_A_out[tend,<span class="st">"C0"</span>]<span class="sc">/</span>pop_A[[<span class="st">"N0"</span>]]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -306,6 +306,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(TVE <span class="sc">==</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>DVE)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>IVE))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Dynamics of four VE measures</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dve <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (pop_A_out[,<span class="st">"C1"</span>]<span class="sc">/</span>pop_A[[<span class="st">"N1"</span>]])<span class="sc">/</span>(pop_A_out[,<span class="st">"C0"</span>]<span class="sc">/</span>pop_A[[<span class="st">"N0"</span>]])</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>ive <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (pop_A_out[,<span class="st">"C0"</span>]<span class="sc">/</span>pop_A[[<span class="st">"N0"</span>]])<span class="sc">/</span>(pop_B_out[,<span class="st">"C0"</span>]<span class="sc">/</span>pop_B[[<span class="st">"N0"</span>]])</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>ove <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> ((<span class="dv">1</span><span class="sc">-</span>f)<span class="sc">*</span>pop_A_out[,<span class="st">"C0"</span>]<span class="sc">/</span>pop_A[[<span class="st">"N0"</span>]] <span class="sc">+</span> f<span class="sc">*</span>pop_A_out[,<span class="st">"C1"</span>]<span class="sc">/</span>pop_A[[<span class="st">"N1"</span>]])<span class="sc">/</span> (pop_B_out[,<span class="st">"C0"</span>]<span class="sc">/</span>pop_B[[<span class="st">"N0"</span>]])</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>tve <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (pop_A_out[,<span class="st">"C1"</span>]<span class="sc">/</span>pop_A[[<span class="st">"N1"</span>]])<span class="sc">/</span>(pop_B_out[,<span class="st">"C0"</span>]<span class="sc">/</span>pop_B[[<span class="st">"N0"</span>]])</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ive)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>tve)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>dve), <span class="at">col=</span><span class="dv">2</span>, <span class="at">lty=</span><span class="dv">1</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">-</span> ove <span class="sc">-</span> f<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>tve))<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>f), <span class="at">col=</span><span class="dv">3</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ove)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">1</span> <span class="sc">-</span> (f<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>tve)<span class="sc">+</span>(<span class="dv">1</span><span class="sc">-</span>f)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>ive)), <span class="at">col=</span><span class="dv">2</span>, <span class="at">lty=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(ive, type="l")</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># lines(1 - (1 - ove - f*(1-tve))/(1-f), col=2, lty=2)</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tve)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>dve)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>ive), <span class="at">col=</span><span class="dv">2</span>, <span class="at">lty=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 

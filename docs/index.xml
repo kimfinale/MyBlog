@@ -13713,7 +13713,7 @@ font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">as.data.frame</span>(out)</span></code></pre></div>
 </div>
-<p>Let’s compute the four VE measures.</p>
+<p>Let’s compute the four VE measures at the end of the simulation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">(DVE <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -13922,6 +13922,251 @@ background-color: null;
 font-style: inherit;">-</span>IVE))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Dynamics of four VE measures</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">dve <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (pop_A_out[,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C1"</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>pop_A[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N1"</span>]])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(pop_A_out[,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C0"</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>pop_A[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N0"</span>]])</span>
+<span id="cb20-2">ive <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (pop_A_out[,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C0"</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>pop_A[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N0"</span>]])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(pop_B_out[,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C0"</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>pop_B[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N0"</span>]])</span>
+<span id="cb20-3">ove <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> ((<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>f)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>pop_A_out[,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C0"</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>pop_A[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N0"</span>]] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> f<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>pop_A_out[,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C1"</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>pop_A[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N1"</span>]])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (pop_B_out[,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C0"</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>pop_B[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N0"</span>]])</span>
+<span id="cb20-4">tve <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (pop_A_out[,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C1"</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>pop_A[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N1"</span>]])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(pop_B_out[,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C0"</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>pop_B[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N0"</span>]])</span>
+<span id="cb20-5"></span>
+<span id="cb20-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(ive)</span>
+<span id="cb20-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lines</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>tve)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>dve), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lty=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb20-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lines</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> ove <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> f<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>tve))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>f), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lty=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://www.jonghoonk.com/posts/vaccine_effectiveness/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(ove)</span>
+<span id="cb21-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lines</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (f<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>tve)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>f)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>ive)), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lty=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://www.jonghoonk.com/posts/vaccine_effectiveness/index_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># plot(ive, type="l")</span></span>
+<span id="cb22-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># lines(1 - (1 - ove - f*(1-tve))/(1-f), col=2, lty=2)</span></span>
+<span id="cb22-3"></span>
+<span id="cb22-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(tve)</span>
+<span id="cb22-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lines</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>dve)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>ive), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lty=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://www.jonghoonk.com/posts/vaccine_effectiveness/index_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
