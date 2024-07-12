@@ -5,7 +5,7 @@ about:
   image: "data/portrait1_1.jpg"
   links:
     - text: My blog
-      href: blog.qmd
+      href: blog/index.qmd
     - icon: github
       text: GitHub
       href: https://github.com/kimfinale

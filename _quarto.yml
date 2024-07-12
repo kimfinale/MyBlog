@@ -11,7 +11,7 @@ website:
       - text: About
         href: index.qmd
       - text: Blog
-        href: blog.qmd
+        href: blog/index.qmd
       - icon: github
         href: https://github.com/kimfinale
       - icon: linkedin
