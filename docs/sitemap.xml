@@ -354,7 +354,7 @@
   </url>
   <url>
     <loc>https://www.jonghoonk.com/index.html</loc>
-    <lastmod>2024-07-12T09:41:28.816Z</lastmod>
+    <lastmod>2024-07-12T21:07:00.798Z</lastmod>
   </url>
   <url>
     <loc>https://www.jonghoonk.com/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index.html</loc>
@@ -374,6 +374,62 @@
   </url>
   <url>
     <loc>https://www.jonghoonk.com/blog/index.html</loc>
-    <lastmod>2024-07-12T09:41:46.677Z</lastmod>
+    <lastmod>2024-07-12T20:42:50.064Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/Euler-Lotka/index.html</loc>
+    <lastmod>2024-07-12T11:13:13.057Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/julia_labelledarrays_namedtupletools/index.html</loc>
+    <lastmod>2024-07-12T12:51:23.515Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/odin/index.html</loc>
+    <lastmod>2024-07-12T13:09:00.955Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/sub-exponential-growth/index.html</loc>
+    <lastmod>2024-07-12T13:21:38.108Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/vacc_waning_nls_erlang/index.html</loc>
+    <lastmod>2024-07-12T20:42:40.494Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/vaccine_effectiveness_waning/index.html</loc>
+    <lastmod>2024-07-12T20:41:34.912Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/universal_differential_eqn_julia/index.html</loc>
+    <lastmod>2024-07-12T20:40:53.689Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/vaccine_effectiveness/index.html</loc>
+    <lastmod>2024-07-12T20:40:57.040Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/vacc_eff_waining_multiple_stages/index.html</loc>
+    <lastmod>2024-07-12T20:42:34.789Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/variable_selection/index.html</loc>
+    <lastmod>2024-07-12T20:42:42.767Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/kalman_filter/index.html</loc>
+    <lastmod>2024-07-12T20:45:11.820Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/neural_network_basic/index.html</loc>
+    <lastmod>2024-07-12T20:45:27.603Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/Probabily_outbreak/index.html</loc>
+    <lastmod>2024-07-12T20:45:52.973Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/diffeqr/index.html</loc>
+    <lastmod>2024-07-12T20:46:10.093Z</lastmod>
   </url>
 </urlset>

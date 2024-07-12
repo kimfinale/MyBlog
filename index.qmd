@@ -25,20 +25,16 @@ about:
 
 # Welcome to my website!
 
-
 Hi! My name is Jong-Hoon Kim, and I live in Seoul, South Korea. I am a theoretical epidemiologist who uses mathematical, statistical, and machine-learning models to study infectious disease epidemiology. My work involves developing theories about infectious disease transmission, making predictions, and assessing the effectiveness of intervention strategies to improve public health. Currently, in 2023, I work at the International Vaccine Institute, which is located in Seoul, South Korea. My current research primarily focuses on typhoid fever, non-typhoidal Salmonella, cholera, and COVID-19.
-
 
 # Research interests
 
 My research focuses on leveraging disease models to generate actionable insights for controlling infectious diseases with real-world impact. Specifically, I aim to:
 
-1. Identify critical details necessary for generating actionable inferences tailored to specific locations and times.
+1.  Identify critical details necessary for generating actionable inferences tailored to specific locations and times.
 
-2. Develop models to understand how human behavior in society can enhance or hinder the effectiveness of disease control methods.
+2.  Develop models to understand how human behavior in society can enhance or hinder the effectiveness of disease control methods.
 
 By addressing these areas, I hope to contribute to the design of effective interventions that can mitigate the spread of infectious diseases and improve public health outcomes.
 
-
 # Publications
-
