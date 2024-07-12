@@ -185,9 +185,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Neural networks can approximate any function according to the <a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">Universal Approximation Theorem</a>. A more precise statement of the theorem is that neural networks with a single hidden layer can be used to approximate any continuous function to any desired precision by the <a href="http://neuralnetworksanddeeplearning.com/chap4.html">e-book</a> by Michael Nielsen. This e-book provides intuitive explanations about the proof.</p>
-<p>In what follows, I recorded what I was able to understand based on those materials and added a few R codes to supplement my explanations. For a simple network with one hidden layer of two neurons, n1 and n2, what is being computed in a hidden neuron is <span class="math inline">\(\sigma(w x + b)\)</span>, where <span class="math inline">\(\sigma (z) \equiv 1/(1+e^{-z})\)</span> is the sigmoid function. And what happens in the output neuron is <span class="math inline">\(w_{31} n1 + w_{32} n2 + b\)</span>. Here, <span class="math inline">\(w_{31} \text{and} w_{32}\)</span> refer to weights that correspond to two neurons, n1 and n2, respectively.</p>
-<p>So the basic idea of the theorem is that weighted sum of outputs of neurons can approximate any functions. This can be visualized by studying a special case in which output from each neuron is close to a step function and weighted sum of a pair of step functions can create a bump of any height and width, which can approximate any continuous function at any desired precision.</p>
+<p>Neural networks can approximate any function according to the <a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">Universal Approximation Theorem</a>. A more precise statement of the theorem is that neural networks with a single hidden layer can be used to approximate any continuous function to any desired precision by the <a href="http://neuralnetworksanddeeplearning.com/chap4.html">e-book</a> by Michael Nielsen. This e-book provides intuitive explanations about the proof. In what follows, I wrote what I was able to understand based on those materials and added a few R code chunks to supplement.</p>
+<p>For a simple network with one hidden layer of two neurons, n1 and n2, what is being computed in a hidden neuron is <span class="math inline">\(\sigma(w x + b)\)</span>, where <span class="math inline">\(\sigma (z) \equiv 1/(1+e^{-z})\)</span> is the sigmoid function. And what happens in the output neuron is <span class="math inline">\(w_{31} n1 + w_{32} n2 + b\)</span>. Here, <span class="math inline">\(w_{31} \text{and} w_{32}\)</span> refer to weights that correspond to two neurons, n1 and n2, respectively.</p>
+<p>The basic idea of the theorem is that weighted sum of outputs of neurons can approximate any functions. This can be visualized by studying a special case in which output from each neuron is close to a step function and weighted sum of a pair of step functions can create a bump of any height and width. With numerous those bumps, one can approximate any continuous function at any desired precision.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">graph_from_literal</span>(Input<span class="sc">--+</span>n1, Input<span class="sc">--+</span>n2, n1<span class="sc">--+</span>Output, n2<span class="sc">--+</span>Output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -489,6 +489,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
+</script>
+<script src="https://utteranc.es/client.js" repo="kimfinale/myblog" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 
