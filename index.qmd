@@ -2,7 +2,7 @@
 about:
   template: jolla
   id: about-block
-  image: "data/portrait1_1.jpg"
+  image: "img/portrait1_1.jpg"
   links:
     - text: My blog
       href: blog/index.qmd
