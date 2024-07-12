@@ -4,7 +4,7 @@ project:
 
 website:
   title: "Disease modeling for public health"
-  site-url: https://kimfinale.github.io/myblog/
+  site-url: https://www.jonghoonk.com
   description: "Disease modeling for public health"
   navbar:
     right:
