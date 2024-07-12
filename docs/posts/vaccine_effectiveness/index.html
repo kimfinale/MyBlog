@@ -9,7 +9,7 @@
 <meta name="author" content="Jong-Hoon Kim">
 <meta name="dcterms.date" content="2024-07-11">
 
-<title>Disease modeling for public health - Kalman filter in R: FKF package</title>
+<title>Disease modeling for public health - Vaccine effectiveness</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -363,7 +363,7 @@ Frequency = 1
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>gamma <span class="ot">&lt;-</span> p[<span class="dv">2</span>]</span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>gamma <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>I <span class="ot">&lt;-</span> <span class="fu">diff</span>(tudf<span class="sc">$</span>V4)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a> <span class="co"># &lt;- rpois(length(thetat), 100000*thetat)</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(I)</span>

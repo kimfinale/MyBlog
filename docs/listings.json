@@ -2,7 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/vaccine_effectiveness/index.html",
+      "/posts/kalman_filter/index.html",
       "/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index.html",
       "/posts/Learning_ChatGPT_3_MNIST/index.html",
       "/posts/parallel/index.html",
@@ -17,7 +17,7 @@
       "/posts/seir_varying_number_compartments/index.html",
       "/posts/vaccine_effectiveness_waning/index.html",
       "/posts/cholera_seir_eqn/index.html",
-      "/posts/kalman_filter/index.html",
+      "/posts/vaccine_effectiveness/index.html",
       "/posts/counterintuitive/index.html",
       "/posts/prevalence_incidence_sirmodel/index.html",
       "/posts/Probabily_outbreak/index.html",
