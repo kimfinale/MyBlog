@@ -160,5 +160,9 @@
       "/posts/nimble/index.html",
       "/posts/infectious_disease_names/index.html"
     ]
+  },
+  {
+    "listing": "/blog/index.html",
+    "items": []
   }
 ]
