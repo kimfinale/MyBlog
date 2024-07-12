@@ -29,7 +29,6 @@ Hi! My name is Jong-Hoon Kim, and I live in Seoul, South Korea. I am a theoretic
 
 # Research interests
 
-My research focuses on leveraging disease models to generate actionable insights for controlling infectious diseases with real-world impact. Specifically, I aim to identify critical details necessary for generating actionable inferences regarding vaccination strategies for cholera and typhoid fever tailored to specific locations and times. Furthermore, I am interested in developing models to under how human behavior in a community can enhance or hinder the effectiveness of disease control methods including vaccination campaigns and using that understanding to improve the control of infectious disease and other public health problems.
-
+My research focuses on leveraging disease models to generate actionable insights for controlling infectious diseases with real-world impact. Specifically, I aim to identify critical details necessary for generating actionable inferences regarding vaccination strategies for cholera and typhoid fever, tailored to specific locations and times. Additionally, I am interested in developing models to understand how human behavior in a community can enhance or hinder the effectiveness of disease control methods, including vaccination campaigns. Using that understanding, I aim to improve the control of infectious diseases and address other public health challenges.
 
 # Publications
