@@ -12,126 +12,12 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
-### Kalman filter
 
-Load packages
-
-```{r}
-library(ggplot2)
-library(FKF)
-```
-
-```{r}
-nhtemp
-data <- data.frame(x = seq(from = 1912, to = 1971, by = 1),
-                   y = as.numeric(nhtemp))
-
-ggplot(data, aes(x = x, y = y)) +
-  geom_line() +
-  xlab("year") + ylab("temperature") +
-  ggtitle("Measured Yearly Average Temperature in New Haven") +
-  theme_bw()
-```
-
-```{r}
-y <- nhtemp
-a0 <- y[1]
-P0 <- matrix(1)
-
-dt <- ct <- matrix(0)
-Zt <- Tt <- matrix(1)
-```
-
-```{r}
-# Estimate parameters:
-fit.fkf <- optim(c(HHt = var(y, na.rm = TRUE) * .5,
-                   GGt = var(y, na.rm = TRUE) * .5),
-                 fn = function(par, ...)
-                 -fkf(HHt = matrix(par[1]), GGt = matrix(par[2]), ...)$logLik,
-                 yt = rbind(y), a0 = a0, P0 = P0, dt = dt, ct = ct,
-                 Zt = Zt, Tt = Tt)
+### Kalman filter to estimate the instantaneous reproduction number
 
 
-# recover values
-HHt <- as.numeric(fit.fkf$par[1])
-GGt <- as.numeric(fit.fkf$par[2])
-HHt; GGt
-```
 
-```{r}
-y_fkf <- fkf(a0, P0, dt, ct, Tt, Zt,
-             HHt = matrix(HHt), GGt = matrix(GGt),
-             yt = rbind(y))
-```
-
-```{r}
-data <- data.frame(x = seq(from = 1912, to = 1971, by = 1),
-                   y = as.numeric(nhtemp),
-                   y_kalman = as.numeric(y_fkf$att))
-
-
-ggplot(data, aes(x, y)) +
-  geom_line() +
-  geom_line(aes(x, y_kalman), col = "steelblue", linewidth=1) +
-  xlab("year") + ylab("temperature") +
-  ggtitle("Measured Yearly Average Temperature in New Haven (with Kalman Filter)") +
-  theme_bw()
-
-# ggsave("kalman_filter.png", plot=p)
-```
-
-```{r}
-# initialize
-theta <- theta_var <- rep(NA, length(y) + 1)
-
-# set our initial guess
-theta[1] <- a0
-theta_var[1] <- P0
-
-# define parameters (notation consistent with Equation 11).
-sigma_w <- sqrt(HHt)
-sigma_v <- sqrt(GGt)
-G_t <- Tt
-F_t <- Zt
-
-# iterate and make estimates
-for (i in 1:length(y)) {
-  
-  # Equation 6.
-  # use previous theta value for theta_hat and calculate e_t
-  theta_hat <- theta[i]
-  e_t <- y[i] - theta_hat * G_t * F_t
-  
-  # calculate R_t
-  R_t <- G_t * theta_var[i] * G_t + sigma_w ^ 2
-  
-  # generate estimates from Equation 11
-  theta[i + 1] <- G_t * theta_hat + R_t * F_t * (sigma_v ^ 2 + F_t ^ 2 * R_t) ^ (-1) * e_t
-  theta_var[i + 1] <- R_t - R_t * F_t * (sigma_v ^ 2 + F_t ^ 2 * R_t) ^ (-1) * F_t * R_t
-}
-
-# adjust by one
-theta <- theta[-1]
-theta_var <- theta_var[-1]
-```
-
-```{r}
-data <- data.frame(x = seq(from = 1912, to = 1971, by = 1),
-                   y = as.numeric(nhtemp),
-                   y_kalman = as.numeric(y_fkf$att),
-                   y_algebra = theta)
-
-
-ggplot(data, aes(x = x, y = y)) +
-  geom_line() +
-  geom_line(aes(x, y_kalman), col = "steelblue", linewidth = 1, alpha= 1 / 2) +
-  geom_line(aes(x, y_kalman), col = "firebrick", linewidth = 1, alpha = 1 / 2) +
-  xlab("year") + ylab("temperature") +
-  ggtitle("Measured Yearly Average Temperature in New Haven (with Kalman Filter)") +
-  theme_bw()
-```
-
-### Infection time series
+Generate infection time series
 
 Generate infection times based on the SIR model in which $R_t$ varies First define Rt, which is the same as used in [the prior study](https://www.sciencedirect.com/science/article/pii/S2468042723000799)
 
@@ -166,6 +52,7 @@ mat <- sapply(sol$u, identity)
 udf <- as.data.frame(t(mat))
 tudf <- cbind(data.frame(t=sol$t), udf)
 
+library(ggplot2)
 ggplot(tudf, aes(x=t)) +
   geom_line(aes(y=V1, color="S")) +
   geom_line(aes(y=V2, color="I")) +
