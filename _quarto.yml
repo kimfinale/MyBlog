@@ -20,8 +20,9 @@ website:
         href: https://twitter.com/tarzanthoreau
 format:
   html:
-    theme: default
-    css: html/my_styles.css
+    theme:
+      - cosmo
+      - html/mytheme.scss
 
 editor: visual
 
