@@ -20,8 +20,8 @@ website:
         href: https://twitter.com/tarzanthoreau
 format:
   html:
-    theme: solar
-    css: html/styles.scss
+    theme: lumen
+    css: html/my_styles.css
 
 editor: visual
 
