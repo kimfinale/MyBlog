@@ -1,6 +1,6 @@
 /*-- scss:defaults --*/
-$h2-font-size:          1.6rem !default;
-$headings-font-weight:  500 !default;
+$h2-font-size:          1.5rem !default;
+$headings-font-weight:  400 !default;
 
 /*-- scss:rules
 h1, h2, h3, h4, h5, h6 {
@@ -8,4 +8,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 --*/
 
-$mainfont: Lato, Roboto, "Segoe UI", "Helvetica Neue", Arial, "Segoe UI", sans-serif;
+$body-color: #343a40; /*#212529*/;
+/*$navbar-dark-color: #f5bc42;*/
+$navbar-bg:  #4682b4;
+/*$code-block-bg:*/
+$monofont: 'Fira Code Retina', 'Fira Code', 'Source Code Pro';
+$font-family-sans-serif: Lato, Roboto, "Segoe UI", "Helvetica Neue", "Source Sans Pro", -apple-system, BlinkMacSystemFont, Arial, san;
