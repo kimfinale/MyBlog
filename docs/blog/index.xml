@@ -2506,7 +2506,6 @@ Balanced Accuracy      0.9939   0.9931   0.9906    0.9896</code></pre>
 
 
 
-
 <p>I find that <code>parallel</code>, <code>doParallel</code> and <code>foreach</code> packages provide the easiest approach for parallel computing in R. The <code>doParallel</code> <a href="https://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf">vignette</a> provides a great overview. <code>library(doParallel)</code> command automatically loads required packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;

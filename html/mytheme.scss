@@ -1,19 +1,28 @@
 /*-- scss:defaults --*/
 
-$h1-font-size: 2.0rem !default;
+$h1-font-size: 2.3rem !default;
 
 $body-color: black;  /* #343a40; #212529*/;
+
 /*$navbar-dark-color: #f5bc42;*/
 $navbar-bg: steelblue;
 
 $monofont: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", "Fira Code Retina", "Source Code Pro", monospace;
-$font-family-sans-serif: Lato, Roboto, "Segoe UI", "Helvetica Neue", "Source Sans Pro", -apple-system, BlinkMacSystemFont, Arial, san;
+
+$font-family-sans-serif: Roboto, Lato, "Helvetica Neue", "Segoe UI", "Source Sans Pro", -apple-system, BlinkMacSystemFont, Arial, san;
+
+
+.title {
+  /*font-size: 100px;
+  font-style: italic;
+  color: blue;
+  font-variant: small-caps;*/
+  font-family: "Open Sans Condensed";
+
+}
 
 
 /*
-$h1-font-family-sans-serif: "Open Sans Condensed",Lato, Roboto, "Segoe UI", "Helvetica Neue", "Source Sans Pro", -apple-system, BlinkMacSystemFont, Arial, san;
-
-
 h1, .h1, h2, .h2 {
     color: inherit;
     background: white;
