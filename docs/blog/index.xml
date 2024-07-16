@@ -14318,8 +14318,8 @@ font-style: inherit;">1</span>)</span></code></pre></div>
 
 
 
-<section id="vaccine-efficacy-and-effectiveness" class="level3">
-<h3 class="anchored" data-anchor-id="vaccine-efficacy-and-effectiveness">Vaccine efficacy and effectiveness</h3>
+<section id="vaccine-efficacy-and-effectiveness" class="level2">
+<h2 class="anchored" data-anchor-id="vaccine-efficacy-and-effectiveness">Vaccine efficacy and effectiveness</h2>
 <p>Vaccine efficacy and effectiveness (VE) is generally estimated as one minus some measure of relative risk (RR) in the vaccinated group compared to the unvaccinated group <a href="https://pubmed.ncbi.nlm.nih.gov/10520474/">Halloran <em>et al</em>.</a>:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BVE%7D%20=%201%20-%20%5Ctext%7BRR%7D%0A"></p>
 <p>RR measures may include relative infection probability given exposure, hazard ratio, or the ratio of cumulative incidence (or attack rate). I will explain different effects of the vaccine using the cumulative incidence (<img src="https://latex.codecogs.com/png.latex?C">) measure, as outlined in the <a href="https://pubmed.ncbi.nlm.nih.gov/1742381/">Study design for dependent happenings</a>.</p>
@@ -14516,7 +14516,6 @@ background-color: null;
 font-style: inherit;">c</span>(dS0,dE0,dI0,dR0,dC0,dS1,dE1,dI1,dR1,dC1)))</span>
 <span id="cb1-27">}</span></code></pre></div>
 </div>
-</section>
 <section id="population-a" class="level3">
 <h3 class="anchored" data-anchor-id="population-a">Population A</h3>
 <p>A fraction <img src="https://latex.codecogs.com/png.latex?f"> of population A received the vaccine, with vaccine efficacy denoted as VE. Vaccination is implemented using an all-or-nothing approach, meaning a fraction of the vaccine recipients, <img src="https://latex.codecogs.com/png.latex?Nf%5Ctext%7BVE%7D">, are completely protected from infection. Here, <img src="https://latex.codecogs.com/png.latex?N">, <img src="https://latex.codecogs.com/png.latex?f">, and VE represent the population size, the fraction of the population that is vaccinated, and vaccine efficacy, respectively. In the SEIR model, we can mimic the vaccination scenario by setting the initial population size for the <img src="https://latex.codecogs.com/png.latex?R"> compartment to <img src="https://latex.codecogs.com/png.latex?Nf%5Ctext%7BVE%7D">.</p>
@@ -15487,6 +15486,7 @@ font-style: inherit;">0.02</span>))</span></code></pre></div>
 </div>
 
 
+</section>
 </section>
 
  ]]></description>

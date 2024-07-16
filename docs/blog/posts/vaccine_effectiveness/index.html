@@ -193,8 +193,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="vaccine-efficacy-and-effectiveness" class="level3">
-<h3 class="anchored" data-anchor-id="vaccine-efficacy-and-effectiveness">Vaccine efficacy and effectiveness</h3>
+<section id="vaccine-efficacy-and-effectiveness" class="level2">
+<h2 class="anchored" data-anchor-id="vaccine-efficacy-and-effectiveness">Vaccine efficacy and effectiveness</h2>
 <p>Vaccine efficacy and effectiveness (VE) is generally estimated as one minus some measure of relative risk (RR) in the vaccinated group compared to the unvaccinated group <a href="https://pubmed.ncbi.nlm.nih.gov/10520474/">Halloran <em>et al</em>.</a>:</p>
 <p><span class="math display">\[
 \text{VE} = 1 - \text{RR}
@@ -247,7 +247,6 @@ The model, <code>seir_2grp</code>, includes two subgroups, which will be used to
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="fu">c</span>(dS0,dE0,dI0,dR0,dC0,dS1,dE1,dI1,dR1,dC1)))</span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
 <section id="population-a" class="level3">
 <h3 class="anchored" data-anchor-id="population-a">Population A</h3>
 <p>A fraction <span class="math inline">\(f\)</span> of population A received the vaccine, with vaccine efficacy denoted as VE. Vaccination is implemented using an all-or-nothing approach, meaning a fraction of the vaccine recipients, <span class="math inline">\(Nf\text{VE}\)</span>, are completely protected from infection. Here, <span class="math inline">\(N\)</span>, <span class="math inline">\(f\)</span>, and VE represent the population size, the fraction of the population that is vaccinated, and vaccine efficacy, respectively. In the SEIR model, we can mimic the vaccination scenario by setting the initial population size for the <span class="math inline">\(R\)</span> compartment to <span class="math inline">\(Nf\text{VE}\)</span>.</p>
@@ -384,6 +383,7 @@ The model, <code>seir_2grp</code>, includes two subgroups, which will be used to
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
