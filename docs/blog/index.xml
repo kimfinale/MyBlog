@@ -19,7 +19,6 @@
 
 
 
-
 <p><a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0244474">Arroyo-Marioli et al</a> used a Kalman filter approach to estimate. I tried to reproduce in R. Let’s use a SIR model as was used in my <a href="https://www.jonghoonk.com/posts/sir_deSolve_odin_diffeqr/">previous post</a> to generate growth rate time series.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
