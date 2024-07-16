@@ -14320,16 +14320,18 @@ font-style: inherit;">1</span>)</span></code></pre></div>
 
 <section id="vaccine-efficacy-and-effectiveness" class="level3">
 <h3 class="anchored" data-anchor-id="vaccine-efficacy-and-effectiveness">Vaccine efficacy and effectiveness</h3>
-<p>Vaccine efficacy and effectiveness (VE) is generally estimated as one minus some measure of relative risk (RR) in the vaccinated group compared with the unvaccinated group <a href="https://pubmed.ncbi.nlm.nih.gov/10520474/">Halloran <em>et al</em>.</a>:</p>
+<p>Vaccine efficacy and effectiveness (VE) is generally estimated as one minus some measure of relative risk (RR) in the vaccinated group compared to the unvaccinated group <a href="https://pubmed.ncbi.nlm.nih.gov/10520474/">Halloran <em>et al</em>.</a>:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BVE%7D%20=%201%20-%20%5Ctext%7BRR%7D%0A"></p>
-<p>RR measures may relative infection probability given exposure, hazard ratio, or the ratio of cumulative incidence (or attack rate). I will explain different effects of the vaccine using the cumulative incidence (<img src="https://latex.codecogs.com/png.latex?C">) measure based on the notations from the <a href="https://pubmed.ncbi.nlm.nih.gov/1742381/">Study design for dependent happenings</a>.</p>
+<p>RR measures may include relative infection probability given exposure, hazard ratio, or the ratio of cumulative incidence (or attack rate). I will explain different effects of the vaccine using the cumulative incidence (<img src="https://latex.codecogs.com/png.latex?C">) measure, as outlined in the <a href="https://pubmed.ncbi.nlm.nih.gov/1742381/">Study design for dependent happenings</a>.</p>
 <p><img src="https://www.jonghoonk.com/blog/posts/vaccine_effectiveness/study_design.png" class="img-fluid"></p>
-<p>In population <img src="https://latex.codecogs.com/png.latex?A">, a fraction, <img src="https://latex.codecogs.com/png.latex?f">, of the population was vaccinated (denoted with <img src="https://latex.codecogs.com/png.latex?1">) and the rest, <img src="https://latex.codecogs.com/png.latex?1-f">, of the Population A remains unvaccinated (denoted with <img src="https://latex.codecogs.com/png.latex?0">). In Population <img src="https://latex.codecogs.com/png.latex?B">, no one was vaccinated. I can now use <img src="https://latex.codecogs.com/png.latex?C_%7BA0%7D"> and <img src="https://latex.codecogs.com/png.latex?C_%7BA1%7D"> to denote cumulative incidence, <img src="https://latex.codecogs.com/png.latex?C">, in the unvaccinated and vaccinated individuals of Population <img src="https://latex.codecogs.com/png.latex?A">. Similarly, I can use <img src="https://latex.codecogs.com/png.latex?C_%7BB0%7D"> to denote the cumulative incidence in the (unvaccinated) population <img src="https://latex.codecogs.com/png.latex?B">.</p>
-<p>The VE can be divided into four different measures and they are direct, indirect, total, and overall VE, which are noted as DVE, IVE, TVE, and OVE, respectively.</p>
+<p>In population <img src="https://latex.codecogs.com/png.latex?A">, a fraction, <img src="https://latex.codecogs.com/png.latex?f">, of the population was vaccinated (denoted as <img src="https://latex.codecogs.com/png.latex?1">) and the rest, <img src="https://latex.codecogs.com/png.latex?1-f">, of the Population A remains unvaccinated (denoted as <img src="https://latex.codecogs.com/png.latex?0">). In Population <img src="https://latex.codecogs.com/png.latex?B">, no one was vaccinated. I will use <img src="https://latex.codecogs.com/png.latex?C_%7BA0%7D"> and <img src="https://latex.codecogs.com/png.latex?C_%7BA1%7D"> to denote cumulative incidence, <img src="https://latex.codecogs.com/png.latex?C">, in the unvaccinated and vaccinated individuals of Population <img src="https://latex.codecogs.com/png.latex?A">. Similarly, <img src="https://latex.codecogs.com/png.latex?C_%7BB0%7D"> will denote the cumulative incidence in the unvaccinated population <img src="https://latex.codecogs.com/png.latex?B">.</p>
+<p>Vaccine effectiveness (VE) can be divided into four different measures: direct, indirect, total, and overall VE, which are denoted as DVE, IVE, TVE, and OVE, respectively.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BDVE%7D%20=%201%20-%20%5Cfrac%7BC_%7BA1%7D%7D%7BC_%7BA0%7D%7D,~%0A%5Ctext%7BIVE%7D%20=%201%20-%20%5Cfrac%7BC_%7BA0%7D%7D%7BC_%7BB0%7D%7D,~%0A%5Ctext%7BTVE%7D%20=%201%20-%20%5Cfrac%7BC_%7BA1%7D%7D%7BC_%7BB0%7D%7D,~%0A%5Ctext%7BOVE%7D%20=%201%20-%20%5Cfrac%7Bf%20C_%7BA1%7D+(1-f)%20C_%7BA0%7D%7D%7BC_%7BB0%7D%7D.%0A"></p>
-<p>Using the above equation we can see the following is true</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BIVE%7D%20=%201-%5Cfrac%7B1-%5Ctext%7BTVE%7D%7D%7B1-%5Ctext%7BDVE%7D%7D,~%20%5Ctext%7BOVE%7D%20=%201-%5Cleft(f%5Cleft(1-%5Ctext%7BTVE%7D%5Cright)+(1-f)%5Cleft(1-%5Ctext%7BIVE%7D%5Cright)%5Cright)%0A"></p>
-<p>Let’s construct a simple <img src="https://latex.codecogs.com/png.latex?SEIR"> model to illustrate the different metrics of VE.</p>
+<p>Given the above equations, the following relationships hold:</p>
+<p><span id="eq-ive"><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BIVE%7D%20=%201-%5Cfrac%7B1-%5Ctext%7BTVE%7D%7D%7B1-%5Ctext%7BDVE%7D%7D,~%0A%5Ctag%7B1%7D"></span></p>
+<p><span id="eq-ove"><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BOVE%7D%20=%201-%5Cleft(f%5Cleft(1-%5Ctext%7BTVE%7D%5Cright)+(1-f)%5Cleft(1-%5Ctext%7BIVE%7D%5Cright)%5Cright)%0A%5Ctag%7B2%7D"></span></p>
+<p>I will illustrate the different metrics of VE using simple <img src="https://latex.codecogs.com/png.latex?SEIR"> model simulations.<br>
+The model, <code>seir_2grp</code>, includes two subgroups, which will be used to differentiate vaccinated and unvaccinated populations.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">seir_2grp <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -14514,28 +14516,21 @@ font-style: inherit;">c</span>(dS0,dE0,dI0,dR0,dC0,dS1,dE1,dI1,dR1,dC1)))</span>
 <span id="cb1-27">}</span></code></pre></div>
 </div>
 </section>
-<section id="population-b" class="level3">
-<h3 class="anchored" data-anchor-id="population-b">Population B</h3>
-<p>No one in the population is vaccinated.</p>
+<section id="population-a" class="level3">
+<h3 class="anchored" data-anchor-id="population-a">Population A</h3>
+<p>A fraction <img src="https://latex.codecogs.com/png.latex?f"> of population A received the vaccine, with vaccine efficacy denoted as VE. Vaccination is implemented using an all-or-nothing approach, meaning a fraction of the vaccine recipients, <img src="https://latex.codecogs.com/png.latex?Nf%5Ctext%7BVE%7D">, are completely protected from infection. Here, <img src="https://latex.codecogs.com/png.latex?N">, <img src="https://latex.codecogs.com/png.latex?f">, and VE represent the population size, the fraction of the population that is vaccinated, and vaccine efficacy, respectively. In the SEIR model, we can mimic the vaccination scenario by setting the initial population size for the <img src="https://latex.codecogs.com/png.latex?R"> compartment to <img src="https://latex.codecogs.com/png.latex?Nf%5Ctext%7BVE%7D">.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">N <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span></span>
-<span id="cb2-2">pop_B <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">N0=</span>N)</span>
-<span id="cb2-3">tend <span class="ot" style="color: #003B4F;
+<span id="cb2-2">tend <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">200</span></span>
-<span id="cb2-4">beta <span class="ot" style="color: #003B4F;
+<span id="cb2-3">beta <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
@@ -14544,7 +14539,7 @@ background-color: null;
 font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">4.5</span></span>
-<span id="cb2-5">epsilon <span class="ot" style="color: #003B4F;
+<span id="cb2-4">epsilon <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -14553,7 +14548,7 @@ background-color: null;
 font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5.2</span></span>
-<span id="cb2-6">gamma <span class="ot" style="color: #003B4F;
+<span id="cb2-5">gamma <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -14562,71 +14557,7 @@ background-color: null;
 font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">4.5</span></span>
-<span id="cb2-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># no need for the vaccinated group</span></span>
-<span id="cb2-8">y0_B <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">S0=</span>pop_B[[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"N0"</span>]], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">E0=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">I0=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.01</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">R0=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">C0=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, </span>
-<span id="cb2-9">          <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">S1=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">E1=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">I1=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">R1=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">C1=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>)</span>
-<span id="cb2-10">times <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">from=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">to=</span>tend, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">by=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb2-11">params <span class="ot" style="color: #003B4F;
+<span id="cb2-6">params <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -14637,46 +14568,22 @@ background-color: null;
 font-style: inherit;">epsilon=</span>epsilon, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">gamma=</span>gamma)</span>
-<span id="cb2-12"></span>
-<span id="cb2-13">out <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> deSolve<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ode</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span>y0_B, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">times=</span>times, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">func=</span>seir_2grp, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">parms=</span>params)</span>
-<span id="cb2-14">pop_B_out <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.data.frame</span>(out) </span></code></pre></div>
-</div>
-</section>
-<section id="population-a" class="level3">
-<h3 class="anchored" data-anchor-id="population-a">Population A</h3>
-<p>A fraction <img src="https://latex.codecogs.com/png.latex?f"> of the population A received the vaccine. Vaccine efficacy is VE. Vaccination can be implemented by assuming all-or-nothing vaccine. That is, the a fraction of vaccine recipients, <img src="https://latex.codecogs.com/png.latex?N*f*%5Ctext%7BVE%7D">, are completely protected from infection. Here, <img src="https://latex.codecogs.com/png.latex?N,%20f">, and VE represent population size, the fraction of the population that is vaccinated, and vaccine efficacy, respectively. In the SEIR model, by setting the initial population size for the <img src="https://latex.codecogs.com/png.latex?R"> compartment as <img src="https://latex.codecogs.com/png.latex?N*f*%5Ctext%7BVE%7D">, we can mimic the vaccination scenario.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">VE <span class="ot" style="color: #003B4F;
+<span id="cb2-7"></span>
+<span id="cb2-8">VE <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.7</span> <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># vaccine efficacy on susceptibility</span></span>
-<span id="cb3-2">f <span class="ot" style="color: #003B4F;
+<span id="cb2-9">f <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0.3</span></span>
-<span id="cb3-3">N0 <span class="ot" style="color: #003B4F;
+font-style: inherit;">0.3</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># vacccine coverage proportion</span></span>
+<span id="cb2-10">N0 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> N<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -14684,13 +14591,17 @@ font-style: inherit;">*</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">-</span>f)</span>
-<span id="cb3-4">N1 <span class="ot" style="color: #003B4F;
+font-style: inherit;">-</span>f)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># unvaccinated population</span></span>
+<span id="cb2-11">N1 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> N<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">*</span>f</span>
-<span id="cb3-5">pop_A <span class="ot" style="color: #003B4F;
+font-style: inherit;">*</span>f <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># vaccinated population</span></span>
+<span id="cb2-12">pop_A <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -14699,7 +14610,7 @@ background-color: null;
 font-style: inherit;">N0=</span>N0, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">N1=</span>N1)</span>
-<span id="cb3-6">y0_A <span class="ot" style="color: #003B4F;
+<span id="cb2-13">y0_A <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -14722,7 +14633,7 @@ background-color: null;
 font-style: inherit;">C0=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>, </span>
-<span id="cb3-7">        <span class="at" style="color: #657422;
+<span id="cb2-14">        <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">S1=</span>N1<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -14747,8 +14658,28 @@ background-color: null;
 font-style: inherit;">C1=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>)</span>
-<span id="cb3-8"></span>
-<span id="cb3-9">out <span class="ot" style="color: #003B4F;
+<span id="cb2-15">tend <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span></span>
+<span id="cb2-16">times <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">from=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">to=</span>tend, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb2-17"></span>
+<span id="cb2-18">out <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> deSolve<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -14763,13 +14694,95 @@ background-color: null;
 font-style: inherit;">func=</span>seir_2grp, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">parms=</span>params)</span>
-<span id="cb3-10">pop_A_out <span class="ot" style="color: #003B4F;
+<span id="cb2-19">pop_A_out <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">as.data.frame</span>(out)</span></code></pre></div>
 </div>
-<p>Let’s compute the four VE measures at the end of the simulation.</p>
+</section>
+<section id="population-b" class="level3">
+<h3 class="anchored" data-anchor-id="population-b">Population B</h3>
+<p>No one in the population is vaccinated.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">pop_B <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">N0=</span>N)</span>
+<span id="cb3-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># no need for the vaccinated group</span></span>
+<span id="cb3-3">y0_B <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">S0=</span>pop_B[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"N0"</span>]], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">E0=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">I0=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">R0=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">C0=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, </span>
+<span id="cb3-4">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">S1=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">E1=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">I1=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">R1=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">C1=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb3-5">out <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> deSolve<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ode</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y=</span>y0_B, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times=</span>times, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">func=</span>seir_2grp, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">parms=</span>params)</span>
+<span id="cb3-6">pop_B_out <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.data.frame</span>(out) </span></code></pre></div>
+</div>
+<p>Let’s compute the four VE measures based on the cumulative incidence.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">(DVE <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -14883,6 +14896,9 @@ font-style: inherit;">"N0"</span>]]))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.7335613</code></pre>
 </div>
+</div>
+<p>Let’s compare the VE metrics using the equations derived above (Equation&nbsp;1 and Equation&nbsp;2).</p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">(IVE <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
@@ -14980,7 +14996,7 @@ font-style: inherit;">-</span>IVE))</span></code></pre></div>
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
-<p>Dynamics of four VE measures</p>
+<p>Let’s examine the dynamics of the four VE measures, where each metric is computed based on the cumulative incidence at each point in time.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">dve <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -15081,12 +15097,29 @@ font-style: inherit;">"C0"</span>]<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span>pop_B[[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"N0"</span>]])</span>
-<span id="cb20-5"></span>
-<span id="cb20-6"><span class="fu" style="color: #4758AB;
+font-style: inherit;">"N0"</span>]])</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">plot</span>(ive)</span>
-<span id="cb20-7"><span class="fu" style="color: #4758AB;
+font-style: inherit;">plot</span>(ive, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pch=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">main=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Indirect vaccine effectiveness"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"day"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"IVE"</span>)</span>
+<span id="cb21-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">lines</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -15104,14 +15137,10 @@ font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span>dve), <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">col=</span><span class="dv" style="color: #AD0000;
+font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">2</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lty=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb20-8"><span class="fu" style="color: #4758AB;
+font-style: inherit;">"firebrick"</span>)</span>
+<span id="cb21-3"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">lines</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -15137,20 +15166,111 @@ font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span>f), <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">col=</span><span class="dv" style="color: #AD0000;
+font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">3</span>, <span class="at" style="color: #657422;
+font-style: inherit;">"magenta"</span>)</span>
+<span id="cb21-4"></span>
+<span id="cb21-5"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">lty=</span><span class="dv" style="color: #AD0000;
+font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">2</span>)</span></code></pre></div>
+font-style: inherit;">"topright"</span>, </span>
+<span id="cb21-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"IVE definition"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Based on Eq. 1"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Based on Eq. 2"</span>), </span>
+<span id="cb21-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"firebrick"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"magenta"</span>),</span>
+<span id="cb21-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pch =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb21-9">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lty =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb21-10">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n"</span>, </span>
+<span id="cb21-11">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cex =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, </span>
+<span id="cb21-12">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text.col =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, </span>
+<span id="cb21-13">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">horiz =</span> F , </span>
+<span id="cb21-14">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">inset =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://www.jonghoonk.com/blog/posts/vaccine_effectiveness/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/blog/posts/vaccine_effectiveness/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">plot</span>(ove)</span>
-<span id="cb21-2"><span class="fu" style="color: #4758AB;
+font-style: inherit;">plot</span>(ove, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pch=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">main=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Overall vaccine effectiveness"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"day"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"OVE"</span>)</span>
+<span id="cb22-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">lines</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -15176,27 +15296,102 @@ font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span>ive)), <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">col=</span><span class="dv" style="color: #AD0000;
+font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+font-style: inherit;">"firebrick"</span>)</span>
+<span id="cb22-3"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">lty=</span><span class="dv" style="color: #AD0000;
+font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">1</span>)</span></code></pre></div>
+font-style: inherit;">"topright"</span>, </span>
+<span id="cb22-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"OVE definition"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Based on Eq. 2"</span>), </span>
+<span id="cb22-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"firebrick"</span>),</span>
+<span id="cb22-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pch =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb22-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lty =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb22-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n"</span>, </span>
+<span id="cb22-9">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cex =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, </span>
+<span id="cb22-10">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text.col =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, </span>
+<span id="cb22-11">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">horiz =</span> F , </span>
+<span id="cb22-12">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">inset =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://www.jonghoonk.com/blog/posts/vaccine_effectiveness/index_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/blog/posts/vaccine_effectiveness/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><span class="co" style="color: #5E5E5E;
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"># plot(ive, type="l")</span></span>
-<span id="cb22-2"><span class="co" style="color: #5E5E5E;
+font-style: inherit;">plot</span>(tve, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;"># lines(1 - (1 - ove - f*(1-tve))/(1-f), col=2, lty=2)</span></span>
-<span id="cb22-3"></span>
-<span id="cb22-4"><span class="fu" style="color: #4758AB;
+font-style: inherit;">pch=</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">plot</span>(tve)</span>
-<span id="cb22-5"><span class="fu" style="color: #4758AB;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">main=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Total vaccine effectiveness"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"day"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"TVE"</span>)</span>
+<span id="cb23-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">lines</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -15214,15 +15409,79 @@ font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span>ive), <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">col=</span><span class="dv" style="color: #AD0000;
+font-style: inherit;">col=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+font-style: inherit;">"firebrick"</span>)</span>
+<span id="cb23-3"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">lty=</span><span class="dv" style="color: #AD0000;
+font-style: inherit;">legend</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">1</span>)</span></code></pre></div>
+font-style: inherit;">"topright"</span>, </span>
+<span id="cb23-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"TVE definition"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Based on Eq. 1"</span>), </span>
+<span id="cb23-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"firebrick"</span>),</span>
+<span id="cb23-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pch =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb23-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lty =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb23-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bty =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"n"</span>, </span>
+<span id="cb23-9">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cex =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, </span>
+<span id="cb23-10">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text.col =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, </span>
+<span id="cb23-11">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">horiz =</span> F , </span>
+<span id="cb23-12">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">inset =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.02</span>,<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.02</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://www.jonghoonk.com/blog/posts/vaccine_effectiveness/index_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="672"></p>
+<p><img src="https://www.jonghoonk.com/blog/posts/vaccine_effectiveness/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
