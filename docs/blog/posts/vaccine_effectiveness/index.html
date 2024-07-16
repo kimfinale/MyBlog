@@ -213,7 +213,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><span id="eq-ive"><span class="math display">\[
 \text{IVE} = 1-\frac{1-\text{TVE}}{1-\text{DVE}},~
 \tag{1}\]</span></span></p>
-<p><span id="eq-ove"><span class="math display">\[\text{OVE} = 1-\left(f\left(1-\text{TVE}\right)+(1-f)\left(1-\text{IVE}\right)\right)
+<p><span class="math display">\[\text{OVE} = 1-\left(f\left(1-\text{TVE}\right)+(1-f)\left(1-\text{IVE}\right)\right)\]</span> TVE may be replaced using IVE and DVE as below.</p>
+<p><span id="eq-ove"><span class="math display">\[\text{OVE} = 1-\left(f\left(1-\text{DVE})(1-\text{IVE}\right)+(1-f)\left(1-\text{IVE}\right)\right)
 \tag{2}\]</span></span></p>
 <p>I will illustrate the different metrics of VE using simple <span class="math inline">\(SEIR\)</span> model simulations.<br>
 The model, <code>seir_2grp</code>, includes two subgroups, which will be used to differentiate vaccinated and unvaccinated populations.</p>

@@ -14329,7 +14329,8 @@ font-style: inherit;">1</span>)</span></code></pre></div>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BDVE%7D%20=%201%20-%20%5Cfrac%7BC_%7BA1%7D%7D%7BC_%7BA0%7D%7D,~%0A%5Ctext%7BIVE%7D%20=%201%20-%20%5Cfrac%7BC_%7BA0%7D%7D%7BC_%7BB0%7D%7D,~%0A%5Ctext%7BTVE%7D%20=%201%20-%20%5Cfrac%7BC_%7BA1%7D%7D%7BC_%7BB0%7D%7D,~%0A%5Ctext%7BOVE%7D%20=%201%20-%20%5Cfrac%7Bf%20C_%7BA1%7D+(1-f)%20C_%7BA0%7D%7D%7BC_%7BB0%7D%7D.%0A"></p>
 <p>Given the above equations, the following relationships hold:</p>
 <p><span id="eq-ive"><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BIVE%7D%20=%201-%5Cfrac%7B1-%5Ctext%7BTVE%7D%7D%7B1-%5Ctext%7BDVE%7D%7D,~%0A%5Ctag%7B1%7D"></span></p>
-<p><span id="eq-ove"><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BOVE%7D%20=%201-%5Cleft(f%5Cleft(1-%5Ctext%7BTVE%7D%5Cright)+(1-f)%5Cleft(1-%5Ctext%7BIVE%7D%5Cright)%5Cright)%0A%5Ctag%7B2%7D"></span></p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BOVE%7D%20=%201-%5Cleft(f%5Cleft(1-%5Ctext%7BTVE%7D%5Cright)+(1-f)%5Cleft(1-%5Ctext%7BIVE%7D%5Cright)%5Cright)"> TVE may be replaced using IVE and DVE as below.</p>
+<p><span id="eq-ove"><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BOVE%7D%20=%201-%5Cleft(f%5Cleft(1-%5Ctext%7BDVE%7D)(1-%5Ctext%7BIVE%7D%5Cright)+(1-f)%5Cleft(1-%5Ctext%7BIVE%7D%5Cright)%5Cright)%0A%5Ctag%7B2%7D"></span></p>
 <p>I will illustrate the different metrics of VE using simple <img src="https://latex.codecogs.com/png.latex?SEIR"> model simulations.<br>
 The model, <code>seir_2grp</code>, includes two subgroups, which will be used to differentiate vaccinated and unvaccinated populations.</p>
 <div class="cell">
