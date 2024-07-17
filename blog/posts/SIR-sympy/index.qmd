@@ -12,7 +12,7 @@ editor_options:
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo=TRUE) 
 ```
 
-I attempted to replicate some of the simple analytical resutls presented in the book, Mathematical Epidemiology by Brauer *et al*.
+I attempted to replicate some of the simple analytical results presented in the book, Mathematical Epidemiology by Brauer *et al*.
 
 $$
 \begin{align}
