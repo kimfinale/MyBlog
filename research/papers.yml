@@ -1,0 +1,36 @@
+dengue_sr:
+    title: "Chikungunya seroprevalence, force of infection, and prevalence of chronic disability after infection in endemic and epidemic settings: a systematic review, meta-analysis, and modelling study"
+    authors:
+        - Hyolim Kang
+        - Megan Auzenbergs
+        - Hannah Clapham
+        - Clara Maure
+        - me
+        - Henrik Salje
+        - Christopher G. Taylor
+        - Ahyoung Lim
+        - John W. Edmunds
+        - Sushant Sahastrabuddhe
+        - Oliver J. Brady
+        - Kaja Abbas
+    year: 2024
+    preprint: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4617040
+    published_url: https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(23)00810-1/fulltext
+    venue: Lancet Infect Dis
+    github: https://github.com/hyolimkang/CHIK
+
+
+tf_map:
+    title: "Mapping the incidence rate of typhoid fever in sub-Saharan Africa"
+    authors:
+        - me
+        - Jungsoon Choi
+        - Chaelin Kim
+        - Gi Deok Pak
+        - Prerana Parajulee
+        - et al.
+    year: 2024
+    preprint: https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0011902
+    published_url: https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0011902
+    venue: PLoS Negl Trop Dis
+    github: https://github.com/kimfinale/TyphoidMapping
