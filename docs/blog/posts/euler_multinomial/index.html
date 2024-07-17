@@ -71,10 +71,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -147,48 +147,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Multinomial distribution</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">multinomial</div>
-                <div class="quarto-category">Rcpp</div>
-                <div class="quarto-category">pomp</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Jong-Hoon Kim </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">June 19, 2023</p>
-      </div>
-    </div>
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Multinomial distribution</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">multinomial</div>
+    <div class="quarto-category">Rcpp</div>
+    <div class="quarto-category">pomp</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jong-Hoon Kim </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 19, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
 
 <section id="a-simple-particle-filter-in-r" class="level3">
 <h3 class="anchored" data-anchor-id="a-simple-particle-filter-in-r">A simple particle filter in R</h3>
@@ -234,12 +232,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(xy, <span class="dv">2</span>, summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        pomp_var1 pomp_var2     var1     var2
-Min.      0.00000   0.00000  0.00000  0.00000
-1st Qu.   3.00000   7.00000  3.00000  7.00000
-Median    4.00000   9.00000  4.00000  9.00000
-Mean      4.65211   9.27891  4.64287  9.28104
-3rd Qu.   6.00000  11.00000  6.00000 11.00000
-Max.     15.00000  24.00000 15.00000 25.00000</code></pre>
+Min.       0.0000   0.00000  0.00000  0.00000
+1st Qu.    3.0000   7.00000  3.00000  7.00000
+Median     4.0000   9.00000  5.00000  9.00000
+Mean       4.6364   9.28729  4.65566  9.28827
+3rd Qu.    6.0000  11.00000  6.00000 11.00000
+Max.      16.0000  25.00000 16.00000 24.00000</code></pre>
 </div>
 </div>
 <p>The speed difference is quite substantial.</p>
@@ -249,11 +247,11 @@ Max.     15.00000  24.00000 15.00000 25.00000</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
                                                       expr   min     lq    mean
- pomp::reulermultinom(100, 100, rate = c(1, 2), dt = 0.05)  32.2  33.20  38.769
-      reulermultinom2(100, 100, rate = c(1, 2), dt = 0.05) 307.2 362.45 492.144
+ pomp::reulermultinom(100, 100, rate = c(1, 2), dt = 0.05)  40.1  41.80  48.890
+      reulermultinom2(100, 100, rate = c(1, 2), dt = 0.05) 372.7 480.95 636.879
  median     uq    max neval cld
-   35.8  40.40   76.2   100  a 
-  447.6 462.45 7142.7   100   b</code></pre>
+   44.3  51.45   83.9   100  a 
+  559.8 589.50 8831.6   100   b</code></pre>
 </div>
 </div>
 <p>Rewrite the function in C++ using Rcpp.</p>
@@ -281,12 +279,12 @@ Max.     15.00000  24.00000 15.00000 25.00000</code></pre>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(pomp<span class="sc">::</span><span class="fu">reulermultinom</span>(<span class="fl">1e5</span>, <span class="dv">100</span>, <span class="at">rate=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">dt=</span><span class="fl">0.05</span>), <span class="fu">reulermultinom_cpp</span>(<span class="fl">1e5</span>, <span class="dv">100</span>, <span class="at">rate=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">dt=</span><span class="fl">0.05</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
-                                                        expr     min       lq
- pomp::reulermultinom(1e+05, 100, rate = c(1, 2), dt = 0.05) 30.4970 31.67625
-   reulermultinom_cpp(1e+05, 100, rate = c(1, 2), dt = 0.05) 29.2925 30.20965
-     mean   median       uq      max neval cld
- 41.90669 35.72935 48.41845 132.3814   100   a
- 39.59061 35.22175 44.14835  96.4338   100   a</code></pre>
+                                                        expr     min      lq
+ pomp::reulermultinom(1e+05, 100, rate = c(1, 2), dt = 0.05) 30.7398 31.0186
+   reulermultinom_cpp(1e+05, 100, rate = c(1, 2), dt = 0.05) 29.5359 29.9252
+     mean   median       uq     max neval cld
+ 32.13278 31.35040 32.34535 45.0120   100  a 
+ 31.00953 30.26875 31.25820 40.4304   100   b</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -299,10 +297,10 @@ Max.     15.00000  24.00000 15.00000 25.00000</code></pre>
 <pre><code>        pomp_var1 pomp_var2     var1     var2
 Min.      0.00000   0.00000  0.00000  0.00000
 1st Qu.   3.00000   7.00000  3.00000  7.00000
-Median    4.00000   9.00000  4.00000  9.00000
-Mean      4.63464   9.31501  4.62865  9.29931
+Median    4.00000   9.00000  5.00000  9.00000
+Mean      4.64162   9.29693  4.65062  9.27988
 3rd Qu.   6.00000  11.00000  6.00000 11.00000
-Max.     16.00000  23.00000 16.00000 24.00000</code></pre>
+Max.     15.00000  26.00000 17.00000 23.00000</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>xy <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">names_to=</span><span class="st">"var"</span>) <span class="ot">-&gt;</span> xylong</span>

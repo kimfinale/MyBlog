@@ -65,7 +65,6 @@ ul.task-list li input[type="checkbox"] {
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../../../html/my_styles.css">
 </head>
 
 <body class="nav-fixed fullcontent">
@@ -116,47 +115,45 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">감염재생산지수 계산하기</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">modeling</div>
-                <div class="quarto-category">reproduction number</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Jong-Hoon Kim </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">August 4, 2023</p>
-      </div>
-    </div>
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">감염재생산지수 계산하기</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">modeling</div>
+    <div class="quarto-category">reproduction number</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jong-Hoon Kim </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 4, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
 
 <p>코로나19에 효과적으로 대응하고자 방역 당국과 연구자들이 코로나19의 전파 양상을 분석한 결과가 뉴스에 종종 보도 되었는데 그 내용 중에 빠지지 않는 것이 감염재생산지수이다. 영어로는 reproduction number (<span class="math inline">\(\mathcal{R}\)</span>) 로 불리는 데 한 명의 감염자로부터 야기된 후속 감염자의 수를 말한다. <span class="math inline">\(\mathcal{R}\)</span>이 1을 넘으면 감염자의 규모가 시간이 지남에 따라 커질 것이고 1보다 작으면 규모가 감소할 것이다. 누가 누구를 감염시켰는지 모두 알고 있다면 감염자들의 수를 세서 <span class="math inline">\(\mathcal{R}\)</span> 구할 수 있을 것이다. 하지만 한국 코로나 19 상황처럼 확진자가 많아서 모든 환자의 감염 경로를 알지 못하고 일별 확진자 자료를 가지고 있다면 어떻게 <span class="math inline">\(\mathcal{R}\)</span>을 계산할까? 이 글에서는 이에 관해 살펴보고자 한다.<br>
 </p>

@@ -97,7 +97,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="../../../html/my_styles.css">
 </head>
 
 <body class="nav-fixed fullcontent">
@@ -148,54 +147,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">odin package</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">ODE</div>
-                <div class="quarto-category">R</div>
-                <div class="quarto-category">odin</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Jong-Hoon Kim </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">September 15, 2023</p>
-      </div>
-    </div>
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">odin package</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">ODE</div>
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">odin</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jong-Hoon Kim </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 15, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
 
 <p>이번 <a href="https://www.vaccineimpact.org/">Vaccine Impact Modeling Consoritum (VIMC)</a> 연례회의에서 <code>odin</code>이라는 패키지에 대해 알게 되었다. <code>deSolve</code>의 업그레이드 버전이라고 보면 될까? R 코드를 C언어로 컴파일하기 때문에 최종 모형의 구동속도가 빠르다. 따라서 모형을 여러번 돌려야 하는 경우 (예를 들어 MCMC) 에 유리하다. <code>pomp</code> 보다도 훨씬 더 빠르다고 했는데 정확한 비교 수치는 잘 기억이 안남. 종종 C++로 모형을 만들었는데 <code>odin</code> 패키지를 사용하면 훨씬 쉬워질 것 같다. 좀 더 살펴보아야 할 텐데 일단 잊지 않기 위해 간단히 SIR 모형만 만들어 보았다.</p>
 <section id="deterministic-sir-model" class="level3">
 <h3 class="anchored" data-anchor-id="deterministic-sir-model">Deterministic SIR model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>path_sir_model <span class="ot">&lt;-</span> <span class="st">"sir.R"</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>path_sir_model <span class="ot">&lt;-</span> <span class="st">"C:/Users/jonghoon.kim/Documents/myblog/blog/posts/odin/sir.R"</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(path_sir_model))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>## Core equations for transitions between compartments:
@@ -243,7 +240,7 @@ gamma &lt;- user(0.1)</code></pre>
 <section id="stochastic-sir-model" class="level3">
 <h3 class="anchored" data-anchor-id="stochastic-sir-model">Stochastic SIR model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>path_sir_stoch_model <span class="ot">&lt;-</span> <span class="st">"sir_stoch.R"</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>path_sir_stoch_model <span class="ot">&lt;-</span> <span class="st">"C:/Users/jonghoon.kim/Documents/myblog/blog/posts/odin/sir_stoch.R"</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(path_sir_stoch_model))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>## Core equations for transitions between compartments:

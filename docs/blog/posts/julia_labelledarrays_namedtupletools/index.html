@@ -97,7 +97,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="../../../html/my_styles.css">
 </head>
 
 <body class="nav-fixed fullcontent">
@@ -148,50 +147,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">LabelledArrays and NamedTupleTools make it easy to use the ODE model in Julia</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">julia</div>
-                <div class="quarto-category">ODE</div>
-                <div class="quarto-category">LabelledArrays</div>
-                <div class="quarto-category">NamedTupleTools</div>
-                <div class="quarto-category">SEIR</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Jong-Hoon Kim </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">January 26, 2024</p>
-      </div>
-    </div>
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">LabelledArrays and NamedTupleTools make it easy to use the ODE model in Julia</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">julia</div>
+    <div class="quarto-category">ODE</div>
+    <div class="quarto-category">LabelledArrays</div>
+    <div class="quarto-category">NamedTupleTools</div>
+    <div class="quarto-category">SEIR</div>
+  </div>
+  </div>
 
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jong-Hoon Kim </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 26, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
 
 <section id="seir-model-using-labelledarrays" class="level3">
 <h3 class="anchored" data-anchor-id="seir-model-using-labelledarrays">SEIR model using LabelledArrays</h3>
@@ -243,26 +240,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>time_la</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  177.900 μs … 260.567 ms  ┊ GC (min … max):  0.00% … 99.88%
- Time  (median):     190.600 μs               ┊ GC (median):     0.00%
- Time  (mean ± σ):   238.357 μs ±   2.605 ms  ┊ GC (mean ± σ):  11.81% ±  3.61%
+ Range (min … max):  197.800 μs … 271.251 ms  ┊ GC (min … max):  0.00% … 99.88%
+ Time  (median):     209.500 μs               ┊ GC (median):     0.00%
+ Time  (mean ± σ):   263.579 μs ±   2.712 ms  ┊ GC (mean ± σ):  11.13% ±  3.55%
 
-  ▃█▆▃▂▁▃▅▄▂▁                                                   ▁
-  █████████████▇▆▆▆▅▅▆▅▅▅▅▂▄▅▃▄▅▃▃▄▄▅▃▄▄▂▄▂▄▄▆▄▄▂▄▃▃▃▃▂▃▃▃▂▃▃▃▂ █
-  178 μs        Histogram: log(frequency) by time        594 μs &lt;
+  ▆█▅▃▂▄▅▃▂▂▂▁▁                                                 ▂
+  ████████████████▇▇▇▇▇▇▆▆▅▆▆▆▆▆▅▆▅▅▅▅▅▅▄▄▅▅▅▅▄▄▄▅▅▄▅▄▁▅▄▄▄▃▄▅▄ █
+  198 μs        Histogram: log(frequency) by time        693 μs &lt;
 
  Memory estimate: 107.62 KiB, allocs estimate: 5775.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>time_nt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  60.100 μs … 256.574 ms  ┊ GC (min … max):  0.00% … 99.92%
- Time  (median):     71.300 μs               ┊ GC (median):     0.00%
- Time  (mean ± σ):   99.061 μs ±   2.565 ms  ┊ GC (mean ± σ):  25.88% ±  1.00%
+ Range (min … max):   73.800 μs … 273.262 ms  ┊ GC (min … max):  0.00% … 99.92%
+ Time  (median):      84.700 μs               ┊ GC (median):     0.00%
+ Time  (mean ± σ):   114.786 μs ±   2.732 ms  ┊ GC (mean ± σ):  23.79% ±  1.00%
 
-  ▆   ██                                                        
-  █▄▃▇███▄▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▂▂▂▂▂▁▂▂▁▂▂▂▁▂▂ ▃
-  60.1 μs         Histogram: frequency by time          200 μs &lt;
+  ▇   ██                                                         
+  █▄▃▇███▄▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂ ▃
+  73.8 μs          Histogram: frequency by time          213 μs &lt;
 
  Memory estimate: 29.45 KiB, allocs estimate: 730.</code></pre>
 </div>

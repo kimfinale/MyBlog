@@ -10,9 +10,12 @@ _freeze/
 *_pycache_*
 gmail_cred
 utils.R
-blog/posts/
 data/
 img/
 pubmed_chatgpt.R
 gmail*
 chat_gpt_api.R
+blog/posts/*/*.png
+blog/posts/*/*.rds
+blog/posts/*/*.jpg
+blog/posts/learning_ChatGPT_1/Model-weights.pt
