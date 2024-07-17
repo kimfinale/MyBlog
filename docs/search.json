@@ -93,7 +93,7 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "",
+    "title": "Disease modeling for public health",
     "section": "",
     "text": "Blog\n  \n  \n     Papers\n  \n  \n    \n     GitHub\n  \n  \n    \n     Linkedin\n  \n  \n    \n     Twitter\n  \n  \n    \n     Email"
   },
@@ -1206,14 +1206,14 @@
   {
     "objectID": "index.html#welcome-to-my-website",
     "href": "index.html#welcome-to-my-website",
-    "title": "",
+    "title": "Disease modeling for public health",
     "section": "Welcome to my website!",
     "text": "Welcome to my website!\nHi! My name is Jong-Hoon Kim. I am a theoretical epidemiologist who uses mathematical, statistical, and machine-learning models to study infectious disease epidemiology. My work involves developing theories about infectious disease transmission, making predictions, and assessing the effectiveness of intervention strategies to improve public health. Currently, in 2023, I work at the International Vaccine Institute, which is located in Seoul, South Korea. My current research primarily focuses on typhoid fever, non-typhoidal Salmonella, cholera, and COVID-19."
   },
   {
     "objectID": "index.html#research-interests",
     "href": "index.html#research-interests",
-    "title": "",
+    "title": "Disease modeling for public health",
     "section": "Research interests",
     "text": "Research interests\nMy research focuses on leveraging disease models to generate actionable insights for controlling infectious diseases with real-world impact. Specifically, I aim to identify critical details necessary for generating actionable inferences regarding vaccination strategies for cholera and typhoid fever, tailored to specific locations and times. Additionally, I am interested in developing models to understand how human behavior in a community can enhance or hinder the effectiveness of disease control methods, including vaccination campaigns. Using that understanding, I aim to improve the control of infectious diseases and address other public health challenges."
   }

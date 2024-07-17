@@ -32,5 +32,3 @@ Hi! My name is Jong-Hoon Kim. I am a theoretical epidemiologist who uses mathema
 ## Research interests
 
 My research focuses on leveraging disease models to generate actionable insights for controlling infectious diseases with real-world impact. Specifically, I aim to identify critical details necessary for generating actionable inferences regarding vaccination strategies for cholera and typhoid fever, tailored to specific locations and times. Additionally, I am interested in developing models to understand how human behavior in a community can enhance or hinder the effectiveness of disease control methods, including vaccination campaigns. Using that understanding, I aim to improve the control of infectious diseases and address other public health challenges.
-
-# 
