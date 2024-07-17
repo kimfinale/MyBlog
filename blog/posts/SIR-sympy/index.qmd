@@ -34,7 +34,7 @@ dSdI = dIdt / dSdt #-(I*S*b - I*g)/(I*S*b)
 simplify(-(I*S*R_0*g - I*g)/(I*S*R_0*g)) 
 ```
 
-The second part is integrate the equation, $dI/dS$
+The second part is integrate the equation, $\text{d}I/\text{d}S$
 
 ```{python}
 S, I = symbols("S I", cls=Function)
