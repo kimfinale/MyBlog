@@ -565,5 +565,61 @@
     "title": "Research",
     "section": "",
     "text": "Published\n2024\nHyolim Kang, Megan Auzenbergs, Hannah Clapham, Clara Maure, Jong-Hoon Kim, Henrik Salje, Christopher G. Taylor, Ahyoung Lim, John W. Edmunds, Sushant Sahastrabuddhe, Oliver J. Brady, and Kaja Abbas. (2024) \"Chikungunya seroprevalence, force of infection, and prevalence of chronic disability after infection in endemic and epidemic settings: a systematic review, meta-analysis, and modelling study.\" Lancet Infect Dis\n        \n        Preprint\n     \n        \n        Github\n     \n        \n        Published\n    \nJong-Hoon Kim, Jungsoon Choi, Chaelin Kim, Gi Deok Pak, Prerana Parajulee, and et al. (2024) \"Mapping the incidence rate of typhoid fever in sub-Saharan Africa.\" PLoS Negl Trop Dis\n        \n        Preprint\n     \n        \n        Github\n     \n        \n        Published\n    \nJong-Hoon Kim, Bieke Tack, Fabio Fiorino, Elena Pettini, Christian S. Marchello, and et al. (2024) \"Examining geospatial and temporal distribution of invasive non-typhoidal Salmonella disease occurrence in sub-Saharan Africa: a systematic review and modelling study.\" BMJ Open\n        \n        Preprint\n     \n        \n        Github\n     \n        \n        Published\n    \nDejene Hailu, Yeonji Jeon, Abel Gedefaw, Jong-Hoon Kim, and et al. (2024) \"Dissecting Water, Sanitation, and Hygiene (WaSH) to Assess Risk Factors for Cholera in Shashemene, Oromia Region, Ethiopia.\" Clin Infect Dis\n        \n        Preprint\n     \n        \n        Published\n    \nJong-Hoon Kim, Prerana Parajulee, Thuy Tien Nguyen, Shreeya Wasunkar, and et al. (2024) \"Occurrence of human infection with Salmonella Typhi in sub-Saharan Africa.\" Sci Data\n        \n        Preprint\n     \n        \n        Github\n     \n        \n        Published\n    \nSubmitted\n2024\nDaeHyup Koh, Monica Duong, Nodar Kipshidze, Virginia E. Pitzer, and Jong-Hoon Kim. (2024) \"Dynamics of typhoid fever outbreaks during 2000-2022: a systematic review with time-series data.\"\n        \n        Preprint\n    \nThuy Tien Nguyen, Chaelin Kim, Gerard Goucher, and Jong-Hoon Kim. (2024) \"Associations of Water Quality with Cholera in Case-Control Studies: A Systematic Review and Meta-Analysis.\"\n        \n        Preprint\n     \n        \n        Github"
+  },
+  {
+    "objectID": "cv/index.html",
+    "href": "cv/index.html",
+    "title": "Jong-Hoon Kim",
+    "section": "",
+    "text": "101-1804\nkimfinale@gmail.com\n\n\n174 Solsaem-ro, Gangbuk-gu\nwww.jonghoonk.com\n\n\nSeoul, Korea\n+82-10-9482-2517\n\n\n\n\n\n\n2021-2023 (expected)\n\nMicroMaster, Statistics and Data Science; MITx (online learning initiative of the Massachusetts Institute of Technology)\n\n2006-2010\n\nPhD, Theoretical Epidemiology (Disease Transmission Modeling); University of Michigan, Ann Arbor\nThesis title: Dynamic partnerships and HIV transmissions by stage\n\n2007-2010\n\nMSc, Biophysics and molecular biology; Gwangju Institute of Science and Technology\n\n2007-2010\n\nBSc, Biochemistry; Chungnam National University\n\n\n\n\n\n2008-9\nRackham Fellowship ($20,000) University of Michigan, Ann Arbor 2004 Student Award ($3,000)\nBlue Cross Blue Shield Michigan Foundation 2003-2004 Study Abroad Scholarship ($60,000) Korea Science and Engineering Foundation\n\n\n\nYour Most Recent Work Experience:\nShort text containing the type of work done, results obtained, lessons learned and other remarks. Can also include lists and links:\n\nFirst item\nItem with link. Links will work both in the html and pdf versions.\n\nThat Other Job You Had\nAlso with a short description.\n\n\n\nResearch Scientist at the International Vaccine Institute (2018-present)\n\n\n\nI am a theoretical epidemiologist specializing in the modeling of infectious disease transmission. My research involves utilizing mathematical and statistical models as well as data science techniques to examine the dynamics of disease transmission and evaluate the effectiveness of intervention programs like vaccination. Over the course of my career, I have investigated a wide range of pathogens including HIV, poliovirus, cholera, typhoid fever, non-typhoidal Salmonella disease, and COVID-19. To continue expanding my expertise in the field, I actively pursue new knowledge in machine learning and data science. Additionally, I have shared my knowledge through numerous lectures and participated in advisory panels aimed at controlling the spread of COVID-19 in Korea.\n\n\n\n\nMy Cool Side Project\n\nFor items which don’t have a clear time ordering, a definition list can be used to have named items.\n\nThese items can also contain lists, but you need to mind the indentation levels in the markdown source.\nSecond item.\n\n\nOpen Source\n\nList open source contributions here, perhaps placing emphasis on the project names, for example the Linux Kernel, where you implemented multithreading over a long weekend, or node.js (with link) which was actually totally your idea…\n\nProgramming Languages\n\nfirst-lang: Here, we have an itemization, where we only want to add descriptions to the first few items, but still want to mention some others together at the end. A format that works well here is a description list where the first few items have their first word emphasized, and the last item contains the final few emphasized terms. Notice the reasonably nice page break in the pdf version, which wouldn’t happen if we generated the pdf via html.\n\n\nsecond-lang: Description of your experience with second-lang, perhaps again including a [link] ref, this time placing the url reference elsewhere in the document to reduce clutter (see source file).\n\n\nobscure-but-impressive-lang: We both know this one’s pushing it.\n\n\nBasic knowledge of C, x86 assembly, forth, Common Lisp\n\n\n\n\n\n\nHuman Languages:\n\nEnglish (native speaker)\n???\nThis is what a nested list looks like.\n\nRandom tidbit\nOther sort of impressive-sounding thing you did"
+  },
+  {
+    "objectID": "cv/index.html#education",
+    "href": "cv/index.html#education",
+    "title": "Jong-Hoon Kim",
+    "section": "",
+    "text": "2021-2023 (expected)\n\nMicroMaster, Statistics and Data Science; MITx (online learning initiative of the Massachusetts Institute of Technology)\n\n2006-2010\n\nPhD, Theoretical Epidemiology (Disease Transmission Modeling); University of Michigan, Ann Arbor\nThesis title: Dynamic partnerships and HIV transmissions by stage\n\n2007-2010\n\nMSc, Biophysics and molecular biology; Gwangju Institute of Science and Technology\n\n2007-2010\n\nBSc, Biochemistry; Chungnam National University"
+  },
+  {
+    "objectID": "cv/index.html#honors-and-awards",
+    "href": "cv/index.html#honors-and-awards",
+    "title": "Jong-Hoon Kim",
+    "section": "",
+    "text": "2008-9\nRackham Fellowship ($20,000) University of Michigan, Ann Arbor 2004 Student Award ($3,000)\nBlue Cross Blue Shield Michigan Foundation 2003-2004 Study Abroad Scholarship ($60,000) Korea Science and Engineering Foundation"
+  },
+  {
+    "objectID": "cv/index.html#experience",
+    "href": "cv/index.html#experience",
+    "title": "Jong-Hoon Kim",
+    "section": "",
+    "text": "Your Most Recent Work Experience:\nShort text containing the type of work done, results obtained, lessons learned and other remarks. Can also include lists and links:\n\nFirst item\nItem with link. Links will work both in the html and pdf versions.\n\nThat Other Job You Had\nAlso with a short description."
+  },
+  {
+    "objectID": "cv/index.html#current-position",
+    "href": "cv/index.html#current-position",
+    "title": "Jong-Hoon Kim",
+    "section": "",
+    "text": "Research Scientist at the International Vaccine Institute (2018-present)"
+  },
+  {
+    "objectID": "cv/index.html#research-interests",
+    "href": "cv/index.html#research-interests",
+    "title": "Jong-Hoon Kim",
+    "section": "",
+    "text": "I am a theoretical epidemiologist specializing in the modeling of infectious disease transmission. My research involves utilizing mathematical and statistical models as well as data science techniques to examine the dynamics of disease transmission and evaluate the effectiveness of intervention programs like vaccination. Over the course of my career, I have investigated a wide range of pathogens including HIV, poliovirus, cholera, typhoid fever, non-typhoidal Salmonella disease, and COVID-19. To continue expanding my expertise in the field, I actively pursue new knowledge in machine learning and data science. Additionally, I have shared my knowledge through numerous lectures and participated in advisory panels aimed at controlling the spread of COVID-19 in Korea."
+  },
+  {
+    "objectID": "cv/index.html#technical-experience",
+    "href": "cv/index.html#technical-experience",
+    "title": "Jong-Hoon Kim",
+    "section": "",
+    "text": "My Cool Side Project\n\nFor items which don’t have a clear time ordering, a definition list can be used to have named items.\n\nThese items can also contain lists, but you need to mind the indentation levels in the markdown source.\nSecond item.\n\n\nOpen Source\n\nList open source contributions here, perhaps placing emphasis on the project names, for example the Linux Kernel, where you implemented multithreading over a long weekend, or node.js (with link) which was actually totally your idea…\n\nProgramming Languages\n\nfirst-lang: Here, we have an itemization, where we only want to add descriptions to the first few items, but still want to mention some others together at the end. A format that works well here is a description list where the first few items have their first word emphasized, and the last item contains the final few emphasized terms. Notice the reasonably nice page break in the pdf version, which wouldn’t happen if we generated the pdf via html.\n\n\nsecond-lang: Description of your experience with second-lang, perhaps again including a [link] ref, this time placing the url reference elsewhere in the document to reduce clutter (see source file).\n\n\nobscure-but-impressive-lang: We both know this one’s pushing it.\n\n\nBasic knowledge of C, x86 assembly, forth, Common Lisp"
+  },
+  {
+    "objectID": "cv/index.html#extra-section-call-it-whatever-you-want",
+    "href": "cv/index.html#extra-section-call-it-whatever-you-want",
+    "title": "Jong-Hoon Kim",
+    "section": "",
+    "text": "Human Languages:\n\nEnglish (native speaker)\n???\nThis is what a nested list looks like.\n\nRandom tidbit\nOther sort of impressive-sounding thing you did"
   }
 ]
