@@ -1,0 +1,16 @@
+{
+  "hash": "284388d550768c54684f16ed2303ea14",
+  "result": {
+    "markdown": "---\ntitle: \"ggplot2로 지도 그리기\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2023-08-30\"\ncategories: [R, map, ggplot2, sf, RColorBrewer]\nimage: \"thumbnail.jpg\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\n`ggplot2`를 이용하여 지도 그리기를 해보자. 지도는 shapefile에 담겨져 있다고 가정하자. shapefile을 읽는 방법은 여러가지가 있을 수 있는데 `sf` 패키지의 `st_read` 혹은 `read_sf` 함수를 이용한 후 `ggplot2`의 `geom_sf`를 이용하여 그리는 것이 가장 쉬운 것 같다.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(sf)\nkor <- st_read(\"gadm41_KOR_1.shp\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nReading layer `gadm41_KOR_1' from data source \n  `C:\\Users\\jonghoon.kim\\Documents\\myblog\\blog\\posts\\drawing-map\\gadm41_KOR_1.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 17 features and 11 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 124.6097 ymin: 33.11236 xmax: 131.8715 ymax: 38.61177\nGeodetic CRS:  WGS 84\n```\n:::\n\n```{.r .cell-code}\n# kor <- read_sf(dsn=\"C:/Users/jonghoon.kim/Documents/myblog/posts/drawing-map\", layer=\"gadm41_KOR_1\")\nset.seed(42)\n# normalized number of characters of the name of the admin unit (level 1)\nchar_len <- sapply(kor$NAME_1, nchar)\nkor$prop_char <- char_len / max(char_len)\n\nlibrary(ggplot2)\nplt <- ggplot(kor)+\n  geom_sf(aes(fill=prop_char))+\n  scale_fill_viridis_c(name=\"Normalized\\ncharacter length\", limits=c(0,1)) +\n  theme_minimal()+\n  theme(legend.position=\"right\")\n\nplt\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n\n```{.r .cell-code}\n# use color brewer \nlibrary(RColorBrewer)\npal <- brewer.pal(9,\"YlOrBr\")\nplt <- plt + \n  scale_fill_gradientn(name=\"Normalized\\ncharacter length\", colors=pal, limits=c(0,1))\n  \nplt\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-2.png){width=672}\n:::\n\n```{.r .cell-code}\n# Clear some background stuff\nplt <- plt +\n  theme(panel.background = element_blank(), # bg of the panel\n        plot.background = element_blank(), # bg of the plot\n        legend.background = element_blank(), # get rid of legend bg\n        legend.box.background = element_blank(),\n        panel.spacing = unit(c(0,0,0,0), \"null\"),\n        plot.margin = unit(c(0,0,0,0), \"null\"),\n        axis.line = element_blank(),\n        axis.text.x = element_blank(),\n        axis.text.y = element_blank(),\n        axis.ticks = element_blank(),\n        axis.title.x = element_blank(),\n        axis.title.y = element_blank(),\n        panel.border = element_blank(),\n        panel.grid.major = element_blank(),\n        panel.grid.minor = element_blank(),\n        legend.position = \"bottom\",\n        plot.title = element_text(hjust=0.5, size=12))\nplt\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-3.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

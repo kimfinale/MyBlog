@@ -1,0 +1,14 @@
+{
+  "hash": "6ca4d444a3d050690e40a3822fb539dc",
+  "result": {
+    "markdown": "---\ntitle: \"PubMed search, ChatGPT summary, and sending an email in Python\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2023-09-01\"\ncategories: [ChatGPT, R, xml, httr]\nimage: \"chatgpt.png\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

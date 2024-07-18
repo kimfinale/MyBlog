@@ -1,0 +1,14 @@
+{
+  "hash": "bf0335ce7ace8a844735fb645e86eb88",
+  "result": {
+    "markdown": "---\ntitle: \"Claude 3\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2024-05-30\"\ncategories: [LLM, Claude]\nimage: \"anthropic.png\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\nTesting Claude 3 with R\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(httr)\nlibrary(jsonlite)\n\n# Function to make API request\nprompt_claude <- function(prompt = NULL, \n                          api_key = NULL, \n                          model = \"opus\",\n                          max_tokens = 1000) {\n  if (is.null(api_key)) {\n   stop(\"api_key must provided\")\n  }\n  model <- grep(model, c(\"claude-3-haiku-20240307\",\n                         \"claude-3-sonnet-20240229\",\n                         \"claude-3-opus-20240229\"), value=TRUE)\n  if(length(model) == 0){\n    stop(\"The model name is wrong. It must be one of the haiku, sonnet, and opus\")\n  }\n  \n  response <- httr::POST(\n    url = \"https://api.anthropic.com/v1/messages\",\n    httr::add_headers(`x-api-key` = api_key, \n                `anthropic-version` = \"2023-06-01\",\n                `content-type` = \"application/json\"),\n    encode = \"json\",\n    body = jsonlite::toJSON(list(\n     model = model,\n     max_tokens = max_tokens,\n     messages = list(list(role = \"user\", content = prompt))\n    ), auto_unbox = TRUE)\n )\n content <- httr::content(response, as=\"text\")\n json_data <- jsonlite::fromJSON(content, flatten = TRUE)\n response <- json_data$content$text\n \n return(response)\n}\n\napi_key <- Sys.getenv(\"CLAUDE_API_KEY\") # api key was stored in the .Renviron file\nres <- prompt_claude(prompt=\"The cat sat on the\", api_key, model=\"haiku\")\ncat(res)\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

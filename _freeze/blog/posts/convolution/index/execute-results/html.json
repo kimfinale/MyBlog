@@ -1,0 +1,16 @@
+{
+  "hash": "0ad04f28363df25df3d3a397766f4bc4",
+  "result": {
+    "markdown": "---\ntitle: \"Convolution\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2023-12-05\"\ncategories: [particle filter]\nimage: \"sample_figure.png\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\n### Convolution\n\nThe following content was adapted from Grant Sanderson's [YouTube video](https://www.youtube.com/watch?v=IaSGqQa5O-M&t=567s) and the [Wikipedia article](https://en.wikipedia.org/wiki/Convolution).\n\nConvolution is a fundamental concept in mathematics and statistics, playing a crucial role in various applications ranging from signal processing to probability theory. In this blog post, we'll explore what convolution is, its significance, and how it's used in mathematics and statistics. Additionally, I'll include a practical example using R.\n\nConvolution is a mathematical operation that combines two functions to produce a third function. It's a way of 'mixing' two functions, often used to understand the way a system modifies a signal. In mathematical terms, the convolution of two functions, $f$ and $g$, is defined as:\n\n$$\n(f*g)(t) = \\int_0^{\\infty} f(\\tau)g(t-\\tau) \\textrm{d}\\tau\n$$\nLet's consider a simple example of convolution in R. We'll convolve two functions, a sine wave and a cosine wave, to see how they interact.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# Define the two functions\nf <- function(x) sin(x)\ng <- function(x) cos(x)\n\n# Create a sequence of points\nx <- seq(-pi, pi, length.out = 100)\n\n# Perform the convolution\nconvolved <- convolve(f(x), g(x), type = \"open\")\n\n# Plot the original functions and their convolution\nplot(x, f(x), type='l', col='blue', ylim=c(-50, 50))\nlines(x, g(x), col='red')\nlines(x, convolved[seq(1,199, length.out=100)], col='green')\nlegend(\"topright\", legend=c(\"f(x) = sin(x)\", \"g(x) = cos(x)\", \"Convolved\"), col=c(\"blue\", \"red\", \"green\"), lty=1)\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n\n\nIn compartmental modeling, it can be used to explore the distribution and features of the consecutive compartments. For example, in the SEIR model, the the length of a generation interval is given by the convolution of E and I compartments.\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

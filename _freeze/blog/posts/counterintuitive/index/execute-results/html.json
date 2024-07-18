@@ -1,0 +1,16 @@
+{
+  "hash": "e90318912bd69a0d94e314803815a3f9",
+  "result": {
+    "markdown": "---\ntitle: \"Counterintuitive effects in disease transmission dynamics\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2024-03-20\"\ncategories: [Infectious diseases, nonlinearity, transmission dynamics]\nimage: \"R0_prevalence.png\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\n### $R_0$ and the prevalence of infection\n\n[An article by Heesterbeek *et al*.](https://www.science.org/doi/10.1126/science.aaa4339) provides a few examples on the counterintuitive behavior of a dynamical system of disease transmission. The first example was about the relationship between the intensity of transmission and the prevalence of infection, citing [the work by Anderson *et al*.](https://pubmed.ncbi.nlm.nih.gov/3892436/). One message from the study by Anderson *et al*. is that the effect of intervention should not be measured by the prevalence of infection. A similar message can be drawn from a simple relationship between $R_0$ and the prevalence of infection. As shown in the figure below, reducing $R_0$ from 15 to 10 may require a lot of efforts and its effect on prevalence of infection may be small.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nR0 <- seq(1, 20, by=0.1)\n# R0*s = 1 is assumed, i.e., endemic steady state\nprev <- 1 - 1/R0\n\ndf <- data.frame(R0=R0, Prev=prev)\n\nlibrary(ggplot2)\nextrafont::loadfonts(\"win\", quiet=TRUE)\ntheme_set(hrbrthemes::theme_ipsum_rc(base_size=14, subtitle_size=16, axis_title_size=12))\n\nggplot(df,aes(x=R0))+\n  geom_line(aes(y=prev))+ \n  ggtitle(expression(\"Prevalence of infection vs.\" ~italic(R)[0]))+\n  scale_y_continuous(limits=c(0,1))+\n  labs(x=expression(italic(R)[0]), y=\"Prevalence\")\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n\n```{.r .cell-code}\n# ggsave(\"R0_prevalence.png\", units=\"in\", width=3.4*2, height=2.7*2)\n```\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

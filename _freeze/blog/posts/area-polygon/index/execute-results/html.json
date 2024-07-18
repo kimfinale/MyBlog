@@ -1,0 +1,16 @@
+{
+  "hash": "fc4c6de29e7170f88346369f837db467",
+  "result": {
+    "markdown": "---\ntitle: \"Polygon 면적 구하기: sf 와 raster 패키지\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2023-08-30\"\ncategories: [R, shapefile, ggplot2, sf, raster, RColorBrewer]\nimage: \"southkorea_map.png\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\n`shapefile`에 담겨져 있는 polygon의 면적을 구해보자 `raster` 패키지의 `area` 혹은 `sf` 패키지의 `st_area` 함수를 이용할 수 있다.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(sf)\nkor <- st_read(\"gadm41_KOR_1.shp\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nReading layer `gadm41_KOR_1' from data source \n  `C:\\Users\\jonghoon.kim\\Documents\\myblog\\blog\\posts\\area-polygon\\gadm41_KOR_1.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 17 features and 11 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 124.6097 ymin: 33.11236 xmax: 131.8715 ymax: 38.61177\nGeodetic CRS:  WGS 84\n```\n:::\n\n```{.r .cell-code}\n# another way\n# kor <- read_sf(dsn=\"C:/Users/jonghoon.kim/Documents/myblog/posts/area-polygon\", layer=\"gadm41_KOR_1\")\nset.seed(42)\n# 1e6 to get population density per 1 km^2\nkor$area_sqkm1 <- as.numeric(st_area(kor))/1e6\n\n# raster package way\n# library(raster)\n# kor <- shapefile(\"C:/Users/jonghoon.kim/Documents/myblog/posts/area-polygon/gadm41_KOR_1.shp\")\n# raster pkg works for the Spatial* object\n# kor$area_sqkm2 <- raster::area(as(kor, 'Spatial'))/1e6\n\n# plot population density\nlibrary(ggplot2)\ntheme_set(hrbrthemes::theme_ipsum_rc(base_size=14, subtitle_size=16, axis_title_size=12))\nextrafont::loadfonts()\n\nlabels = expression(atop(\"Population density\", per~1~km^2))\nplt <- ggplot(kor)+\n  geom_sf(aes(fill=area_sqkm1))+\n  scale_fill_viridis_c(name=labels) +\n  theme(legend.position=\"right\")\n\n# ggsave(\"southkorea_map.png\", gg, units=\"in\", width=3.4*2, height=2.7*2)  \nplt\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n\n```{.r .cell-code}\n# use RColorBrewer \nlibrary(RColorBrewer)\npal <- brewer.pal(9,\"YlOrBr\")\nplt + scale_fill_gradientn(name=labels, colors=pal)\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-2.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

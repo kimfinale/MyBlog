@@ -1,0 +1,14 @@
+{
+  "hash": "20f082aae51e7f444d8eff9768cab265",
+  "result": {
+    "markdown": "---\ntitle: \"Idiosyncrasies and generalities\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2023-12-04\"\ncategories: [ecology, idiosyncransy, generality, COVID-19]\nimage: \"sample_figure.png\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\n### Idiosyncrasies and generalities\n\nDebates in the population ecology [Bjørnstad and Grenfell](https://www.science.org/doi/10.1126/science.1062226).\n\n1. Relative importance of “noise” (small-scale, high-frequency stochastic influences) versus climatic forcing (larger scale, often lower-frequency signals) versus nonlinear interactions between individuals of the same or different species.\n\n2. The impact of intrinsic (i.e., intraspecific) processes, as opposed to extrinsic or community-level interactions\n\n3. Nested within 2, “dimensionality” of population fluctuations; given that most populations are embedded in rich communities and affected by numerous interspecific interactions, can simple (low-dimensional) models involving one or a few species capture the patterns of fluctuations?\n\n“… To understand any system, we need to appreciate its idiosyncrasies; to encompass broad patterns, we need to extract generalities…”\n\nViewing infectious disease epidemiology as a subset of ecology can be highly beneficial. By doing so, we can apply all the components that influence the dynamics of animal species to infectious disease dynamics, to varying degrees.\n\nIn the context of COVID-19, the modeling of confirmed cases has primarily focused on the variation in transmission rates. Often, the variation within reasonable limits in the transmission rate alone is sufficient to produce the daily number of cases. However, there is a potential risk of overlooking other influential factors, which could lead to biased estimates for transmission.\n\nBy considering infectious disease dynamics from an ecological perspective, we can broaden our understanding and ensure that relevant factors beyond transmission rates are taken into account. This approach can enhance the accuracy of our modeling and contribute to more effective public health interventions in combating diseases like COVID-19.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

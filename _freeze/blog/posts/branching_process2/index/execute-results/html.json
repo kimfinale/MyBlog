@@ -1,0 +1,16 @@
+{
+  "hash": "270e26f07fe410af518abc86f6ca3256",
+  "result": {
+    "markdown": "---\ntitle: \"Branching process model 2\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2023-11-14\"\ncategories: [R, branching process, final epidemic size]\nimage: \"thumbnail.jpg\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\n### Branching process model\n\nIn the branching process model, the number of secondary infections is realized as a random number (e.g., Poission or Negative binomial).\n\n\n::: {.cell}\n\n```{.r .cell-code}\nR0_mean <- 2\npopsize = 1000 # population size for each iteration\nnrun <- 1000 # number of iterations to compute the mean\noutbreaks <- vector(\"list\", nrun) # to store outbreak size for each iteration\ninit_inf <- 1 # initially infected people\n\nfor (r in 1:nrun) {\n  pop <- data.frame(id=1:popsize)\n  pop$status <- \"S\"\n  pop$status[1:init_inf] <- \"I\"\n  pop$run_id <- r\n  pop$time_inf <- NA\n  pop$time_inf[1:init_inf] <- 0\n  nS <- sum(pop$status == \"S\")\n  nI <- sum(pop$status == \"I\")\n  N <- nrow(pop)\n  cnt <- init_inf + 1 # infecteds are placed from the first position\n  while (nI > 0 & nS > 0) {\n    row <- which(pop$status == \"I\")\n    nI <- length(row)\n    for (i in seq_len(nI)) {\n      # cat(\"i =\", i, \"\\n\")\n      pop$status[row[i]] <- \"R\"\n      offspring <- rpois(1, lambda=R0_mean*nS/N)\n      nS = nS - offspring\n      for (k in seq_len(offspring)) {\n        pop$status[cnt] <- \"I\"\n        pop$time_inf[cnt] <- pop$time_inf[row[i]] + \n          rgamma(1, shape=2, rate=1/3)\n        cnt <- cnt + 1\n      }\n    }\n  }\n  outbreaks[[r]] <- pop\n}\n\noutbreak_size <- sapply(outbreaks, function(x) nrow(x) - sum(x$status==\"S\"))\nhist(outbreak_size) # minor and major outbreaks\nmajor_outbreaks = outbreak_size > 200\nmean(outbreak_size[major_outbreaks])/popsize # only major outbreaks\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 0.7974659\n```\n:::\n\n```{.r .cell-code}\noutbks = purrr::list_rbind(outbreaks)\nlibrary(tidyverse)\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/sir_branch-1.png){width=672}\n:::\n\n```{.r .cell-code}\noutbks[major_outbreaks,] |> \n  filter(!is.na(time_inf)) |> \n  ggplot()+\n    geom_histogram(aes(x=time_inf))\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/sir_branch-2.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "hash": "5555490a44217fc74a77f5f3dc99bdb4",
+  "result": {
+    "markdown": "---\ntitle: \"Apartment transactions in Korea via API provided by the Ministry of Land, Infrastructure, and Transport\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2023-11-01\"\ncategories: [R, API, apartment]\nimage: \"apt_price.png\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\n### Data preparation\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(XML)\nlibrary(RCurl)\nlibrary(dplyr)\n\nservice_key <- readRDS(\"apartment_key_datagokr.rds\")\ndatlist <- vector(\"list\", 12)\n\n# combine the data in 2022\nfor (m in 1:12){\n  if (m < 10) {\n    dt <- paste0(\"20220\", m)\n  } else {\n    dt <- paste0(\"2022\", m)\n  } \n  uri <- paste0(\"http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?LAWD_CD=11110&DEAL_YMD=\", dt, \"&serviceKey=\", service_key)\n\n  xml_doc <- xmlTreeParse(uri, useInternalNodes = TRUE, encoding = \"UTF-8\")\n  root_node <- xmlRoot(xml_doc)\n  xml_data <- xmlToDataFrame(nodes = getNodeSet(root_node, '//item'))\n\n  datlist[[m]] <- xml_data\n}\n\nd <- do.call('rbind', datlist)\n```\n:::\n\n\nI will plot the price\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# million won\nd$price <- as.numeric(gsub('\\\\,', \"\", d$거래금액)) / 100\nd$area_sq_meter <- as.numeric(d$전용면적) # q\nd$area_category <- NA\n\nfor(i in 1:nrow(d)) {\n  ar <- d$area_sq_meter[i]\n  if(ar < 50){\n    d$area_category[i] <- \"<50\"\n  }\n  else if(ar >= 50 & ar < 80) {\n    d$area_category[i] <- \"50-80\"\n  }\n  else if(ar >= 80 & ar < 100) {\n    d$area_category[i] <- \"80-100\"\n  }\n  else if(ar >= 100) {\n    d$area_category[i] <- \">100\"\n  }\n}\n\nd$area_category <- factor(d$area_category, levels=c(\"<50\", \"50-80\", \"80-100\",\">100\"))\n                             \nd$levels <- as.numeric(d$층)\n\nlibrary(ggplot2)\n\nd |> as.data.frame() |> \n  ggplot()+\n  geom_point(aes(area_category, price, color=levels)) +\n  labs(x=parse(text=paste0(\"Area~(m^2)\")), y=\"Price (million won)\", color=parse(text=paste0(\"Levels\")))+\n  theme_bw()+\n  ggtitle(\"Apartment price in Jongno-gu, Seoul, 2022\") \n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n\n```{.r .cell-code}\n# ggsave(\"apt_price.png\", width=3.4*1.5, height=2.7*1.5, units=\"in\")\n```\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

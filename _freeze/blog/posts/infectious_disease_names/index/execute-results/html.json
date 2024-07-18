@@ -1,0 +1,14 @@
+{
+  "hash": "a124e88e289cc2d855b1f99fc07b8a4e",
+  "result": {
+    "markdown": "---\ntitle: \"Origins of major human infectious diseases\"\nauthor: \"Jong-Hoon Kim\"\ndate: \"2023-03-04\"\ncategories: [infectious disease, emergence, density]\nimage: \"gates-climate-book.jpg\"\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\nMajor human infecious disease are believed to have arisen after agriculture revolution[Origins of major human infectious diseases](https://pubmed.ncbi.nlm.nih.gov/17507975/). By the way, this emergence of infectious diseases are one reason that agricultural revolution is callled one of the \nmajor mistakes of the human species by Diamond and \n\nby Bill Gates is a comprehensive and accessible guide on how to tackle the urgent issue of climate change. Gates begins by laying out the scope of the problem, explaining that the world needs to reduce its greenhouse gas emissions to zero to avoid a catastrophe. I've compiled important numbers from the book to understand the climate change issues.\n\n-   51 Billion Tonnes: This is the amount of greenhouse gases, measured in CO2 equivalent ($\\mathrm{CO_{2}e}$), that humanity adds to the atmosphere every year.\n\n-   Zero: According to Bill Gates, we need to bring this number down to zero to avoid a climate disaster. And he thinks it is possible through our technological advances. Watch his TED talk, [Innovating to zero!](https://www.youtube.com/watch?v=JaF-fq2Zn7I&t=999s). He is a great speaker!\n\n| Percentage | Item                        |\n|------------|-----------------------------|\n| 27%        | How we generate electricity |\n| 31%        | How we make things          |\n| 18%        | How we grow our food        |\n| 16%        | How we move around          |\n| 6%         | How we keep warm or cool    |\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
