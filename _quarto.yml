@@ -27,6 +27,6 @@ format:
       - html/mytheme.scss
 
 
-editor: visual
+editor: source
 
 

@@ -18,8 +18,6 @@ dengue_sr:
     published_url: https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(23)00810-1/fulltext
     venue: Lancet Infect Dis
     github: https://github.com/hyolimkang/CHIK
-
-
 tf_map:
     title: "Mapping the incidence rate of typhoid fever in sub-Saharan Africa"
     authors:
@@ -28,9 +26,74 @@ tf_map:
         - Chaelin Kim
         - Gi Deok Pak
         - Prerana Parajulee
-        - et al.
+        - et al
     year: 2024
     preprint: https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0011902
     published_url: https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0011902
     venue: PLoS Negl Trop Dis
     github: https://github.com/kimfinale/TyphoidMapping
+ints_map:
+    title: "Examining geospatial and temporal distribution of invasive non-typhoidal Salmonella disease occurrence in sub-Saharan Africa: a systematic review and modelling study"
+    authors:
+        - me
+        - Bieke Tack
+        - Fabio Fiorino
+        - Elena Pettini
+        - Christian S. Marchello
+        - et al
+    year: 2024
+    preprint: https://bmjopen.bmj.com/content/14/3/e080501
+    published_url: https://bmjopen.bmj.com/content/14/3/e080501
+    venue: BMJ Open
+    github: https://github.com/kimfinale/iNTS_Mapping
+wash_eth:
+    title: "Dissecting Water, Sanitation, and Hygiene (WaSH) to Assess Risk Factors for Cholera in Shashemene, Oromia Region, Ethiopia"
+    authors:
+        - Dejene Hailu
+        - Yeonji Jeon
+        - Abel Gedefaw
+        - me
+        - et al
+    year: 2024
+    preprint: https://academic.oup.com/cid/article/79/Supplement_1/S53/7712957
+    published_url: https://academic.oup.com/cid/article/79/Supplement_1/S53/7712957
+    venue: Clin Infect Dis
+    github: https://github.com/kimfinale/iNTS_Mapping
+tf_occ_data:
+    title: "Occurrence of human infection with Salmonella Typhi in sub-Saharan Africa"
+    authors:
+        - me
+        - Prerana Parajulee
+        - Thuy Tien Nguyen
+        - Shreeya Wasunkar
+        - et al
+    year: 2024
+    preprint: https://www.medrxiv.org/content/10.1101/2023.09.22.23295884v1
+    published_url: https://www.medrxiv.org/content/10.1101/2023.09.22.23295884v1
+    venue: Sci Data
+    github: https://github.com/kimfinale/typhoid_occurrence
+
+tf_outbk_data:
+    title: "Dynamics of typhoid fever outbreaks during 2000-2022: a systematic review with time-series data"
+    authors:
+        - DaeHyup Koh
+        - Monica Duong
+        - Nodar Kipshidze
+        - Virginia E. Pitzer
+        - me
+    year: 2024
+    preprint: https://osf.io/n9cke/
+    published_url:
+    github:
+
+chol_wash_meta:
+    title: "Associations of Water Quality with Cholera in Case-Control Studies: A Systematic Review and Meta-Analysis"
+    authors:
+        - Thuy Tien Nguyen
+        - Chaelin Kim
+        - Gerard Goucher
+        - me
+    year: 2024
+    preprint: https://www.medrxiv.org/content/10.1101/2023.09.06.23295113v1
+    published_url:
+    github: https://github.com/kimfinale/Cholera_WASH_meta

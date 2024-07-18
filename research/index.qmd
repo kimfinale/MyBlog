@@ -25,13 +25,12 @@ def button(url, str, icon):
     </a>"""
 
 
-
 yaml_data = yaml.safe_load(open("papers.yml"))
 pub_strs = {"pubs": {}, "wps": {}}
 for _, data in yaml_data.items():
     title_str = data["title"]
     authors = data.get("authors", ["me"])
-    authors = [aut if aut != "me" else "<strong>Kim J-H</strong>" for aut in authors]
+    authors = [aut if aut != "me" else "<strong>Jong-Hoon Kim</strong>" for aut in authors]
     author_str = readable_list(authors)
     year_str = data["year"]
 
@@ -81,7 +80,7 @@ for year in sorted(pub_strs["pubs"].keys(), reverse=True):
     ))
 ```
 
-## Working Papers / Non-archival
+## Submitted
 
 ```{python}
 #| label: "not-published-year"
