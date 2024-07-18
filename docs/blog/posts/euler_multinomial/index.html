@@ -235,13 +235,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(xy) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"pomp_var1"</span>, <span class="st">"pomp_var2"</span>, <span class="st">"var1"</span>, <span class="st">"var2"</span>)</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(xy, <span class="dv">2</span>, summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        pomp_var1 pomp_var2     var1     var2
-Min.      0.00000   0.00000  0.00000  0.00000
-1st Qu.   3.00000   7.00000  3.00000  7.00000
-Median    4.00000   9.00000  4.00000  9.00000
-Mean      4.64354   9.28383  4.64639  9.29096
-3rd Qu.   6.00000  11.00000  6.00000 11.00000
-Max.     16.00000  24.00000 15.00000 23.00000</code></pre>
+<pre><code>        pomp_var1 pomp_var2    var1     var2
+Min.      0.00000   0.00000  0.0000  0.00000
+1st Qu.   3.00000   7.00000  3.0000  7.00000
+Median    4.00000   9.00000  4.0000  9.00000
+Mean      4.64097   9.27939  4.6419  9.28399
+3rd Qu.   6.00000  11.00000  6.0000 11.00000
+Max.     16.00000  25.00000 15.0000 24.00000</code></pre>
 </div>
 </div>
 <p>The speed difference is quite substantial.</p>
@@ -250,12 +250,12 @@ Max.     16.00000  24.00000 15.00000 23.00000</code></pre>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(pomp<span class="sc">::</span><span class="fu">reulermultinom</span>(<span class="dv">100</span>, <span class="dv">100</span>, <span class="at">rate=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">dt=</span><span class="fl">0.05</span>), <span class="fu">reulermultinom2</span>(<span class="dv">100</span>, <span class="dv">100</span>, <span class="at">rate=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">dt=</span><span class="fl">0.05</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: microseconds
-                                                      expr   min     lq    mean
- pomp::reulermultinom(100, 100, rate = c(1, 2), dt = 0.05)  39.9  41.15  53.657
-      reulermultinom2(100, 100, rate = c(1, 2), dt = 0.05) 376.6 431.40 630.590
- median    uq    max neval cld
-   43.6  47.7  169.5   100  a 
-  552.4 574.0 7845.3   100   b</code></pre>
+                                                      expr     min       lq
+ pomp::reulermultinom(100, 100, rate = c(1, 2), dt = 0.05)  39.702  41.4505
+      reulermultinom2(100, 100, rate = c(1, 2), dt = 0.05) 377.301 384.9005
+      mean  median       uq      max neval cld
+  48.18708  43.651  48.0015   92.801   100  a 
+ 561.12002 401.851 641.1015 6275.101   100   b</code></pre>
 </div>
 </div>
 <p>Rewrite the function in C++ using Rcpp.</p>
@@ -284,11 +284,11 @@ Max.     16.00000  24.00000 15.00000 23.00000</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
                                                         expr     min       lq
- pomp::reulermultinom(1e+05, 100, rate = c(1, 2), dt = 0.05) 30.3712 30.79325
-   reulermultinom_cpp(1e+05, 100, rate = c(1, 2), dt = 0.05) 29.3822 29.71490
-     mean   median       uq     max neval cld
- 32.20896 31.09070 32.17400 48.9918   100  a 
- 30.81625 30.04045 30.80155 40.3015   100   b</code></pre>
+ pomp::reulermultinom(1e+05, 100, rate = c(1, 2), dt = 0.05) 24.9228 27.61285
+   reulermultinom_cpp(1e+05, 100, rate = c(1, 2), dt = 0.05) 23.9839 25.87615
+     mean   median      uq      max neval cld
+ 51.27772 41.71065 66.0408 131.8367   100   a
+ 51.02618 43.38275 67.6930 120.4940   100   a</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -299,12 +299,12 @@ Max.     16.00000  24.00000 15.00000 23.00000</code></pre>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(xy, <span class="dv">2</span>, summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        pomp_var1 pomp_var2     var1     var2
-Min.      0.00000   0.00000  0.00000  0.00000
-1st Qu.   3.00000   7.00000  3.00000  7.00000
-Median    4.00000   9.00000  4.00000  9.00000
-Mean      4.64974   9.25779  4.63744  9.27941
-3rd Qu.   6.00000  11.00000  6.00000 11.00000
-Max.     16.00000  23.00000 16.00000 24.00000</code></pre>
+Min.       0.0000   0.00000  0.00000  0.00000
+1st Qu.    3.0000   7.00000  3.00000  7.00000
+Median     4.0000   9.00000  4.00000  9.00000
+Mean       4.6498   9.28149  4.64416  9.28147
+3rd Qu.    6.0000  11.00000  6.00000 11.00000
+Max.      17.0000  22.00000 15.00000 24.00000</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>xy <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">names_to=</span><span class="st">"var"</span>) <span class="ot">-&gt;</span> xylong</span>

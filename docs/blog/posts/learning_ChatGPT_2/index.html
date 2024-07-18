@@ -244,16 +244,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  opt<span class="sc">$</span><span class="fu">step</span>()  <span class="co"># update weights</span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch:  100 , Loss:  0.05758696 
-Epoch:  200 , Loss:  0.03286087 
-Epoch:  300 , Loss:  0.02268028 
-Epoch:  400 , Loss:  0.0170499 
-Epoch:  500 , Loss:  0.01472238 
-Epoch:  600 , Loss:  0.01367431 
-Epoch:  700 , Loss:  0.0129793 
-Epoch:  800 , Loss:  0.01234574 
-Epoch:  900 , Loss:  0.01175375 
-Epoch:  1000 , Loss:  0.0112502 </code></pre>
+<pre><code>Epoch:  100 , Loss:  0.05918226 
+Epoch:  200 , Loss:  0.04266065 
+Epoch:  300 , Loss:  0.02848286 
+Epoch:  400 , Loss:  0.01916445 
+Epoch:  500 , Loss:  0.01608658 
+Epoch:  600 , Loss:  0.01477717 
+Epoch:  700 , Loss:  0.01393809 
+Epoch:  800 , Loss:  0.01333173 
+Epoch:  900 , Loss:  0.01286871 
+Epoch:  1000 , Loss:  0.01249429 </code></pre>
 </div>
 </div>
 <p>Compare the data and the model predictions</p>
@@ -261,7 +261,7 @@ Epoch:  1000 , Loss:  0.0112502 </code></pre>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ypred <span class="ot">&lt;-</span> <span class="fu">net</span>(x)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">"L2 loss: %.4f"</span>, <span class="fu">sum</span>((ypred<span class="sc">-</span>y)<span class="sc">^</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "L2 loss: 3.3849"</code></pre>
+<pre><code>[1] "L2 loss: 3.7598"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"X"</span>, <span class="at">ylab=</span><span class="st">"Y"</span>, <span class="at">lty=</span><span class="st">"dashed"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x, ypred, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"firebrick"</span>)</span>
@@ -313,16 +313,16 @@ Epoch:  1000 , Loss:  0.0112502 </code></pre>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  opt<span class="sc">$</span><span class="fu">step</span>()  <span class="co"># update weights</span></span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch:  100 , Loss:  0.02036888 
-Epoch:  200 , Loss:  0.006955167 
-Epoch:  300 , Loss:  0.00403592 
-Epoch:  400 , Loss:  0.00277434 
-Epoch:  500 , Loss:  0.002088986 
-Epoch:  600 , Loss:  0.001664117 
-Epoch:  700 , Loss:  0.001378873 
-Epoch:  800 , Loss:  0.001246304 
-Epoch:  900 , Loss:  0.001051587 
-Epoch:  1000 , Loss:  0.0009358777 </code></pre>
+<pre><code>Epoch:  100 , Loss:  0.02049372 
+Epoch:  200 , Loss:  0.005859586 
+Epoch:  300 , Loss:  0.00293437 
+Epoch:  400 , Loss:  0.001943566 
+Epoch:  500 , Loss:  0.001552111 
+Epoch:  600 , Loss:  0.001466194 
+Epoch:  700 , Loss:  0.00113698 
+Epoch:  800 , Loss:  0.001119171 
+Epoch:  900 , Loss:  0.0009291215 
+Epoch:  1000 , Loss:  0.001042918 </code></pre>
 </div>
 </div>
 <p>Compare the data and the model predictions</p>
@@ -330,7 +330,7 @@ Epoch:  1000 , Loss:  0.0009358777 </code></pre>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ypred <span class="ot">&lt;-</span> <span class="fu">net</span>(x)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">"L2 loss: %.4f"</span>, <span class="fu">sum</span>((ypred<span class="sc">-</span>y)<span class="sc">^</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "L2 loss: 0.2819"</code></pre>
+<pre><code>[1] "L2 loss: 0.3239"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># png("stepfunc_nn.png")</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"X"</span>, <span class="at">ylab=</span><span class="st">"Y"</span>, <span class="at">lty=</span><span class="st">"dashed"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
