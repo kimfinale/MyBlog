@@ -126,6 +126,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../../../blog/index.html" rel="" target="">
  <span class="menu-text">Blog</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../research/index.html" rel="" target="">
+ <span class="menu-text">Papers</span></a>
+  </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/kimfinale" rel="" target=""><i class="bi bi-github" role="img">
 </i> 
@@ -273,26 +277,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>   })</span>
 <span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch:  10    Loss:  2.338403 
-Epoch:  20    Loss:  1.594172 
-Epoch:  30    Loss:  1.346208 
-Epoch:  40    Loss:  1.23456 
-Epoch:  50    Loss:  1.173951 
-Epoch:  60    Loss:  1.136746 
-Epoch:  70    Loss:  1.111702 
-Epoch:  80    Loss:  1.092398 
-Epoch:  90    Loss:  1.077442 
-Epoch:  100    Loss:  1.065288 
-Epoch:  110    Loss:  1.055572 
-Epoch:  120    Loss:  1.047273 
-Epoch:  130    Loss:  1.039628 
-Epoch:  140    Loss:  1.032881 
-Epoch:  150    Loss:  1.026692 
-Epoch:  160    Loss:  1.021032 
-Epoch:  170    Loss:  1.016186 
-Epoch:  180    Loss:  1.011744 
-Epoch:  190    Loss:  1.007999 
-Epoch:  200    Loss:  1.004493 </code></pre>
+<pre><code>Epoch:  10    Loss:  2.104279 
+Epoch:  20    Loss:  1.372061 
+Epoch:  30    Loss:  1.191334 
+Epoch:  40    Loss:  1.098159 
+Epoch:  50    Loss:  1.033439 
+Epoch:  60    Loss:  0.982311 
+Epoch:  70    Loss:  0.9397649 
+Epoch:  80    Loss:  0.9066577 
+Epoch:  90    Loss:  0.8789482 
+Epoch:  100    Loss:  0.8547369 
+Epoch:  110    Loss:  0.8349309 
+Epoch:  120    Loss:  0.8183722 
+Epoch:  130    Loss:  0.8033121 
+Epoch:  140    Loss:  0.7895713 
+Epoch:  150    Loss:  0.7772487 
+Epoch:  160    Loss:  0.7666193 
+Epoch:  170    Loss:  0.7577021 
+Epoch:  180    Loss:  0.7495397 
+Epoch:  190    Loss:  0.7418678 
+Epoch:  200    Loss:  0.7349382 </code></pre>
 </div>
 </div>
 <p>Evaluate the model visually</p>
@@ -308,7 +312,7 @@ Epoch:  200    Loss:  1.004493 </code></pre>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dev.off()</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>((<span class="fu">as.numeric</span>(y) <span class="sc">-</span> <span class="fu">as.numeric</span>(y_pred))<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 200.8312</code></pre>
+<pre><code>[1] 146.8605</code></pre>
 </div>
 </div>
 <p>The same model can be created in a more compactly way using a sequential module and using the activation function.</p>
@@ -342,26 +346,26 @@ Epoch:  200    Loss:  1.004493 </code></pre>
 <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  opt<span class="sc">$</span><span class="fu">step</span>()</span>
 <span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch:  10 , Loss:  2.856685 
-Epoch:  20 , Loss:  2.6566 
-Epoch:  30 , Loss:  2.466517 
-Epoch:  40 , Loss:  2.285974 
-Epoch:  50 , Loss:  2.115099 
-Epoch:  60 , Loss:  1.954442 
-Epoch:  70 , Loss:  1.804683 
-Epoch:  80 , Loss:  1.666377 
-Epoch:  90 , Loss:  1.541488 
-Epoch:  100 , Loss:  1.430705 
-Epoch:  110 , Loss:  1.334711 
-Epoch:  120 , Loss:  1.253548 
-Epoch:  130 , Loss:  1.187396 
-Epoch:  140 , Loss:  1.135513 
-Epoch:  150 , Loss:  1.09667 
-Epoch:  160 , Loss:  1.068778 
-Epoch:  170 , Loss:  1.050131 
-Epoch:  180 , Loss:  1.037716 
-Epoch:  190 , Loss:  1.0294 
-Epoch:  200 , Loss:  1.023996 </code></pre>
+<pre><code>Epoch:  10 , Loss:  2.291924 
+Epoch:  20 , Loss:  2.115984 
+Epoch:  30 , Loss:  1.954019 
+Epoch:  40 , Loss:  1.804715 
+Epoch:  50 , Loss:  1.665964 
+Epoch:  60 , Loss:  1.536633 
+Epoch:  70 , Loss:  1.416483 
+Epoch:  80 , Loss:  1.304981 
+Epoch:  90 , Loss:  1.202147 
+Epoch:  100 , Loss:  1.109683 
+Epoch:  110 , Loss:  1.028967 
+Epoch:  120 , Loss:  0.9603787 
+Epoch:  130 , Loss:  0.9038252 
+Epoch:  140 , Loss:  0.8589772 
+Epoch:  150 , Loss:  0.8244728 
+Epoch:  160 , Loss:  0.7985836 
+Epoch:  170 , Loss:  0.7798271 
+Epoch:  180 , Loss:  0.7666305 
+Epoch:  190 , Loss:  0.7572556 
+Epoch:  200 , Loss:  0.7504278 </code></pre>
 </div>
 </div>
 <p>Compare the prediction and observation</p>
@@ -376,7 +380,7 @@ Epoch:  200 , Loss:  1.023996 </code></pre>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean squared error, L2 loss</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>((<span class="fu">as.numeric</span>(y) <span class="sc">-</span> <span class="fu">as.numeric</span>(y_pred))<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 204.7991</code></pre>
+<pre><code>[1] 150.0856</code></pre>
 </div>
 </div>
 <p>Compared with the linear model</p>
@@ -398,7 +402,7 @@ Epoch:  200 , Loss:  1.023996 </code></pre>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean squared error, L2 loss</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>((ydf<span class="sc">$</span>y <span class="sc">-</span> y_pred_lm)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 212.2704</code></pre>
+<pre><code>[1] 146.3624</code></pre>
 </div>
 </div>
 

@@ -124,6 +124,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../../../blog/index.html" rel="" target="">
  <span class="menu-text">Blog</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../research/index.html" rel="" target="">
+ <span class="menu-text">Papers</span></a>
+  </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/kimfinale" rel="" target=""><i class="bi bi-github" role="img">
 </i> 
@@ -209,7 +213,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>y_train, y_test <span class="op">=</span> <span class="fu">linear_model</span>.(x_train), <span class="fu">linear_model</span>.(x_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>([3.94043536851806 5.957557412545258 … 17.469709856477465 22.572253121196763], [27.790587575965926 29.620981411958944 … 37.14101952725472 41.60827846136504])</code></pre>
+<pre><code>([1.3605398141373888 5.789932798544724 … 19.036176710693812 21.044079108697417], [26.559406627133576 29.99786540343597 … 37.87038991630314 43.72683176322802])</code></pre>
 </div>
 </div>
 </section>
@@ -225,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">model</span>(x_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1×6 Matrix{Float32}:
- 0.0  0.819132  1.63826  2.4574  3.27653  4.09566</code></pre>
+ 0.0  0.369459  0.738918  1.10838  1.47784  1.84729</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># define the loss function to use it for training</span></span>
@@ -235,7 +239,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">loss</span>(model, x_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>132.51211925600526</code></pre>
+<pre><code>149.69839741083763</code></pre>
 </div>
 </div>
 </section>
@@ -257,19 +261,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [(x_train, y_train)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1-element Vector{Tuple{Matrix{Int64}, Matrix{Float64}}}:
- ([0 1 … 4 5], [3.94043536851806 5.957557412545258 … 17.469709856477465 22.572253121196763])</code></pre>
+ ([0 1 … 4 5], [1.3605398141373888 5.789932798544724 … 19.036176710693812 21.044079108697417])</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">train!</span>(loss, model, data, opt)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">loss</span>(model, x_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>125.72081158551337</code></pre>
+<pre><code>142.1219748246698</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># check model parameters after going through the data once</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>model.weight, model.bias</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(Float32[7.704994;;], Float32[2.063995])</code></pre>
+<pre><code>(Float32[7.7473807;;], Float32[2.091839])</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># iteratively train the model</span></span>
@@ -284,23 +288,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the loss</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">loss</span>(model, x_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.48265315633149636</code></pre>
+<pre><code>0.7480771249095337</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the model parameters</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>model.weight, model.bias</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(Float32[3.796242;;], Float32[2.928561])</code></pre>
+<pre><code>(Float32[4.072003;;], Float32[1.257641])</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the model against the test data set</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">model</span>(x_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1×5 Matrix{Float32}:
- 25.706  29.5023  33.2985  37.0947  40.891</code></pre>
+ 25.6897  29.7617  33.8337  37.9057  41.9777</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>y_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1×5 Matrix{Float64}:
- 27.7906  29.621  32.1588  37.141  41.6083</code></pre>
+ 26.5594  29.9979  34.8506  37.8704  43.7268</code></pre>
 </div>
 </div>
 

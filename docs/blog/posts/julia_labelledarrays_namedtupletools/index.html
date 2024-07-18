@@ -124,6 +124,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../../../blog/index.html" rel="" target="">
  <span class="menu-text">Blog</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../research/index.html" rel="" target="">
+ <span class="menu-text">Papers</span></a>
+  </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/kimfinale" rel="" target=""><i class="bi bi-github" role="img">
 </i> 
@@ -240,26 +244,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>time_la</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  197.800 μs … 271.251 ms  ┊ GC (min … max):  0.00% … 99.88%
- Time  (median):     209.500 μs               ┊ GC (median):     0.00%
- Time  (mean ± σ):   263.579 μs ±   2.712 ms  ┊ GC (mean ± σ):  11.13% ±  3.55%
+ Range (min … max):  181.800 μs … 290.420 ms  ┊ GC (min … max):  0.00% … 99.90%
+ Time  (median):     195.100 μs               ┊ GC (median):     0.00%
+ Time  (mean ± σ):   247.329 μs ±   2.905 ms  ┊ GC (mean ± σ):  12.65% ±  3.63%
 
-  ▆█▅▃▂▄▅▃▂▂▂▁▁                                                 ▂
-  ████████████████▇▇▇▇▇▇▆▆▅▆▆▆▆▆▅▆▅▅▅▅▅▅▄▄▅▅▅▅▄▄▄▅▅▄▅▄▁▅▄▄▄▃▄▅▄ █
-  198 μs        Histogram: log(frequency) by time        693 μs &lt;
+  ▄█▆▃▁▁▅▅▃▂▁▁                                                  ▂
+  ██████████████▇▆▆▆▆▅▅▅▆▆▄▆▆▄▅▅▅▅▁▅▄▄▅▄▅▆▅▆▇▆▅▅▅▅▇▆▆▄▅▅▅▅▄▄▅▅▅ █
+  182 μs        Histogram: log(frequency) by time        615 μs &lt;
 
  Memory estimate: 107.62 KiB, allocs estimate: 5775.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>time_nt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):   73.800 μs … 273.262 ms  ┊ GC (min … max):  0.00% … 99.92%
- Time  (median):      84.700 μs               ┊ GC (median):     0.00%
- Time  (mean ± σ):   114.786 μs ±   2.732 ms  ┊ GC (mean ± σ):  23.79% ±  1.00%
+ Range (min … max):  60.200 μs … 257.765 ms  ┊ GC (min … max):  0.00% … 99.92%
+ Time  (median):     71.300 μs               ┊ GC (median):     0.00%
+ Time  (mean ± σ):   99.443 μs ±   2.577 ms  ┊ GC (mean ± σ):  25.90% ±  1.00%
 
-  ▇   ██                                                         
-  █▄▃▇███▄▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂ ▃
-  73.8 μs          Histogram: frequency by time          213 μs &lt;
+  ▅    ██                                                       
+  █▄▂▃▇███▅▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ▃
+  60.2 μs         Histogram: frequency by time          172 μs &lt;
 
  Memory estimate: 29.45 KiB, allocs estimate: 730.</code></pre>
 </div>
