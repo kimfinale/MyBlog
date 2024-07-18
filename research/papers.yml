@@ -58,7 +58,7 @@ wash_eth:
     preprint: https://academic.oup.com/cid/article/79/Supplement_1/S53/7712957
     published_url: https://academic.oup.com/cid/article/79/Supplement_1/S53/7712957
     venue: Clin Infect Dis
-    github: https://github.com/kimfinale/iNTS_Mapping
+    github:
 tf_occ_data:
     title: "Occurrence of human infection with Salmonella Typhi in sub-Saharan Africa"
     authors:
