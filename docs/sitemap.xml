@@ -150,7 +150,7 @@
   </url>
   <url>
     <loc>https://www.jonghoonk.com/blog/index.html</loc>
-    <lastmod>2024-07-18T08:52:04.425Z</lastmod>
+    <lastmod>2024-07-22T09:51:00.690Z</lastmod>
   </url>
   <url>
     <loc>https://www.jonghoonk.com/blog/posts/apartment-data-api/index.html</loc>
@@ -311,5 +311,9 @@
   <url>
     <loc>https://www.jonghoonk.com/cv/index.html</loc>
     <lastmod>2024-07-18T08:17:57.227Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.jonghoonk.com/blog/posts/bayesian_workflow/index.html</loc>
+    <lastmod>2024-07-22T09:51:04.109Z</lastmod>
   </url>
 </urlset>

@@ -2,6 +2,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/bayesian_workflow/index.html",
       "/blog/posts/kalman_filter/index.html",
       "/blog/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index.html",
       "/blog/posts/parallel/index.html",
@@ -28,7 +29,6 @@
       "/blog/posts/sir_deSolve_odin_diffeqr/index.html",
       "/blog/posts/diffeqr/index.html",
       "/blog/posts/universal_differential_eqn_julia/index.html",
-      "/blog/posts/oral_cholera_vacc_cov/index.html",
       "/blog/posts/fit_a_straight_line_julia/index.html",
       "/blog/posts/critical_vacc_threshold/index.html",
       "/blog/posts/generation_interval1/index.html",
