@@ -70,23 +70,32 @@ background-color: null;
 font-style: inherit;">2.6</span>) <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># relative number of contacts by household size  (hhsize0 =1)  </span></span>
-<span id="cb1-5">size_true <span class="ot" style="color: #003B4F;
+<span id="cb1-5">rr_sex_true <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.2</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># males have more frequent contacts, which is not modeled in model 1</span></span>
+<span id="cb1-6">size_true <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span> <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># shape parameter for the negative binomial distribution</span></span>
-<span id="cb1-6"></span>
-<span id="cb1-7"><span class="fu" style="color: #4758AB;
+<span id="cb1-7"></span>
+<span id="cb1-8"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">42</span>)</span>
-<span id="cb1-8"><span class="co" style="color: #5E5E5E;
+<span id="cb1-9"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 9 categories with &gt;100 observations on average</span></span>
-<span id="cb1-9">d <span class="ot" style="color: #003B4F;
+<span id="cb1-10">d <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -105,7 +114,7 @@ background-color: null;
 font-style: inherit;">1000</span>, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">replace=</span>T),</span>
-<span id="cb1-10">                <span class="at" style="color: #657422;
+<span id="cb1-11">                <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">hhsize =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -119,13 +128,28 @@ font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1000</span>, <span class="at" style="color: #657422;
 background-color: null;
+font-style: inherit;">replace=</span>T), </span>
+<span id="cb1-12">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sex =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>, <span class="at" style="color: #657422;
+background-color: null;
 font-style: inherit;">replace=</span>T))</span>
-<span id="cb1-11">d<span class="sc" style="color: #5E5E5E;
+<span id="cb1-13">d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>b_age <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> </span>
-<span id="cb1-12">  <span class="fu" style="color: #4758AB;
+<span id="cb1-14">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ifelse</span>(d<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -136,7 +160,7 @@ background-color: null;
 font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>, </span>
-<span id="cb1-13">         <span class="fu" style="color: #4758AB;
+<span id="cb1-15">         <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ifelse</span>(d<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -151,12 +175,12 @@ background-color: null;
 font-style: inherit;">2</span>])) <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># relative risk by age</span></span>
-<span id="cb1-14">d<span class="sc" style="color: #5E5E5E;
+<span id="cb1-16">d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>b_hhsize <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> </span>
-<span id="cb1-15">  <span class="fu" style="color: #4758AB;
+<span id="cb1-17">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ifelse</span>(d<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -167,7 +191,7 @@ background-color: null;
 font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>, </span>
-<span id="cb1-16">         <span class="fu" style="color: #4758AB;
+<span id="cb1-18">         <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ifelse</span>(d<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -182,14 +206,33 @@ background-color: null;
 font-style: inherit;">2</span>])) <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># relative risk by household size</span></span>
-<span id="cb1-17"></span>
-<span id="cb1-18"><span class="co" style="color: #5E5E5E;
+<span id="cb1-19"></span>
+<span id="cb1-20">d<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>b_sex <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> </span>
+<span id="cb1-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ifelse</span>(d<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>hhsize <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, rr_sex_true) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># relative risk by</span></span>
+<span id="cb1-22"></span>
+<span id="cb1-23"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># mean as a function of age and hhsize</span></span>
-<span id="cb1-19">a <span class="ot" style="color: #003B4F;
+<span id="cb1-24">a <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> intercept_true </span>
-<span id="cb1-20">log_mu <span class="ot" style="color: #003B4F;
+<span id="cb1-25">log_mu <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -205,15 +248,21 @@ font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">log</span>(d<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>b_hhsize)</span>
-<span id="cb1-21">d<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">$</span>b_hhsize) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(d<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>b_sex)</span>
+<span id="cb1-26">d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>mu <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">exp</span>(log_mu)</span>
-<span id="cb1-22">d<span class="sc" style="color: #5E5E5E;
+<span id="cb1-27">d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>age <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -222,7 +271,7 @@ background-color: null;
 font-style: inherit;">as.factor</span>(d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>age)</span>
-<span id="cb1-23">d<span class="sc" style="color: #5E5E5E;
+<span id="cb1-28">d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>hhsize <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -231,7 +280,16 @@ background-color: null;
 font-style: inherit;">as.factor</span>(d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>hhsize)</span>
-<span id="cb1-24">d<span class="sc" style="color: #5E5E5E;
+<span id="cb1-29">d<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>sex <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.factor</span>(d<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>sex)</span>
+<span id="cb1-30">d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>contacts <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -272,7 +330,11 @@ font-style: inherit;">geom_histogram</span>(<span class="at" style="color: #6574
 background-color: null;
 font-style: inherit;">binwidth=</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1</span>)<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"steelblue"</span>)<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb2-5">  <span class="fu" style="color: #4758AB;
@@ -287,7 +349,7 @@ font-style: inherit;">mean</span>(d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>contacts)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 6.148</code></pre>
+<pre><code>[1] 6.85</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -295,7 +357,7 @@ font-style: inherit;">var</span>(d<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>contacts)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 25.07918</code></pre>
+<pre><code>[1] 31.42492</code></pre>
 </div>
 </div>
 </section>
@@ -304,6 +366,7 @@ font-style: inherit;">$</span>contacts)</span></code></pre></div>
 <h2 class="anchored" data-anchor-id="building-the-model">Building the model</h2>
 <section id="bayesian-modeling-using-the-brms-package." class="level3">
 <h3 class="anchored" data-anchor-id="bayesian-modeling-using-the-brms-package.">Bayesian modeling using the <code>brms</code> package.</h3>
+<p>We first try the model that includes age and household size</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -328,26 +391,25 @@ background-color: null;
 font-style: inherit;">1.5</span> <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># chosen with an assumption that exp(2*a_scale) will likely cover plausible values </span></span>
-<span id="cb8-4"></span>
-<span id="cb8-5">b_mean <span class="ot" style="color: #003B4F;
+<span id="cb8-4">b_mean <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span></span>
-<span id="cb8-6">b_scale <span class="ot" style="color: #003B4F;
+<span id="cb8-5">b_scale <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1.5</span></span>
-<span id="cb8-7"></span>
-<span id="cb8-8">shp_alpha <span class="ot" style="color: #003B4F;
+<span id="cb8-6"></span>
+<span id="cb8-7">shp_alpha <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.8</span> <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 0.4 (brms default) causes divergent transitions,</span></span>
-<span id="cb8-9">shp_beta <span class="ot" style="color: #003B4F;
+<span id="cb8-8">shp_beta <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
@@ -574,7 +636,7 @@ font-style: inherit;">"Prior"</span><span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"forestgreen"</span>))<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">"darkgreen"</span>))<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb10-12">  <span class="fu" style="color: #4758AB;
@@ -620,7 +682,7 @@ font-style: inherit;">0.8</span>))</span></code></pre></div>
 <h2 class="anchored" data-anchor-id="fit-the-model">Fit the model</h2>
 <p><a href="https://arxiv.org/abs/2011.01808">Gelman <em>et al</em>.</a> writes: ” … The first step in validating computation is to check that the model actually finishes the fitting process in an acceptable time frame and the convergence diagnostics are reasonable. In the context of HMC, this is primarily the absence of divergent transitions, Rb diagnostic near 1, and sufficient effective sample sizes for the central tendency, the tail quantiles, and the energy (Vehtari et al., 2020). …”</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">fit <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">fit1 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -655,22 +717,22 @@ background-color: null;
 font-style: inherit;">4</span>)</span>
 <span id="cb11-6"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">saveRDS</span>(fit, <span class="st" style="color: #20794D;
+font-style: inherit;">saveRDS</span>(fit1, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"fit.rds"</span>)</span></code></pre></div>
+font-style: inherit;">"fit1.rds"</span>)</span></code></pre></div>
 </div>
 <p><code>brms</code> package reports all the relevant information.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">fit <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">fit1 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">readRDS</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"fit.rds"</span>)</span>
+font-style: inherit;">"fit1.rds"</span>)</span>
 <span id="cb12-2"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">summary</span>(fit)</span></code></pre></div>
+font-style: inherit;">summary</span>(fit1)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: negbinomial 
   Links: mu = log; shape = identity 
@@ -681,15 +743,15 @@ Formula: contacts ~ 1 + age + hhsize
 
 Regression Coefficients:
           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-Intercept     1.10      0.05     1.01     1.20 1.00    18087    13497
-age2          0.36      0.05     0.27     0.45 1.00    22199    15458
-age3         -0.53      0.05    -0.63    -0.42 1.00    22085    15938
-hhsize2       0.74      0.05     0.63     0.84 1.00    20153    15715
-hhsize3       1.03      0.05     0.93     1.13 1.00    19397    15626
+Intercept     1.13      0.05     1.04     1.22 1.00    17035    13697
+age2          0.40      0.04     0.32     0.49 1.00    20548    15508
+age3         -0.47      0.05    -0.57    -0.37 1.00    20229    15028
+hhsize2       0.78      0.05     0.68     0.88 1.00    17675    15906
+hhsize3       1.10      0.05     1.01     1.20 1.00    17685    16213
 
 Further Distributional Parameters:
       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-shape     5.19      0.46     4.37     6.16 1.00    26405    14803
+shape     5.30      0.45     4.48     6.24 1.00    22342    14546
 
 Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -723,7 +785,7 @@ font-style: inherit;">200</span>)</span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">pp_check</span>(fit, <span class="at" style="color: #657422;
+font-style: inherit;">pp_check</span>(fit1, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">type=</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -866,7 +928,7 @@ font-style: inherit;">"Prior"</span><span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"forestgreen"</span>,</span>
+font-style: inherit;">"darkgreen"</span>,</span>
 <span id="cb14-15">                               <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Posterior"</span><span class="ot" style="color: #003B4F;
@@ -921,7 +983,7 @@ font-style: inherit;">0.8</span>))</span></code></pre></div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">plot</span>(fit, <span class="at" style="color: #657422;
+font-style: inherit;">plot</span>(fit1, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">pars =</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -940,7 +1002,7 @@ font-style: inherit;"># plot(fit, pars = ".*hhsize*.")</span></span></code></pre
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">pairs</span>(fit, <span class="at" style="color: #657422;
+font-style: inherit;">pairs</span>(fit1, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">pars =</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -955,7 +1017,7 @@ font-style: inherit;">".*age*."</span>)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">as.data.frame</span>(fit)</span>
+font-style: inherit;">as.data.frame</span>(fit1)</span>
 <span id="cb18-2">x <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -1506,6 +1568,159 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://www.jonghoonk.com/blog/posts/bayesian_workflow/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="model-evaluation" class="level2">
+<h2 class="anchored" data-anchor-id="model-evaluation">Model evaluation</h2>
+<p>Leave-one-out (LOO) cross validation as suggested in <a href="https://link.springer.com/article/10.1007/s11222-016-9696-4">Vehtari <em>et al.</em></a> and <a href="https://link.springer.com/article/10.1007/s11222-013-9416-2">Gelman <em>et al.</em></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">fit2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brm</span>(contacts <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> age <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> hhsize <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> sex, </span>
+<span id="cb23-2">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> d, </span>
+<span id="cb23-3">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">negbinomial</span>(),</span>
+<span id="cb23-4">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prior =</span> my_priors,</span>
+<span id="cb23-5">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">iter =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e4</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cores =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>)</span>
+<span id="cb23-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">saveRDS</span>(fit2, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fit2.rds"</span>)</span></code></pre></div>
+</div>
+<p>Summary of fit2</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">fit2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">readRDS</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fit2.rds"</span>)</span>
+<span id="cb24-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(fit2)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: negbinomial 
+  Links: mu = log; shape = identity 
+Formula: contacts ~ 1 + age + hhsize + sex 
+   Data: d (Number of observations: 1000) 
+  Draws: 4 chains, each with iter = 10000; warmup = 5000; thin = 1;
+         total post-warmup draws = 20000
+
+Regression Coefficients:
+          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+Intercept     1.12      0.05     1.02     1.22 1.00    21089    14681
+age2          0.40      0.04     0.32     0.49 1.00    23623    15288
+age3         -0.47      0.05    -0.57    -0.37 1.00    23780    16196
+hhsize2       0.78      0.05     0.68     0.88 1.00    21501    16727
+hhsize3       1.10      0.05     1.01     1.20 1.00    20906    17372
+sex2          0.01      0.04    -0.06     0.08 1.00    30179    14675
+
+Further Distributional Parameters:
+      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+shape     5.28      0.45     4.49     6.22 1.00    30118    15669
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+</div>
+<p>Compare fit1 and fit2 suing leave-one out (LOO) crossvalidation</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(loo)</span>
+<span id="cb26-2">loo_fit1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">loo</span>(fit1)</span>
+<span id="cb26-3">loo_fit2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">loo</span>(fit2)</span>
+<span id="cb26-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">saveRDS</span>(loo_fit1, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"loo_fit1.rds"</span>)</span>
+<span id="cb26-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">saveRDS</span>(loo_fit2, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"loo_fit2.rds"</span>)</span>
+<span id="cb26-6"></span>
+<span id="cb26-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">print</span>(loo_fit1)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Computed from 20000 by 1000 log-likelihood matrix
+
+         Estimate   SE
+elpd_loo  -2618.3 26.2
+p_loo         5.9  0.3
+looic      5236.6 52.5
+------
+Monte Carlo SE of elpd_loo is 0.0.
+
+All Pareto k estimates are good (k &lt; 0.5).
+See help('pareto-k-diagnostic') for details.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">print</span>(loo_fit2)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Computed from 20000 by 1000 log-likelihood matrix
+
+         Estimate   SE
+elpd_loo  -2619.3 26.2
+p_loo         6.9  0.4
+looic      5238.5 52.4
+------
+Monte Carlo SE of elpd_loo is 0.0.
+
+All Pareto k estimates are good (k &lt; 0.5).
+See help('pareto-k-diagnostic') for details.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">loo_compare</span>(loo_fit1, loo_fit2)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     elpd_diff se_diff
+fit1  0.0       0.0   
+fit2 -1.0       0.3   </code></pre>
 </div>
 </div>
 
