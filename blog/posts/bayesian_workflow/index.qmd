@@ -348,24 +348,34 @@ ggplot(df, aes(x=Model))+
   labs(y="inference for the shape parameter", x="")
 ```
 
-Compare fit1 and fit2 suing leave-one out (LOO) cross-validation
-```{r, eval=FALSE}
+Compare fit0, fit1 and fit2 suing leave-one out (LOO) cross-validation
+```{r}
 library(loo)
+loo_fit0 <- loo(fit0)
 loo_fit1 <- loo(fit1)
 loo_fit2 <- loo(fit2)
-loo_fit0 <- loo(fit0)
+saveRDS(loo_fit0, "loo_fit0.rds")
 saveRDS(loo_fit1, "loo_fit1.rds")
 saveRDS(loo_fit2, "loo_fit2.rds")
-saveRDS(loo_fit0, "loo_fit0.rds")
 ```
 
 ```{r}
+loo_fit0 <- readRDS("loo_fit0.rds")
 loo_fit1 <- readRDS("loo_fit1.rds")
 loo_fit2 <- readRDS("loo_fit2.rds")
-loo_fit0 <- readRDS("loo_fit0.rds")
+print(loo_fit0)
 print(loo_fit1)
 print(loo_fit2)
-print(loo_fit0)
-loo_compare(loo_fit1, loo_fit2, loo_fit0)
+
+brms::loo_compare(loo_fit1, loo_fit2, loo_fit0)
 ```
 
+```{r}
+fit0 <- add_criterion(fit0, "waic")
+fit1 <- add_criterion(fit1, "waic")
+fit2 <- add_criterion(fit2, "waic")
+
+brms::loo_compare(fit0, fit1, fit2, criterion = "waic")
+```
+
+It appears that `fit1` is the most favored by the `looic` metric.

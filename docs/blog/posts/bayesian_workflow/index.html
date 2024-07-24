@@ -596,51 +596,21 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Compare fit1 and fit2 suing leave-one out (LOO) cross-validation</p>
+<p>Compare fit0, fit1 and fit2 suing leave-one out (LOO) cross-validation</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(loo)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>loo_fit1 <span class="ot">&lt;-</span> <span class="fu">loo</span>(fit1)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>loo_fit2 <span class="ot">&lt;-</span> <span class="fu">loo</span>(fit2)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>loo_fit0 <span class="ot">&lt;-</span> <span class="fu">loo</span>(fit0)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(loo_fit1, <span class="st">"loo_fit1.rds"</span>)</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(loo_fit2, <span class="st">"loo_fit2.rds"</span>)</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(loo_fit0, <span class="st">"loo_fit0.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>loo_fit0 <span class="ot">&lt;-</span> <span class="fu">loo</span>(fit0)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>loo_fit1 <span class="ot">&lt;-</span> <span class="fu">loo</span>(fit1)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>loo_fit2 <span class="ot">&lt;-</span> <span class="fu">loo</span>(fit2)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(loo_fit0, <span class="st">"loo_fit0.rds"</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(loo_fit1, <span class="st">"loo_fit1.rds"</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(loo_fit2, <span class="st">"loo_fit2.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>loo_fit1 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"loo_fit1.rds"</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>loo_fit2 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"loo_fit2.rds"</span>)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>loo_fit0 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"loo_fit0.rds"</span>)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(loo_fit1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Computed from 20000 by 1000 log-likelihood matrix
-
-         Estimate   SE
-elpd_loo  -2618.3 26.2
-p_loo         5.9  0.3
-looic      5236.6 52.5
-------
-Monte Carlo SE of elpd_loo is 0.0.
-
-All Pareto k estimates are good (k &lt; 0.5).
-See help('pareto-k-diagnostic') for details.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(loo_fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Computed from 20000 by 1000 log-likelihood matrix
-
-         Estimate   SE
-elpd_loo  -2619.3 26.2
-p_loo         6.9  0.4
-looic      5238.5 52.4
-------
-Monte Carlo SE of elpd_loo is 0.0.
-
-All Pareto k estimates are good (k &lt; 0.5).
-See help('pareto-k-diagnostic') for details.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(loo_fit0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>loo_fit0 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"loo_fit0.rds"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>loo_fit1 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"loo_fit1.rds"</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>loo_fit2 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"loo_fit2.rds"</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(loo_fit0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Computed from 20000 by 1000 log-likelihood matrix
@@ -655,14 +625,58 @@ Monte Carlo SE of elpd_loo is 0.0.
 All Pareto k estimates are good (k &lt; 0.5).
 See help('pareto-k-diagnostic') for details.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">loo_compare</span>(loo_fit1, loo_fit2, loo_fit0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(loo_fit1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Computed from 20000 by 1000 log-likelihood matrix
+
+         Estimate   SE
+elpd_loo  -2618.3 26.2
+p_loo         5.9  0.3
+looic      5236.6 52.5
+------
+Monte Carlo SE of elpd_loo is 0.0.
+
+All Pareto k estimates are good (k &lt; 0.5).
+See help('pareto-k-diagnostic') for details.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(loo_fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Computed from 20000 by 1000 log-likelihood matrix
+
+         Estimate   SE
+elpd_loo  -2619.3 26.2
+p_loo         6.9  0.4
+looic      5238.5 52.4
+------
+Monte Carlo SE of elpd_loo is 0.0.
+
+All Pareto k estimates are good (k &lt; 0.5).
+See help('pareto-k-diagnostic') for details.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>brms<span class="sc">::</span><span class="fu">loo_compare</span>(loo_fit1, loo_fit2, loo_fit0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     elpd_diff se_diff
 fit1    0.0       0.0 
 fit2   -1.0       0.3 
-fit3 -305.9      19.4 </code></pre>
+fit0 -305.9      19.4 </code></pre>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(fit0, <span class="st">"waic"</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(fit1, <span class="st">"waic"</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(fit2, <span class="st">"waic"</span>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>brms<span class="sc">::</span><span class="fu">loo_compare</span>(fit0, fit1, fit2, <span class="at">criterion =</span> <span class="st">"waic"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     elpd_diff se_diff
+fit1    0.0       0.0 
+fit2   -1.0       0.3 
+fit0 -305.9      19.4 </code></pre>
+</div>
+</div>
+<p>It appears that <code>fit1</code> is the most favored by the <code>looic</code> metric.</p>
 
 
 </section>
