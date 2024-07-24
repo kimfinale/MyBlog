@@ -1,5 +1,5 @@
 ---
-title: "Bayesian workflow: fake social contact data example"
+title: "Bayesian workflow: fake social contact data example [in progress]"
 author: "Jong-Hoon Kim"
 date: "2024-07-21"
 categories: [Bayesian workflow, negative binomial, social contact]
@@ -86,7 +86,7 @@ library(tidyverse)
 d |> 
   ggplot(aes(x=contacts))+
   geom_histogram(binwidth=1, fill="steelblue")+
-  theme_bw()
+  theme_light()
 
 mean(d$contacts)
 var(d$contacts)
@@ -301,6 +301,7 @@ legend("topright",
 
 Leave-one-out (LOO) cross validation as suggested in [Vehtari *et al.*](https://link.springer.com/article/10.1007/s11222-016-9696-4) and  [Gelman *et al.*](https://link.springer.com/article/10.1007/s11222-013-9416-2).
 
+We fit two additional models: `fit2` and `fit0`. `fit2` includes `sex` variable in addition to all variables included in `fit1` and could be better or worse than `fit1` as impact of sex is not big in the data set. `fit0` is intercept-only model and thus is very likely to be worse than `fit1` or `fit2`.
 ```{r, eval=FALSE}
 fit2 <- brm(contacts ~ 1 + age + hhsize + sex, 
            data = d, 
@@ -308,26 +309,63 @@ fit2 <- brm(contacts ~ 1 + age + hhsize + sex,
            prior = my_priors,
            iter = 1e4, cores = 4)
 saveRDS(fit2, "fit2.rds")
+
+fit0 <- brm(contacts ~ 1, 
+           data = d, 
+           family = negbinomial(),
+           prior = set_prior("normal(0,5)", class="Intercept"),
+           iter = 1e4, cores = 4)
+saveRDS(fit0, "fit0.rds")
 ```
 
-Summary of fit2
+
+Summary of fit2 and fit2
 ```{r}
-fit2 <- readRDS("fit2.rds")
+fit2 <- readRDS("fit2.rds") 
+fit0 <- readRDS("fit0.rds")
 summary(fit2)
+summary(fit0)
 ```
 
-Compare fit1 and fit2 suing leave-one out (LOO) crossvalidation
+Shape parameter estimates 
 ```{r}
+probs <- c(0.025, 0.25, 0.5, 0.75, 0.975)
+shp1 <- quantile(as.matrix(fit1)[,"shape"], probs=probs)
+shp2 <- quantile(as.matrix(fit2)[,"shape"], probs=probs)
+shp0 <- quantile(as.matrix(fit0)[,"shape"], probs=probs)
+
+df <- data.frame(Model = "Model0", t(shp0))
+df <- rbind(df, data.frame(Model = "Model1", t(shp1)),
+            data.frame(Model = "Model2", t(shp2)))
+# df$percentile <- rep(as.character(100*probs),3)
+
+ggplot(df, aes(x=Model))+
+  geom_linerange(aes(ymin=`X2.5.`, ymax=`X97.5.`))+
+  geom_linerange(aes(ymin=`X25.`, ymax=`X75.`), linewidth=1)+
+  geom_point(aes(x=Model, y=`X50.`))+
+  ggtitle("")+
+  theme_light() + 
+  labs(y="inference for the shape parameter", x="")
+```
+
+Compare fit1 and fit2 suing leave-one out (LOO) cross-validation
+```{r, eval=FALSE}
 library(loo)
 loo_fit1 <- loo(fit1)
 loo_fit2 <- loo(fit2)
+loo_fit0 <- loo(fit0)
 saveRDS(loo_fit1, "loo_fit1.rds")
 saveRDS(loo_fit2, "loo_fit2.rds")
+saveRDS(loo_fit0, "loo_fit0.rds")
+```
 
+```{r}
+loo_fit1 <- readRDS("loo_fit1.rds")
+loo_fit2 <- readRDS("loo_fit2.rds")
+loo_fit0 <- readRDS("loo_fit0.rds")
 print(loo_fit1)
 print(loo_fit2)
-loo_compare(loo_fit1, loo_fit2)
-
-
+print(loo_fit0)
+loo_compare(loo_fit1, loo_fit2, loo_fit0)
 ```
 
