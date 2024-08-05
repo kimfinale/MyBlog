@@ -43,12 +43,12 @@ $\mu_i$ and $\phi$ represent the mean number of contacts per day for a person $i
 Load packages
 
 ```{r}
-library(posterior)
-options(pillar.neg = FALSE, pillar.subtle=FALSE, pillar.sigfig=2)
+# library(posterior)
+# options(pillar.neg = FALSE, pillar.subtle=FALSE, pillar.sigfig=2)
 library(brms)
 library(tidyverse)
-library(bayesplot)
-theme_set(bayesplot::theme_default(base_family = "sans"))
+# library(bayesplot)
+# theme_set(bayesplot::theme_default(base_family = "sans"))
 set1 <- RColorBrewer::brewer.pal(7, "Set1")
 ```
 
@@ -64,7 +64,9 @@ rr_age_true <- c(1.5, 0.6) # relative number of contacts by age (age0 = 1)
 rr_hhsize_true <- c(2, 2.6) # relative number of contacts by household size  (hhsize0 =1)  
 rr_sex_true <- c(1.2) # males have more frequent contacts, which is not modeled in model 1
 shape_true <- 5 # shape parameter for the negative binomial distribution
+```
 
+```{r, eval=FALSE}
 set.seed(42)
 # 9 categories with >100 observations on average
 d <- data.frame(age = sample(1:3, 1000, replace=T),
@@ -87,10 +89,13 @@ d$age <- as.factor(d$age)
 d$hhsize <- as.factor(d$hhsize)
 d$sex <- as.factor(d$sex)
 d$contacts <- rnbinom(nrow(d), mu=d$mu, size=shape_true) # size, aka, shape, dispersion
+saveRDS(d, "data.rds")
 ```
 
 Histogram, mean, and variance of the data
 ```{r}
+d <- readRDS("data.rds")
+
 library(tidyverse)
 d |> 
   ggplot(aes(x=contacts))+
