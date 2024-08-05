@@ -14,7 +14,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 ## Bayesian workflow
 
-This post is an my attempt to follow along a [Bayesian Workflow](https://arxiv.org/abs/2011.01808) by Gelman _et al_ and create examples for better understanding. While my ultimate goal is to study infectious disease transmission using a dynamic model following a Bayesian workflow, I use a simpler statistical model to practice in this post. I also consulted a [blog post](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html#31_Example_Workflow_Executions) by Michael Betancourt to create this post. 
+This post is my attempt to follow along a [Bayesian Workflow](https://arxiv.org/abs/2011.01808) by Gelman _et al_ and create examples for better understanding. While my ultimate goal is to study infectious disease transmission using a dynamic model following a Bayesian workflow, I use a simpler statistical model for practice in this post. I also consulted a [blog post](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html#31_Example_Workflow_Executions) by Michael Betancourt to create this post. 
  
 Regarding the definition of Bayesian workflow, [Gelman _et al_.](https://arxiv.org/abs/2011.01808) writes:
 
@@ -64,10 +64,8 @@ rr_age_true <- c(1.5, 0.6) # relative number of contacts by age (age0 = 1)
 rr_hhsize_true <- c(2, 2.6) # relative number of contacts by household size  (hhsize0 =1)  
 rr_sex_true <- c(1.2) # males have more frequent contacts, which is not modeled in model 1
 shape_true <- 5 # shape parameter for the negative binomial distribution
-```
 
-```{r, eval=FALSE}
-set.seed(42)
+set.seed(1220)
 # 9 categories with >100 observations on average
 d <- data.frame(age = sample(1:3, 1000, replace=T),
                 hhsize = sample(1:3, 1000, replace=T), 
@@ -78,8 +76,7 @@ d$b_age <-
 d$b_hhsize <- 
   ifelse(d$hhsize == 1, 1, 
          ifelse(d$hhsize == 2, rr_hhsize_true[1], rr_hhsize_true[2])) # relative risk by household size
-d$b_sex <- 
-  ifelse(d$hhsize == 1, 1, rr_sex_true) # relative risk by
+d$b_sex <- ifelse(d$sex == 1, 1, rr_sex_true) # relative risk by sex
 
 # mean as a function of age and hhsize
 a <- intercept_true 
@@ -89,13 +86,10 @@ d$age <- as.factor(d$age)
 d$hhsize <- as.factor(d$hhsize)
 d$sex <- as.factor(d$sex)
 d$contacts <- rnbinom(nrow(d), mu=d$mu, size=shape_true) # size, aka, shape, dispersion
-saveRDS(d, "data.rds")
 ```
 
 Histogram, mean, and variance of the data
 ```{r}
-d <- readRDS("data.rds")
-
 library(tidyverse)
 d |> 
   ggplot(aes(x=contacts))+
@@ -273,13 +267,16 @@ legend("topright",
 #   theme(legend.position="bottom")
 ```
 
+True $\beta_{\text{age}}$ values were well retrieved.  
+
+
 $\beta_{\text{hhsize}}$ parameter
 
 ```{r}
 plot(exp(x), dnorm(x, b_mean, b_scale), type="l", ylim=c(0,5), 
      xlab="Value", ylab="Density", main=expression(beta[hhsize]))
 lines(density(exp(df_post$b_hhsize2)), col=set1[2])
-lines(density(exp(df_post$b_hhsize3)), col=set1[2])
+lines(density(exp(df_post$b_hhsize3)), col=set1[3])
 abline(v=rr_hhsize_true, col=set1[1], lwd=1.2, lty="dotted")
 
 legend("topright",
@@ -308,7 +305,6 @@ legend("topright",
 Shape parameter
 ```{r}
 library(extraDistr)
-
 x <- seq(0,10,0.01)
 plot(x, dinvgamma(x, shp_alpha, shp_beta), type="l", 
      ylim=c(0,2), xlab="Value", ylab="Density", main="Shape")
@@ -403,7 +399,7 @@ fit2 <- add_criterion(fit2, "loo")
 loo_compare(fit1, fit2, fit0, criterion = "loo")
 ```
 
-`brms::loo_compare` uses the `loo::loo_compare` under the hood and and `loo::loo_compare` package produces the same results 
+`brms::loo_compare` uses the `loo::loo_compare` under the hood and and `loo::loo_compare` package produces the same results. 
 
 ```{r}
 library(loo)
@@ -418,4 +414,8 @@ print(loo_fit2)
 brms::loo_compare(loo_fit1, loo_fit2, loo_fit0)
 ```
 
-It appears that `fit1` is the most favored by the looic and waic metrics. This implies that adding `sex` variable does not improve the model performance much while increasing the degree of freedom. This may be due to that the influence of `sex` is relatively small compared to the `age` and `household size`.
+It appears that `fit2` is the most favored by LOO cross validation. This implies that adding `sex` variable still improves the model performance while its influence on the number of contacts relatively small compared to the `age` and `household size`.
+
+```{r}
+summary(fit2)
+```
