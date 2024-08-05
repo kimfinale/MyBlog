@@ -1,5 +1,5 @@
 ---
-title: "Bayesian workflow: fake social contact data example [in progress]"
+title: "Bayesian workflow: fake social contact data example"
 author: "Jong-Hoon Kim"
 date: "2024-07-21"
 categories: [Bayesian workflow, negative binomial, social contact]
@@ -14,46 +14,56 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 
 ## Bayesian workflow
 
-
-This post is an example analysis following a Bayesian workflow and uses simple models and fake data. I consulted a pre-print, [Bayesian Workflow](https://arxiv.org/abs/2011.01808) by Gelman _et al_. and [blog post](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html#31_Example_Workflow_Executions) by Betancourt. 
+This post is an my attempt to follow along a [Bayesian Workflow](https://arxiv.org/abs/2011.01808) by Gelman _et al_ and create examples for better understanding. While my ultimate goal is to conduct a study on infectious disease transmission using a dynamic model framed in a Bayesian framework, I use a simpler statistical model to practice. I also consulted a [blog post](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html#31_Example_Workflow_Executions) by Michael Betancourt. 
  
-[Gelman _et al_.](https://arxiv.org/abs/2011.01808) writes:
+Regarding the definition of Bayesian workflow, [Gelman _et al_.](https://arxiv.org/abs/2011.01808) writes:
 
-  "... Bayesian inference is just the formulation and computation of conditional probability or probability densities, $p(\theta|y) \propto p(\theta) p(y|\theta)$. Bayesian workflow includes the three steps of model building,
-inference, and model checking/improvement, along with the comparison of different models, not just for the purpose of model choice or model averaging but more importantly to better understand these models ... "  
+> "... Bayesian inference is just the formulation and computation of conditional probability or probability densities, $p(\theta|y) \propto p(\theta) p(y|\theta)$. Bayesian workflow includes the three steps of model building, inference, and model checking/improvement, along with the comparison of different models, not just for the purpose of model choice or model averaging but more importantly to better understand these models ... "  
 
-Let's suppose, hoping to develop a way to better disease control strategies, we set out to measure the number of close contacts that a typical person makes in a day and variation of the close contacts across age and household size. 
-
+## Model building
 
 ### Conceptual analysis
 
-The study is to examine the variations of the number of contacts a typical Korean makes in a day, specifically, variations by age and household size. [A prior study](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0050074) and other numerous studies showed that contact frequencies differ by age. And a significant fraction of contacts occur with household members and as such the contact frequencies will likely vary by household size. 
+Let's suppose that we measured how the number of contact a person makes varies.[A prior study](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0050074) and other numerous studies showed that contact frequencies differ by age. And a significant fraction of contacts occur with household members and as such the contact frequencies will likely vary by household size. We sampled a group of people and followed them for some time (e.g., 1 week) and measured the number of contacts that a typical person makes in a day. We also collected variables such as age, sex, and household size.
 
-There are three conceptual modelling approaches: descriptive, predictive and explanatory acording to [the study by Shmueli](https://www.stat.berkeley.edu/~aldous/157/Papers/shmueli.pdf), This study is best described as a descriptive study and the descriptive study does not directly aim at obtaining optimal predictive performance, but at capturing the data structure parsimoniously. For a descriptive model, interpretability, transportability and general usability are important criteria as described in the [article](ttps://diagnprognres.biomedcentral.com/articles/10.1186/s41512-020-00074-3). 
+There are three conceptual modelling approaches: descriptive, predictive and explanatory approaches as per [the study by Shmueli](https://www.stat.berkeley.edu/~aldous/157/Papers/shmueli.pdf). This study is best described as a descriptive study and does not directly aim at obtaining optimal predictive performance, but at capturing the data structure parsimoniously. For a descriptive model, interpretability, transportability and general usability are important criteria as described in the [article](ttps://diagnprognres.biomedcentral.com/articles/10.1186/s41512-020-00074-3). 
 
-
-The integer number of people that each person met during one day. Participants are classified by age and household size. The number of contacts are best captured with negative binomial distribution and mean umber of contacts is a function of age and household size.
+Assuming that the number of contacts per day per person, $y_i$, follows a negative binomial distribution, we can mathematically express our concepts in the following equations:
 
 $$
 y_i \sim \text{NB}(y_i|\mu_i,\phi)=\frac{\Gamma (y_i + \theta)}{\Gamma (\theta) y_i !}) \left(\frac{\mu_i}{\mu_i+\phi} \right)^y \left(\frac{\phi}{\mu_i+\phi} \right)^\phi
 $${#eq-nb}
 
-$$\text{log}(\mu_i)= \alpha + \beta_{\text{age}_i} +\beta_{\text{hhsize}_i}$${#eq-mu}
+$$\text{log}(\mu_i)= \alpha + \beta_{\text{age}_i}  + \beta_{\text{sex}_i} +\beta_{\text{hhsize}_i}$${#eq-mu}
+
+$\mu_i$ and $\phi$ represent the mean number of contacts per day for a person $i$ and the shape parameter of the negative binomial distribution, respectively. $\Gamma (\cdot)$ denotes a [gamma function](https://en.wikipedia.org/wiki/Gamma_function).
+
+### Implemetation
+
+Load packages
+
+```{r}
+library(posterior)
+options(pillar.neg = FALSE, pillar.subtle=FALSE, pillar.sigfig=2)
+library(brms)
+library(tidyverse)
+library(bayesplot)
+theme_set(bayesplot::theme_default(base_family = "sans"))
+set1 <- RColorBrewer::brewer.pal(7, "Set1")
+```
+
+Generate the fake data
 
 We take the fake-data simulation approach, which can help us understand our
-data model and priors, what can be learned from an experiment, and the validity of the applied inference methods. 
-
-### Generate the fake data
-
-Parameters of interest are the ratios of contacts per day (i.e., rate ratios or relative risks) by age and household size. Plugging @eq-mu into @eq-nb becomes our generative model.
+data model and priors, what can be learned from an experiment, and the validity of the applied inference methods. Parameters of interest are the ratios of number of contacts per day (i.e., rate ratios or relative risks) by age, sex, and household size. Plugging @eq-mu into @eq-nb becomes our generative model.
 
 ```{r}
 # parameter values to be estimated
 intercept_true <- 3 # base number of contacts
-rr_age_true <- c(1.5,0.6) # relative number of contacts by age (age0 = 1)
-rr_hhsize_true <- c(2,2.6) # relative number of contacts by household size  (hhsize0 =1)  
+rr_age_true <- c(1.5, 0.6) # relative number of contacts by age (age0 = 1)
+rr_hhsize_true <- c(2, 2.6) # relative number of contacts by household size  (hhsize0 =1)  
 rr_sex_true <- c(1.2) # males have more frequent contacts, which is not modeled in model 1
-size_true <- 5 # shape parameter for the negative binomial distribution
+shape_true <- 5 # shape parameter for the negative binomial distribution
 
 set.seed(42)
 # 9 categories with >100 observations on average
@@ -66,7 +76,6 @@ d$b_age <-
 d$b_hhsize <- 
   ifelse(d$hhsize == 1, 1, 
          ifelse(d$hhsize == 2, rr_hhsize_true[1], rr_hhsize_true[2])) # relative risk by household size
-
 d$b_sex <- 
   ifelse(d$hhsize == 1, 1, rr_sex_true) # relative risk by
 
@@ -77,7 +86,7 @@ d$mu <- exp(log_mu)
 d$age <- as.factor(d$age)
 d$hhsize <- as.factor(d$hhsize)
 d$sex <- as.factor(d$sex)
-d$contacts <- rnbinom(nrow(d), mu=d$mu, size=size_true) # size, aka, shape, dispersion
+d$contacts <- rnbinom(nrow(d), mu=d$mu, size=shape_true) # size, aka, shape, dispersion
 ```
 
 Histogram, mean, and variance of the data
@@ -85,37 +94,34 @@ Histogram, mean, and variance of the data
 library(tidyverse)
 d |> 
   ggplot(aes(x=contacts))+
-  geom_histogram(binwidth=1, fill="steelblue")+
-  theme_light()
+  geom_histogram(binwidth=1, fill=set1[2])+
+  theme_light()+
+  labs(x="Number of contacts per day per person", y="Frequency")
 
 mean(d$contacts)
 var(d$contacts)
 ```
+The number of contacts is count data and the variance-to-mean ratio is around 5. Thefore, the choice of negative binomial distribution looks reasonable.
 
+### Model 1: age and household size 
 
-## Building the model
+For this model, we assume that the dependent variable is mostly influenced by age and household size and do not include sex variable in the model.  
 
-### Bayesian modeling using the `brms` package.
-
-We first try the model that includes age and household size
-```{r}
-library(brms)
-```
-
-### Prior predictive model using the `sample_prior = "only"` argument
+We use the `brms` package to implement the Bayesian regression model. We first set the priors for the intercept, `a_*`, the age and household size, 
+`b_*`, and the shape parameter of the negative binomial distribution, `shp_*`.
 
 ```{r}
-# prior distribution
+# prior distributions
+# intercept, modeled as normal
 a_mean <- 0
-a_scale <- 1.5 # chosen with an assumption that exp(2*a_scale) will likely cover plausible values 
+a_scale <- 1.5 # exp(2*a_scale) will likely cover plausible values 
+# beta for the age and the household, modeled as normal
 b_mean <- 0
 b_scale <- 1.5
-
+# shape parameter of the negbin distr, modeled as inverse gamma
 shp_alpha <- 0.8 # 0.4 (brms default) causes divergent transitions,
 shp_beta <- 0.3
-```
 
-```{r, eval=FALSE}
 my_priors <- 
   c(prior_string(paste0("normal(", a_mean, ",", a_scale,")"), 
                  class = "Intercept"),
@@ -123,7 +129,12 @@ my_priors <-
                  class = "b"),
     prior_string(paste0("inv_gamma(", shp_alpha, ",", shp_beta,")"), 
                  class="shape"))
+```
 
+### Prior predictive check
+
+We use `sample_prior = "only"` argument to get the prior predictive distribution. 
+```{r, eval=FALSE}
 prior_pred <- brm(contacts ~ 1 + age + hhsize,
                  data = d,
                  family = negbinomial(),
@@ -133,8 +144,6 @@ prior_pred <- brm(contacts ~ 1 + age + hhsize,
 saveRDS(prior_pred, "prior_pred.rds")
 ```
 
-
-### Prior predictive checks
 ```{r}
 prior_pred <- readRDS("prior_pred.rds")
 priorpc <- pp_check(prior_pred, type="bars", ndraws = 200)
@@ -145,20 +154,20 @@ priorpc$data |>
   geom_point(aes(y=m, color="Prior"))+
   geom_linerange(aes(ymax=h, ymin=l, color="Prior"))+
   scale_x_continuous(limits=c(-1,30))+
-  labs(x="number of contacts", y= "frequency")+
-  scale_color_manual("", values=c("Prior"="darkgreen"))+
-  scale_fill_manual("", values=c("Data"="steelblue"))+
+  labs(x="Number of contacts per day per person", y="Frequency")+
+  scale_color_manual("", values=c("Prior" = set1[3]))+
+  scale_fill_manual("", values=c("Data" = set1[2]))+
   theme_bw()+
   theme(legend.position=c(0.8,0.8))
 ```
 
 
-## Fit the model
+### Fit the model
 
 [Gelman _et al_.](https://arxiv.org/abs/2011.01808)
 writes: 
-" ... The first step in validating computation is to check that the model actually finishes the fitting process in an acceptable time frame and the convergence diagnostics are reasonable. In the context of HMC, this is primarily the absence of divergent transitions, Rb diagnostic near 1, and sufficient
-effective sample sizes for the central tendency, the tail quantiles, and the energy (Vehtari et al., 2020). ..." 
+
+> " ... The first step in validating computation is to check that the model actually finishes the fitting process in an acceptable time frame and the convergence diagnostics are reasonable. In the context of HMC, this is primarily the absence of divergent transitions, $\hat{R}$ diagnostic near 1, and sufficient effective sample sizes for the central tendency, the tail quantiles, and the energy (Vehtari et al., 2020). ..." 
 
 ```{r, eval=FALSE}
 fit1 <- brm(contacts ~ 1 + age + hhsize, 
@@ -169,13 +178,14 @@ fit1 <- brm(contacts ~ 1 + age + hhsize,
 saveRDS(fit1, "fit1.rds")
 ```
 
-`brms` package reports all the relevant information.
+`brms` package reports all the relevant information to check the fitting.
 ```{r}
 fit1 <- readRDS("fit1.rds")
 summary(fit1)
 ```
 
-### Plot posterior predictive values along with prior predictive values
+### Posterior predictive values along with prior predictive values
+
 ```{r}
 prior_pred <- readRDS("prior_pred.rds")
 priorpc <- pp_check(prior_pred, type="bars", ndraws = 200)
@@ -189,17 +199,17 @@ postpc$data |>
   geom_point(aes(y=m, color="Posterior"))+
   geom_linerange(aes(ymax=h, ymin=l, color="Posterior"))+
   scale_x_continuous(limits=c(-1,30))+
-  labs(x="number of contacts", y= "frequency")+
-  scale_color_manual("", values=c("Prior"="darkgreen",
-                               "Posterior"="firebrick"))+
-  scale_fill_manual("", values=c("Data"="steelblue"))+
+  labs(x="Number of contacts per day per person", y= "Frequency")+
+  scale_color_manual("", values=c("Prior"=set1[3],
+                               "Posterior"=set1[4]))+
+  scale_fill_manual("", values=c("Data"=set1[2]))+
   theme_bw()+
   theme(legend.position=c(0.8,0.8))
 ```
 
+## Inference
 
-## Prior and posterior distributions of parameters
-
+Prior and posterior distributions of parameters. 
 Trace plots and histograms
 ```{r}
 plot(fit1, pars = "^b_")
@@ -212,6 +222,19 @@ Correlations
 pairs(fit1, pars = ".*age*.")
 ```
 
+There is a positive correlation between `b_age2` and `b_age3`. It appears that increase in one parameter creates a deviation from the specified distribution (negative binomial distribution) and the other parameter also increases for all predicted values conform to the specified distribution.
+
+```{r}
+pairs(fit1, pars = "^b_age*.|^In*.")
+```
+
+I also expected that the increase in those parameters (`b_age2` and `b_age3`) lead to the decrease in the `Intercept` to maintain the mean. This is, however, only clear when examining the association among `Intercept`, `b_hhsize2`, and `b_hhsize3`.
+
+```{r}
+pairs(fit1, pars = ".*hh*.")
+pairs(fit1, pars = "^b_hh*.|^In*.")
+```
+
 
 $\beta_{\text{age}}$ parameter
 
@@ -222,16 +245,15 @@ df <- data.frame(x=seq(-2, 2, 0.01))
 df$prior_density <-  dnorm(df$x, b_mean, b_scale)
 
 plot(exp(x), dnorm(x, b_mean, b_scale), type="l", ylim=c(0, 20), 
-     xlab="value", ylab="density", main=expression(beta[age]))
-lines(density(exp(df_post$b_age2)), col=2)
-lines(density(exp(df_post$b_age3)), col=3)
-abline(v=rr_age_true, col="purple", lwd=2)
-
+     xlab="Value", ylab="Density", main=expression(beta[age]))
+lines(density(exp(df_post$b_age2)), col=set1[2])
+lines(density(exp(df_post$b_age3)), col=set1[3])
+abline(v=rr_age_true, col=set1[1], lwd=1.2, lty="dotted")
 legend("topright",
        bty = "n",
-       lty=1,
-       col=c(1,2,3,"purple"),
-       legend=c("Prior", "age2", "age3","True"),
+       lty=c(1,1,1,3),
+       col=c(1,set1[2],set1[3],set1[1]),
+       legend=c("Prior","age2","age3","True"),
        inset=0.02)
 
 # ggplot2 way
@@ -250,31 +272,30 @@ $\beta_{\text{hhsize}}$ parameter
 
 ```{r}
 plot(exp(x), dnorm(x, b_mean, b_scale), type="l", ylim=c(0,5), 
-     xlab="value", ylab="density", main=expression(beta[hhsize]))
-lines(density(exp(df_post$b_hhsize2)), col=2)
-lines(density(exp(df_post$b_hhsize3)), col=3)
-abline(v=rr_hhsize_true, col="purple", lwd=2)
+     xlab="Value", ylab="Density", main=expression(beta[hhsize]))
+lines(density(exp(df_post$b_hhsize2)), col=set1[2])
+lines(density(exp(df_post$b_hhsize3)), col=set1[2])
+abline(v=rr_hhsize_true, col=set1[1], lwd=1.2, lty="dotted")
 
 legend("topright",
        bty = "n",
-       lty=1,
-       col=c(1,2,3,"purple"),
+       lty=c(1,1,1,3),
+       col=c(1, set1[2], set1[3], set1[1]),
        legend=c("Prior", "hhsize2", "hhsize3", "True"),
        inset=0.02)
 ```
 
-
 Intercept
 ```{r}
-x <- seq(-3, 3,0.01)
+x <- seq(-3,3,0.01)
 plot(exp(x), dnorm(x, a_mean, a_scale), type="l", ylim=c(0,4), 
-     xlab="value", ylab="density", main="Intercept")
-lines(density(exp(df_post$b_Intercept)), col=2)
-abline(v=intercept_true, col="purple", lwd=2)
+     xlab="Value", ylab="Density", main="Intercept")
+lines(density(exp(df_post$b_Intercept)), col=set1[2])
+abline(v=intercept_true, col=set1[1], lwd=1.2, lty="dotted")
 legend("topright",
        bty = "n",
-       lty=1,
-       col=c(1,2,"purple"),
+       lty=c(1,1,3),
+       col=c(1,set1[2],set1[1]),
        legend=c("Prior", "Posterior", "True"),
        inset=0.02)
 ```
@@ -285,23 +306,30 @@ library(extraDistr)
 
 x <- seq(0,10,0.01)
 plot(x, dinvgamma(x, shp_alpha, shp_beta), type="l", 
-     ylim=c(0,2), xlab="value", ylab="density", main="Shape")
-lines(density(df_post$shape), col=2)
-abline(v=size_true, col="purple", lwd=2)
+     ylim=c(0,2), xlab="Value", ylab="Density", main="Shape")
+lines(density(df_post$shape), col=set1[2])
+abline(v=shape_true, col=set1[1], lwd=1.2, lty="dotted")
 legend("topright",
        bty = "n",
-       lty=1,
-       col=c(1,2,"purple"),
+       lty=c(1,1,3),
+       col=c(1,set1[2],set1[1]),
        legend=c("Prior", "Posterior", "True"),
        inset=0.02)
 ```
 
+## Model checking, improvement, and comparing multiple models
 
-## Model evaluation
+Gelman *et al*. writes: 
 
-Leave-one-out (LOO) cross validation as suggested in [Vehtari *et al.*](https://link.springer.com/article/10.1007/s11222-016-9696-4) and  [Gelman *et al.*](https://link.springer.com/article/10.1007/s11222-013-9416-2).
+> "...  The key aspect of Bayesian workflow, which takes it beyond Bayesian data analysis, is that we are fitting many models while working on a single problem. We are not talking here about model selection or model averaging but rather of the use of a series of fitted models to better understand each one. ..."
+
+### Model evaluation
+
+We use leave-one-out (LOO) cross validation as suggested in [Vehtari *et al.*](https://link.springer.com/article/10.1007/s11222-016-9696-4) and  [Gelman *et al.*](https://link.springer.com/article/10.1007/s11222-013-9416-2).
 
 We fit two additional models: `fit2` and `fit0`. `fit2` includes `sex` variable in addition to all variables included in `fit1` and could be better or worse than `fit1` as impact of sex is not big in the data set. `fit0` is intercept-only model and thus is very likely to be worse than `fit1` or `fit2`.
+
+### Model 2: Include sex in addition to age and household size as covariates.
 ```{r, eval=FALSE}
 fit2 <- brm(contacts ~ 1 + age + hhsize + sex, 
            data = d, 
@@ -318,8 +346,7 @@ fit0 <- brm(contacts ~ 1,
 saveRDS(fit0, "fit0.rds")
 ```
 
-
-Summary of fit2 and fit2
+Summary of fit0 and fit2
 ```{r}
 fit2 <- readRDS("fit2.rds") 
 fit0 <- readRDS("fit0.rds")
@@ -334,9 +361,9 @@ shp1 <- quantile(as.matrix(fit1)[,"shape"], probs=probs)
 shp2 <- quantile(as.matrix(fit2)[,"shape"], probs=probs)
 shp0 <- quantile(as.matrix(fit0)[,"shape"], probs=probs)
 
-df <- data.frame(Model = "Model0", t(shp0))
-df <- rbind(df, data.frame(Model = "Model1", t(shp1)),
-            data.frame(Model = "Model2", t(shp2)))
+df <- data.frame(Model = "Model 0", t(shp0))
+df <- rbind(df, data.frame(Model = "Model 1", t(shp1)),
+            data.frame(Model = "Model 2", t(shp2)))
 # df$percentile <- rep(as.character(100*probs),3)
 
 ggplot(df, aes(x=Model))+
@@ -345,24 +372,40 @@ ggplot(df, aes(x=Model))+
   geom_point(aes(x=Model, y=`X50.`))+
   ggtitle("")+
   theme_light() + 
-  labs(y="inference for the shape parameter", x="")
+  labs(y="Inference for the shape parameter", x="")
 ```
 
-Compare fit0, fit1 and fit2 suing leave-one out (LOO) cross-validation
+Compare fit0, fit1 and fit2 models
+
+Using WAIC
+```{r}
+fit1 <- add_criterion(fit1, "waic")
+fit0 <- add_criterion(fit0, "waic")
+fit2 <- add_criterion(fit2, "waic")
+
+waic(fit0)
+waic(fit1)
+waic(fit2)
+
+loo_compare(fit1, fit2, fit0, criterion = "waic")
+```  
+
+Using leave-one-out (LOO) cross-validation
+```{r}    
+fit1 <- add_criterion(fit1, "loo")
+fit0 <- add_criterion(fit0, "loo")
+fit2 <- add_criterion(fit2, "loo")
+loo_compare(fit1, fit2, fit0, criterion = "loo")
+```
+
+`brms::loo_compare` uses the `loo::loo_compare` under the hood and and `loo::loo_compare` package produces the same results 
+
 ```{r}
 library(loo)
 loo_fit0 <- loo(fit0)
 loo_fit1 <- loo(fit1)
 loo_fit2 <- loo(fit2)
-saveRDS(loo_fit0, "loo_fit0.rds")
-saveRDS(loo_fit1, "loo_fit1.rds")
-saveRDS(loo_fit2, "loo_fit2.rds")
-```
 
-```{r}
-loo_fit0 <- readRDS("loo_fit0.rds")
-loo_fit1 <- readRDS("loo_fit1.rds")
-loo_fit2 <- readRDS("loo_fit2.rds")
 print(loo_fit0)
 print(loo_fit1)
 print(loo_fit2)
@@ -370,12 +413,4 @@ print(loo_fit2)
 brms::loo_compare(loo_fit1, loo_fit2, loo_fit0)
 ```
 
-```{r}
-fit0 <- add_criterion(fit0, "waic")
-fit1 <- add_criterion(fit1, "waic")
-fit2 <- add_criterion(fit2, "waic")
-
-brms::loo_compare(fit0, fit1, fit2, criterion = "waic")
-```
-
-It appears that `fit1` is the most favored by the `looic` metric.
+It appears that `fit1` is the most favored by the looic and waic metrics. This implies that adding `sex` variable does not improve the model performance much while increasing the degree of freedom. This may be due to that the influence of `sex` is relatively small compared to the `age` and `household size`.
