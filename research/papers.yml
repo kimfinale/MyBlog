@@ -18,6 +18,23 @@ dengue_sr:
     published_url: https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(23)00810-1/fulltext
     venue: Lancet Infect Dis
     github: https://github.com/hyolimkang/CHIK
+
+vimc_joint:
+    title: "Estimating the health effects of COVID-19-related immunisation disruptions in 112 countries during 2020-30: a modelling study"
+    authors:
+        - Anna-Maria Hartner
+        - Xiang Li
+        - Hannah Clapham
+        - ...
+        - me
+        - ...
+        - Katy Gaythorpe
+    year: 2024
+    preprint: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4492698
+    published_url: https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(23)00603-4/fulltext
+    venue: Lancet Glob Health
+    github: https://github.com/vimc/paper-covid-immunisation-disruptions
+
 tf_map:
     title: "Mapping the incidence rate of typhoid fever in sub-Saharan Africa"
     authors:

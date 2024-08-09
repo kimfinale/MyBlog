@@ -24,6 +24,16 @@ format: html
         <i class="ai ai-archive" role='img' aria-label='Published'></i>
         Published
     </a></li>
+<li class='list-group-item'>Anna-Maria Hartner, Xiang Li, Hannah Clapham, ..., <strong>Jong-Hoon Kim</strong>, ..., and Katy Gaythorpe. (2024) "Estimating the health effects of COVID-19-related immunisation disruptions in 112 countries during 2020-30: a modelling study." <em>Lancet Glob Health</em><br><a class="btn btn-outline-dark btn-sm", href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4492698" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-file-earmark-pdf" role='img' aria-label='Preprint'></i>
+        Preprint
+    </a> <a class="btn btn-outline-dark btn-sm", href="https://github.com/vimc/paper-covid-immunisation-disruptions" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-github" role='img' aria-label='Github'></i>
+        Github
+    </a> <a class="btn btn-outline-dark btn-sm", href="https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(23)00603-4/fulltext" target="_blank" rel="noopener noreferrer">
+        <i class="ai ai-archive" role='img' aria-label='Published'></i>
+        Published
+    </a></li>
 <li class='list-group-item'><strong>Jong-Hoon Kim</strong>, Jungsoon Choi, Chaelin Kim, Gi Deok Pak, Prerana Parajulee, and et al. (2024) "Mapping the incidence rate of typhoid fever in sub-Saharan Africa." <em>PLoS Negl Trop Dis</em><br><a class="btn btn-outline-dark btn-sm", href="https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0011902" target="_blank" rel="noopener noreferrer">
         <i class="bi bi-file-earmark-pdf" role='img' aria-label='Preprint'></i>
         Preprint

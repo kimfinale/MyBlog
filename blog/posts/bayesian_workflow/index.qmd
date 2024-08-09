@@ -414,7 +414,7 @@ print(loo_fit2)
 brms::loo_compare(loo_fit1, loo_fit2, loo_fit0)
 ```
 
-It appears that `fit2` is the most favored by LOO cross validation. This implies that adding `sex` variable still improves the model performance while its influence on the number of contacts relatively small compared to the `age` and `household size`.
+It appears that `fit2` is the most favored by LOO cross validation. This implies that adding `sex` variable still improves the model performance while its influence on the number of contacts relatively small compared to the `age` and `household size`. However, the difference in elpd (i.e, 6.1) is smaller than 2*se_diff (i.e., 7.2).
 
 ```{r}
 summary(fit2)
