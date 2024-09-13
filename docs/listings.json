@@ -3,6 +3,7 @@
     "listing": "/blog/index.html",
     "items": [
       "/blog/posts/bayesian_workflow/index.html",
+      "/blog/posts/behavior_change/index.html",
       "/blog/posts/kalman_filter/index.html",
       "/blog/posts/Learning_ChatGPT_4_UniversalApproximationTheorem/index.html",
       "/blog/posts/parallel/index.html",

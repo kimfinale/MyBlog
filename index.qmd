@@ -6,7 +6,7 @@ about:
   links:
     - text: Blog
       href: blog/index.qmd
-    - text: Papers
+    - text: Publications
       href: research/index.qmd
     - icon: github
       text: GitHub

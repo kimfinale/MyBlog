@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Jong-Hoon Kim">
+<meta name="dcterms.date" content="2024-07-21">
 
-<title>Disease modeling for public health</title>
+<title>Disease modeling for public health - Modeling human behavior: Infectious disease transmission modeling perspective</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,24 +22,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -59,6 +96,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -69,7 +108,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Disease modeling for public health</span>
     </a>
   </div>
@@ -80,15 +119,15 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" rel="" target="" aria-current="page">
+    <a class="nav-link" href="../../../index.html" rel="" target="">
  <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./blog/index.html" rel="" target="">
+    <a class="nav-link" href="../../../blog/index.html" rel="" target="">
  <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./research/index.html" rel="" target="">
+    <a class="nav-link" href="../../../research/index.html" rel="" target="">
  <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item compact">
@@ -121,50 +160,80 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Modeling human behavior: Infectious disease transmission modeling perspective</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Bayesian workflow</div>
+    <div class="quarto-category">negative binomial</div>
+    <div class="quarto-category">social contact</div>
+  </div>
+  </div>
 
 
-<div class="quarto-about-jolla">
-  <img src="img/portrait1_1.jpg" class="about-image
-  round " style="height: 15em; width: 15em;">
- <div id="about-block">
-</div> 
-  <hr class="about-sep">
-   <div class="about-links">
-  <a href="/blog/index.html" class="about-link" rel="" target="">
-     <span class="about-link-text">Blog</span>
-  </a>
-  <a href="/research/index.html" class="about-link" rel="" target="">
-     <span class="about-link-text">Publications</span>
-  </a>
-  <a href="https://github.com/kimfinale" class="about-link" rel="" target="">
-    <i class="bi bi-github"></i>
-     <span class="about-link-text">GitHub</span>
-  </a>
-  <a href="https://www.linkedin.com/in/jong-hoon-kim-6447325/" class="about-link" rel="" target="">
-    <i class="bi bi-linkedin"></i>
-     <span class="about-link-text">Linkedin</span>
-  </a>
-  <a href="https://twitter.com/tarzanthoreau" class="about-link" rel="" target="">
-    <i class="bi bi-twitter"></i>
-     <span class="about-link-text">Twitter</span>
-  </a>
-  <a href="mailto:kimfinale@gmail.com" class="about-link" rel="" target="">
-    <i class="bi bi-envelope"></i>
-     <span class="about-link-text">Email</span>
-  </a>
-</div>
-</div>
 
-<section id="welcome-to-my-website" class="level2">
-<h2 data-anchor-id="welcome-to-my-website">Welcome to my website!</h2>
-<p>Hi! My name is Jong-Hoon Kim. I am a theoretical epidemiologist who uses mathematical, statistical, and machine-learning models to study infectious disease epidemiology. My work involves developing theories about infectious disease transmission, making predictions, and assessing the effectiveness of intervention strategies to improve public health. Currently, in 2023, I work at the International Vaccine Institute, which is located in Seoul, South Korea. My current research primarily focuses on typhoid fever, non-typhoidal Salmonella, cholera, and COVID-19.</p>
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jong-Hoon Kim </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 21, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="epidemiology" class="level2">
+<h2 class="anchored" data-anchor-id="epidemiology">Epidemiology</h2>
+<p>사람의 질병 발생 패턴을 연구하는 학문을 역학, 영어로는 <a href="https://www.bmj.com/about-bmj/resources-readers/publications/epidemiology-uninitiated/1-what-epidemiology">epidemiology</a>,이라고 한다. 패턴을 이해하는 데 필수적인 세가지 축은 감염원 (infectious agent), 환경 (environment), 숙주 (host) 이다.</p>
+<p>연구하는 세 가지 패턴은</p>
+<p>그 중에 감염병학 (epidemiology))사람 간 감염병 전파에 효과적으로 대처하기 위해서는 감염병 전파에 잘 이해하여야 한다. 이러한 감염병 역학 (epidemiology)을 감염병 전파를 잘 이해하기 위해서는 감염원 (infectious agent)에 대한 이해가 필수적인데 그에 못지 않게 중요할 수 있는 것이 감염병의 전파에 반응하여 시시각각 변할 수 있는 사람 (host). Sebastian Funk <em>et al</em>. 의 논문 <a href="https://royalsocietypublishing.org/doi/full/10.1098/rsif.2010.0142">Modelling the influence of human behaviour on the spread of infectious diseases: a review</a> 을 살펴보고자 한다.</p>
+<p>논문에서 다음과 같이 적었다:</p>
+<blockquote class="blockquote">
+<p>“… After all, individual self-initiated behaviour can change the fate of an outbreak, and its interaction with disease dynamics requires proper understanding if we are to fully comprehend what happens when a disease spreads through human populations Ferguson <em>et al</em>. <a href="https://www.nature.com/articles/446733a">Capturing human behaviour</a>. …”</p>
+</blockquote>
 </section>
-<section id="research-interests" class="level2">
-<h2 data-anchor-id="research-interests">Research interests</h2>
-<p>My research focuses on leveraging disease models to generate actionable insights for controlling infectious diseases with real-world impact. Specifically, I aim to identify critical details necessary for generating actionable inferences regarding vaccination strategies for cholera and typhoid fever, tailored to specific locations and times. Additionally, I am interested in developing models to understand how human behavior in a community can enhance or hinder the effectiveness of disease control methods, including vaccination campaigns. Using that understanding, I aim to improve the control of infectious diseases and address other public health challenges.</p>
+<section id="model-building" class="level2">
+<h2 class="anchored" data-anchor-id="model-building">Model building</h2>
+<section id="conceptual-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="conceptual-analysis">Conceptual analysis</h3>
+<p>Let’s suppose that we measured how the number of contact a person makes varies.<a href="https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0050074">A prior study</a> and other numerous studies showed that contact frequencies differ by age. And a significant fraction of contacts occur with household members and as such the contact frequencies will likely vary by household size. We sampled a group of people and followed them for some time (e.g., 1 week) and measured the number of contacts that a typical person makes in a day. We also collected variables such as age, sex, and household size.</p>
+<p>There are three conceptual modelling approaches: descriptive, predictive and explanatory approaches as per <a href="https://www.stat.berkeley.edu/~aldous/157/Papers/shmueli.pdf">the study by Shmueli</a>. This study is best described as a descriptive study and does not directly aim at obtaining optimal predictive performance, but at capturing the data structure parsimoniously. For a descriptive model, interpretability, transportability and general usability are important criteria as described in the <a href="ttps://diagnprognres.biomedcentral.com/articles/10.1186/s41512-020-00074-3">article</a>.</p>
+<p>Assuming that the number of contacts per day per person, <span class="math inline">\(y_i\)</span>, follows a negative binomial distribution, we can mathematically express our concepts in the following equations:</p>
+<p><span id="eq-nb"><span class="math display">\[
+y_i \sim \text{NB}(y_i|\mu_i,\phi)=\frac{\Gamma (y_i + \theta)}{\Gamma (\theta) y_i !}) \left(\frac{\mu_i}{\mu_i+\phi} \right)^y \left(\frac{\phi}{\mu_i+\phi} \right)^\phi
+\tag{1}\]</span></span></p>
+<p><span id="eq-mu"><span class="math display">\[\text{log}(\mu_i)= \alpha + \beta_{\text{age}_i}  + \beta_{\text{sex}_i} +\beta_{\text{hhsize}_i} \tag{2}\]</span></span></p>
+<p><span class="math inline">\(\mu_i\)</span> and <span class="math inline">\(\phi\)</span> represent the mean number of contacts per day for a person <span class="math inline">\(i\)</span> and the shape parameter of the negative binomial distribution, respectively. <span class="math inline">\(\Gamma (\cdot)\)</span> denotes a <a href="https://en.wikipedia.org/wiki/Gamma_function">gamma function</a>.</p>
+</section>
+<section id="implemetation" class="level3">
+<h3 class="anchored" data-anchor-id="implemetation">Implemetation</h3>
+<p>Load packages</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(posterior)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># options(pillar.neg = FALSE, pillar.subtle=FALSE, pillar.sigfig=2)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># library(bayesplot)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># theme_set(bayesplot::theme_default(base_family = "sans"))</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>set1 <span class="ot">&lt;-</span> RColorBrewer<span class="sc">::</span><span class="fu">brewer.pal</span>(<span class="dv">7</span>, <span class="st">"Set1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Generate the fake data</p>
+<p>We take the fake-data simulation approach, which can help us understand our data model and priors, what can be learned from an experiment, and the validity of the applied inference methods. Parameters of interest are the ratios of number of contacts per day (i.e., rate ratios or relative risks) by age, sex, and household size. Plugging <a href="#eq-mu">Equation&nbsp;2</a> into <a href="#eq-nb">Equation&nbsp;1</a> becomes our generative model.</p>
 
 
-
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -188,6 +257,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
   const isCodeAnnotation = (el) => {
     for (const clz of el.classList) {
       if (clz.startsWith('code-annotation-')) {                     
@@ -393,6 +469,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
+</script>
+<script src="https://utteranc.es/client.js" repo="kimfinale/myblog" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 
