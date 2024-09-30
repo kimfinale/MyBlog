@@ -2308,64 +2308,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 
 <section id="epidemiology" class="level2">
 <h2 class="anchored" data-anchor-id="epidemiology">Epidemiology</h2>
-<p>사람의 질병 발생 패턴을 연구하는 학문을 역학, 영어로는 <a href="https://www.bmj.com/about-bmj/resources-readers/publications/epidemiology-uninitiated/1-what-epidemiology">epidemiology</a>,이라고 한다. 패턴을 이해하는 데 필수적인 세가지 축은 감염원 (infectious agent), 환경 (environment), 숙주 (host) 이다.</p>
-<p>연구하는 세 가지 패턴은</p>
-<p>그 중에 감염병학 (epidemiology))사람 간 감염병 전파에 효과적으로 대처하기 위해서는 감염병 전파에 잘 이해하여야 한다. 이러한 감염병 역학 (epidemiology)을 감염병 전파를 잘 이해하기 위해서는 감염원 (infectious agent)에 대한 이해가 필수적인데 그에 못지 않게 중요할 수 있는 것이 감염병의 전파에 반응하여 시시각각 변할 수 있는 사람 (host). Sebastian Funk <em>et al</em>. 의 논문 <a href="https://royalsocietypublishing.org/doi/full/10.1098/rsif.2010.0142">Modelling the influence of human behaviour on the spread of infectious diseases: a review</a> 을 살펴보고자 한다.</p>
-<p>논문에서 다음과 같이 적었다:</p>
+<p>감염병의 전파 양상을 연구하는 감염병 역학 (Epidemiology of Infectious Diseases ; EID)에서는 감염병의 발생 양샹을 세 가지 요소로 해석하고자 한다. 하나는 병을 일으키는 감염원 (infectious agent)이고, 다른 하나는 사람이 살아가고 있는 주변 환경 (environment)이며 마지막은 감염되는 대상, 즉 숙주 (host) 이다[<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2465549/">Barreto <em>et al</em>.</a>].</p>
+<p>Sebastian Funk <em>et al</em>. 의 논문 <a href="https://royalsocietypublishing.org/doi/full/10.1098/rsif.2010.0142">Modelling the influence of human behaviour on the spread of infectious diseases: a review</a>은 을 살펴보고자 한다.</p>
 <blockquote class="blockquote">
 <p>“… After all, individual self-initiated behaviour can change the fate of an outbreak, and its interaction with disease dynamics requires proper understanding if we are to fully comprehend what happens when a disease spreads through human populations Ferguson <em>et al</em>. <a href="https://www.nature.com/articles/446733a">Capturing human behaviour</a>. …”</p>
 </blockquote>
-</section>
-<section id="model-building" class="level2">
-<h2 class="anchored" data-anchor-id="model-building">Model building</h2>
-<section id="conceptual-analysis" class="level3">
-<h3 class="anchored" data-anchor-id="conceptual-analysis">Conceptual analysis</h3>
-<p>Let’s suppose that we measured how the number of contact a person makes varies.<a href="https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0050074">A prior study</a> and other numerous studies showed that contact frequencies differ by age. And a significant fraction of contacts occur with household members and as such the contact frequencies will likely vary by household size. We sampled a group of people and followed them for some time (e.g., 1 week) and measured the number of contacts that a typical person makes in a day. We also collected variables such as age, sex, and household size.</p>
-<p>There are three conceptual modelling approaches: descriptive, predictive and explanatory approaches as per <a href="https://www.stat.berkeley.edu/~aldous/157/Papers/shmueli.pdf">the study by Shmueli</a>. This study is best described as a descriptive study and does not directly aim at obtaining optimal predictive performance, but at capturing the data structure parsimoniously. For a descriptive model, interpretability, transportability and general usability are important criteria as described in the <a href="ttps://diagnprognres.biomedcentral.com/articles/10.1186/s41512-020-00074-3">article</a>.</p>
-<p>Assuming that the number of contacts per day per person, <img src="https://latex.codecogs.com/png.latex?y_i">, follows a negative binomial distribution, we can mathematically express our concepts in the following equations:</p>
-<p><span id="eq-nb"><img src="https://latex.codecogs.com/png.latex?%0Ay_i%20%5Csim%20%5Ctext%7BNB%7D(y_i%7C%5Cmu_i,%5Cphi)=%5Cfrac%7B%5CGamma%20(y_i%20+%20%5Ctheta)%7D%7B%5CGamma%20(%5Ctheta)%20y_i%20!%7D)%20%5Cleft(%5Cfrac%7B%5Cmu_i%7D%7B%5Cmu_i+%5Cphi%7D%20%5Cright)%5Ey%20%5Cleft(%5Cfrac%7B%5Cphi%7D%7B%5Cmu_i+%5Cphi%7D%20%5Cright)%5E%5Cphi%0A%5Ctag%7B1%7D"></span></p>
-<p><span id="eq-mu"><img src="https://latex.codecogs.com/png.latex?%5Ctext%7Blog%7D(%5Cmu_i)=%20%5Calpha%20+%20%5Cbeta_%7B%5Ctext%7Bage%7D_i%7D%20%20+%20%5Cbeta_%7B%5Ctext%7Bsex%7D_i%7D%20+%5Cbeta_%7B%5Ctext%7Bhhsize%7D_i%7D%20%5Ctag%7B2%7D"></span></p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cmu_i"> and <img src="https://latex.codecogs.com/png.latex?%5Cphi"> represent the mean number of contacts per day for a person <img src="https://latex.codecogs.com/png.latex?i"> and the shape parameter of the negative binomial distribution, respectively. <img src="https://latex.codecogs.com/png.latex?%5CGamma%20(%5Ccdot)"> denotes a <a href="https://en.wikipedia.org/wiki/Gamma_function">gamma function</a>.</p>
-</section>
-<section id="implemetation" class="level3">
-<h3 class="anchored" data-anchor-id="implemetation">Implemetation</h3>
-<p>Load packages</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># library(posterior)</span></span>
-<span id="cb1-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># options(pillar.neg = FALSE, pillar.subtle=FALSE, pillar.sigfig=2)</span></span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(brms)</span>
-<span id="cb1-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(tidyverse)</span>
-<span id="cb1-5"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># library(bayesplot)</span></span>
-<span id="cb1-6"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># theme_set(bayesplot::theme_default(base_family = "sans"))</span></span>
-<span id="cb1-7">set1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> RColorBrewer<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">brewer.pal</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">7</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Set1"</span>)</span></code></pre></div>
-</div>
-<p>Generate the fake data</p>
-<p>We take the fake-data simulation approach, which can help us understand our data model and priors, what can be learned from an experiment, and the validity of the applied inference methods. Parameters of interest are the ratios of number of contacts per day (i.e., rate ratios or relative risks) by age, sex, and household size. Plugging Equation&nbsp;2 into Equation&nbsp;1 becomes our generative model.</p>
 
 
-</section>
 </section>
 
  ]]></description>
@@ -7214,8 +7163,8 @@ font-style: inherit;">kable</span>(df)</span></code></pre></div>
 <p>The standard logistic function, where <img src="https://latex.codecogs.com/png.latex?x_%7B0%7D=0,%20L=1,%20k=1">, is sometimes called sigmoid or expit.</p>
 <p>In the logistic function, the initial stage of growth is approximately exponential (geometric); then, as saturation begins, the growth slows to linear (arithmetic), and at maturity, growth stops. This function may be also used to describe other phenomena and <a href="https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003003">was recently used</a> to model the shape of indirect vaccine efficacy (IVE) in response to the vaccine coverage levels. We are going to explore the use of the logistic function to model the IVE.</p>
 </section>
-<section id="indirect-effect-effectiveness" class="level3">
-<h3 class="anchored" data-anchor-id="indirect-effect-effectiveness">Indirect effect effectiveness</h3>
+<section id="indirect-vaccine-effectiveness" class="level3">
+<h3 class="anchored" data-anchor-id="indirect-vaccine-effectiveness">Indirect vaccine effectiveness</h3>
 <p><a href="https://www.jonghoonk.com/posts/vaccine_effectiveness/">Indirect vaccine effectiveness (IVE)</a> is a crucial metric in assessing the impact of vaccination on both vaccinated and unvaccinated individuals within a population. It refers to the protection unvaccinated individuals receive due to the presence of vaccinated individuals in the community.</p>
 <p>To delve into the dynamics of IVE, we examine data from clinical trials of oral cholera vaccine conducted in Bangladesh and India. These studies provide insights into how varying levels of vaccination coverage affect the incidence rates among unvaccinated individuals residing in the same cluster.</p>
 <p>In particular, we use the IVE analyzed based on clinical trials of oral cholera vaccines in <a href="https://pubmed.ncbi.nlm.nih.gov/15993232/">Bangladesh</a> and in <a href="https://pubmed.ncbi.nlm.nih.gov/23362293/">India</a>. In Table 1 below, we analyze the relationship between “Level of vaccine coverage” and the incidence rates among placebo recipients. The presence of IVE is evident as the risk of illness among placebo recipients diminishes with increasing vaccine coverage levels.</p>

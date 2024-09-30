@@ -40,7 +40,7 @@ describe other phenomena and [was recently used](https://journals.plos.org/plosm
 vaccine coverage levels. We are going to explore the use of the logistic function
 to model the IVE.
 
-### Indirect effect effectiveness
+### Indirect vaccine effectiveness
 
 [Indirect vaccine effectiveness (IVE)](https://www.jonghoonk.com/posts/vaccine_effectiveness/) is a crucial metric in assessing the impact of vaccination on both vaccinated and unvaccinated individuals within a population. It refers to the protection unvaccinated individuals receive due to the presence of vaccinated individuals in the community.
 
