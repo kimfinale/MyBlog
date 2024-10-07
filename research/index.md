@@ -90,5 +90,7 @@ format: html
     </a> <a class="btn btn-outline-dark btn-sm", href="https://github.com/kimfinale/Cholera_WASH_meta" target="_blank" rel="noopener noreferrer">
         <i class="bi bi-github" role='img' aria-label='Github'></i>
         Github
-    </a></li></ul>
+    </a></li>
+<li class='list-group-item'>Manjari Shankar, Anna-Maria Hartner, Callum R, ..., <strong>Jong-Hoon Kim</strong>, ..., and Katy Gaythorpe. (2024) "Mathematical modelling to inform outbreak response vaccination."<br></li>
+<li class='list-group-item'>Woo-Sik Son, Min-Kyung Chae, ..., <strong>Jong-Hoon Kim</strong>, and Jonggul Lee. (2024) "Social contact patterns in South Korea: an analysis of a survey conducted in 2023-2024."<br></li></ul>
 ```

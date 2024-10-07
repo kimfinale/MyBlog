@@ -114,3 +114,32 @@ chol_wash_meta:
     preprint: https://www.medrxiv.org/content/10.1101/2023.09.06.23295113v1
     published_url:
     github: https://github.com/kimfinale/Cholera_WASH_meta
+
+
+outbreak_response_modeling:
+    title: "Mathematical modelling to inform outbreak response vaccination"
+    authors:
+        - Manjari Shankar
+        - Anna-Maria Hartner
+        - Callum R
+        - ...
+        - me
+        - ...
+        - Katy Gaythorpe
+    year: 2024
+    preprint:
+    published_url:
+    github:
+
+social_contact_korea:
+    title: "Social contact patterns in South Korea: an analysis of a survey conducted in 2023-2024"
+    authors:
+        - Woo-Sik Son
+        - Min-Kyung Chae
+        - ...
+        - me
+        - Jonggul Lee
+    year: 2024
+    preprint:
+    published_url:
+    github:
