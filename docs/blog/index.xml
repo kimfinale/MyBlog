@@ -10,7 +10,1001 @@
 <atom:link href="https://www.jonghoonk.com/blog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Disease modeling for public health</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Sat, 20 Jul 2024 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 30 Oct 2024 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>Distribution Matching Methods: From Theory to Practice</title>
+  <dc:creator>Jong-Hoon Kim</dc:creator>
+  <link>https://www.jonghoonk.com/blog/posts/distribution_matching/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Load required packages</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(MASS)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ks)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(patchwork)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyr)</span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr)</span></code></pre></div>
+</div>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>When working with data from different sources or distributions, we often need to transform one distribution to match another. In this post, we’ll explore various methods for distribution matching, implement them in R, and discuss their strengths and limitations.</p>
+</section>
+<section id="distribution-matching-methods" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Distribution Matching Methods</h1>
+<section id="quantile-matching" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="quantile-matching"><span class="header-section-number">2.1</span> Quantile Matching</h2>
+<p>Quantile matching transforms data by mapping corresponding quantiles between distributions. It’s a non-parametric approach that preserves the rank order of the original data.</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">quantile_match <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(A, B) {</span>
+<span id="cb2-2">  probs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">length.out =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(A))</span>
+<span id="cb2-3">  sorted_A <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sort</span>(A)</span>
+<span id="cb2-4">  </span>
+<span id="cb2-5">  B_transformed <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">approx</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> probs,</span>
+<span id="cb2-6">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> sorted_A,</span>
+<span id="cb2-7">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xout =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rank</span>(B)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(B) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb2-8">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"linear"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>y</span>
+<span id="cb2-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(B_transformed)</span>
+<span id="cb2-10">}</span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="box-cox-transformation" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="box-cox-transformation"><span class="header-section-number">2.2</span> Box-Cox Transformation</h2>
+<p>The Box-Cox transformation is particularly useful when you want to transform data to approximate normality before matching moments.</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">boxcox_match <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(A, B) {</span>
+<span id="cb3-2">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Find optimal lambda for both distributions</span></span>
+<span id="cb3-3">  bc_A <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">boxcox</span>(A <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plotit =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>)</span>
+<span id="cb3-4">  lambda_A <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> bc_A<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x[<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">which.max</span>(bc_A<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>y)]</span>
+<span id="cb3-5">  </span>
+<span id="cb3-6">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Transform to normality</span></span>
+<span id="cb3-7">  transform_boxcox <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x, lambda) {</span>
+<span id="cb3-8">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">abs</span>(lambda) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-4</span>) {</span>
+<span id="cb3-9">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">log</span>(x)</span>
+<span id="cb3-10">    } <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> {</span>
+<span id="cb3-11">      (x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span>lambda <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> lambda</span>
+<span id="cb3-12">    }</span>
+<span id="cb3-13">  }</span>
+<span id="cb3-14">  </span>
+<span id="cb3-15">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Transform both samples</span></span>
+<span id="cb3-16">  A_transformed <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">transform_boxcox</span>(A, lambda_A)</span>
+<span id="cb3-17">  B_transformed <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">transform_boxcox</span>(B, lambda_A)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Use same lambda</span></span>
+<span id="cb3-18">  </span>
+<span id="cb3-19">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Match moments</span></span>
+<span id="cb3-20">  B_standardized <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> (B_transformed <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(B_transformed)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(B_transformed)</span>
+<span id="cb3-21">  B_matched <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> B_standardized <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(A_transformed) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(A_transformed)</span>
+<span id="cb3-22">  </span>
+<span id="cb3-23">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Inverse transform</span></span>
+<span id="cb3-24">  inverse_boxcox <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x, lambda) {</span>
+<span id="cb3-25">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">abs</span>(lambda) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-4</span>) {</span>
+<span id="cb3-26">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(x)</span>
+<span id="cb3-27">    } <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> {</span>
+<span id="cb3-28">      (lambda <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>lambda)</span>
+<span id="cb3-29">    }</span>
+<span id="cb3-30">  }</span>
+<span id="cb3-31">  </span>
+<span id="cb3-32">  B_final <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">inverse_boxcox</span>(B_matched, lambda_A)</span>
+<span id="cb3-33">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(B_final)</span>
+<span id="cb3-34">}</span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="kernel-density-based-transformation" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="kernel-density-based-transformation"><span class="header-section-number">2.3</span> Kernel Density-Based Transformation</h2>
+<p>This method uses kernel density estimation to transform the distributions.</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">kernel_density_match <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(A, B, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bw =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"nrd0"</span>) {</span>
+<span id="cb4-2">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Estimate densities</span></span>
+<span id="cb4-3">  density_A <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">kde</span>(A, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">h =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bw.nrd0</span>(A))</span>
+<span id="cb4-4">  density_B <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">kde</span>(B, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">h =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bw.nrd0</span>(B))</span>
+<span id="cb4-5">  </span>
+<span id="cb4-6">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Calculate CDFs using numerical integration</span></span>
+<span id="cb4-7">  cdf_A <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x) {</span>
+<span id="cb4-8">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sapply</span>(x, <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(xi) {</span>
+<span id="cb4-9">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pnorm</span>(xi, A, density_A<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>h))</span>
+<span id="cb4-10">    })</span>
+<span id="cb4-11">  }</span>
+<span id="cb4-12">  </span>
+<span id="cb4-13">  cdf_B <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x) {</span>
+<span id="cb4-14">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sapply</span>(x, <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(xi) {</span>
+<span id="cb4-15">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pnorm</span>(xi, B, density_B<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>h))</span>
+<span id="cb4-16">    })</span>
+<span id="cb4-17">  }</span>
+<span id="cb4-18">  </span>
+<span id="cb4-19">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Transform B to match A's distribution</span></span>
+<span id="cb4-20">  B_probs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cdf_B</span>(B)</span>
+<span id="cb4-21">  </span>
+<span id="cb4-22">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create quantile function for A using interpolation</span></span>
+<span id="cb4-23">  A_sorted <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sort</span>(A)</span>
+<span id="cb4-24">  A_probs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cdf_A</span>(A_sorted)</span>
+<span id="cb4-25">  </span>
+<span id="cb4-26">  B_transformed <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">approx</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> A_probs,</span>
+<span id="cb4-27">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> A_sorted,</span>
+<span id="cb4-28">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xout =</span> B_probs,</span>
+<span id="cb4-29">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">yleft =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(A),</span>
+<span id="cb4-30">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">yright =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>(A))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>y</span>
+<span id="cb4-31">  </span>
+<span id="cb4-32">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(B_transformed)</span>
+<span id="cb4-33">}</span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="moment-matching" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="moment-matching"><span class="header-section-number">2.4</span> Moment Matching</h2>
+<p>A simpler approach that focuses on matching the first two moments of the distributions.</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">moment_match <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(A, B) {</span>
+<span id="cb5-2">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Standardize B</span></span>
+<span id="cb5-3">  B_std <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> (B <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(B)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(B)</span>
+<span id="cb5-4">  </span>
+<span id="cb5-5">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Transform to match A's moments</span></span>
+<span id="cb5-6">  B_transformed <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> B_std <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(A) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(A)</span>
+<span id="cb5-7">  </span>
+<span id="cb5-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(B_transformed)</span>
+<span id="cb5-9">}</span></code></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="comparing-the-methods" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Comparing the Methods</h1>
+<p>Let’s generate some sample data and compare all methods:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set seed for reproducibility</span></span>
+<span id="cb6-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">123</span>)</span>
+<span id="cb6-3"></span>
+<span id="cb6-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate sample data</span></span>
+<span id="cb6-5">A <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">mean =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sd =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Normal distribution</span></span>
+<span id="cb6-6">B <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rexp</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">rate =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>)          <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Exponential distribution</span></span>
+<span id="cb6-7"></span>
+<span id="cb6-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Apply all transformations</span></span>
+<span id="cb6-9">B_quantile <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">quantile_match</span>(A, B)</span>
+<span id="cb6-10">B_boxcox <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">boxcox_match</span>(A, B)</span>
+<span id="cb6-11">B_kernel <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">kernel_density_match</span>(A, B)</span>
+<span id="cb6-12">B_moment <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">moment_match</span>(A, B)</span></code></pre></div>
+</details>
+</div>
+<section id="visual-comparison" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="visual-comparison"><span class="header-section-number">3.1</span> Visual Comparison</h2>
+<p>Let’s create a more elegant visualization using ggplot2:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a data frame for plotting</span></span>
+<span id="cb7-2">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(</span>
+<span id="cb7-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Original_A =</span> A,</span>
+<span id="cb7-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Original_B =</span> B,</span>
+<span id="cb7-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Quantile =</span> B_quantile,</span>
+<span id="cb7-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">BoxCox =</span> B_boxcox,</span>
+<span id="cb7-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Kernel =</span> B_kernel,</span>
+<span id="cb7-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Moment =</span> B_moment</span>
+<span id="cb7-9">)</span>
+<span id="cb7-10"></span>
+<span id="cb7-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Convert to long format</span></span>
+<span id="cb7-12">df_long <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_longer</span>(df, </span>
+<span id="cb7-13">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cols =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">everything</span>(),</span>
+<span id="cb7-14">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Method"</span>,</span>
+<span id="cb7-15">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Value"</span>)</span>
+<span id="cb7-16"></span>
+<span id="cb7-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create the plot</span></span>
+<span id="cb7-18"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(df_long, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Value, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Method)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-19">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-20">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>Method, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scales =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"free_y"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-22">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Value"</span>,</span>
+<span id="cb7-23">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Density"</span>,</span>
+<span id="cb7-24">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Comparison of Distribution Matching Methods"</span>,</span>
+<span id="cb7-25">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Original A (target) vs Original B and transformed distributions"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-26">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://www.jonghoonk.com/blog/posts/distribution_matching/index_files/figure-html/visualization-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption class="figure-caption">Comparison of Distribution Matching Methods</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="numerical-comparison" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="numerical-comparison"><span class="header-section-number">3.2</span> Numerical Comparison</h2>
+<p>Let’s compare some summary statistics:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Function to calculate summary statistics</span></span>
+<span id="cb8-2">get_stats <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x) {</span>
+<span id="cb8-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Mean =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(x),</span>
+<span id="cb8-4">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">SD =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(x),</span>
+<span id="cb8-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Median =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">median</span>(x),</span>
+<span id="cb8-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Skewness =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>((x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(x))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(x)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>,</span>
+<span id="cb8-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Kurtosis =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>((x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(x))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(x)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>)</span>
+<span id="cb8-8">}</span>
+<span id="cb8-9"></span>
+<span id="cb8-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Calculate statistics for all distributions</span></span>
+<span id="cb8-11">stats_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(</span>
+<span id="cb8-12">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Original_A =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_stats</span>(A),</span>
+<span id="cb8-13">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Original_B =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_stats</span>(B),</span>
+<span id="cb8-14">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Quantile =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_stats</span>(B_quantile),</span>
+<span id="cb8-15">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">BoxCox =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_stats</span>(B_boxcox),</span>
+<span id="cb8-16">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Kernel =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_stats</span>(B_kernel),</span>
+<span id="cb8-17">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Moment =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_stats</span>(B_moment)</span>
+<span id="cb8-18">)</span>
+<span id="cb8-19"></span>
+<span id="cb8-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Display the results</span></span>
+<span id="cb8-21">knitr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">kable</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(stats_df, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Summary Statistics Comparison </caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Original_A</th>
+<th style="text-align: right;">Original_B</th>
+<th style="text-align: right;">Quantile</th>
+<th style="text-align: right;">BoxCox</th>
+<th style="text-align: right;">Kernel</th>
+<th style="text-align: right;">Moment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mean</td>
+<td style="text-align: right;">10.032</td>
+<td style="text-align: right;">9.837</td>
+<td style="text-align: right;">10.031</td>
+<td style="text-align: right;">10.031</td>
+<td style="text-align: right;">10.093</td>
+<td style="text-align: right;">10.032</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SD</td>
+<td style="text-align: right;">1.983</td>
+<td style="text-align: right;">9.720</td>
+<td style="text-align: right;">1.967</td>
+<td style="text-align: right;">2.011</td>
+<td style="text-align: right;">1.872</td>
+<td style="text-align: right;">1.983</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Median</td>
+<td style="text-align: right;">10.018</td>
+<td style="text-align: right;">6.684</td>
+<td style="text-align: right;">10.018</td>
+<td style="text-align: right;">9.424</td>
+<td style="text-align: right;">9.989</td>
+<td style="text-align: right;">9.389</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Skewness</td>
+<td style="text-align: right;">0.065</td>
+<td style="text-align: right;">1.686</td>
+<td style="text-align: right;">0.057</td>
+<td style="text-align: right;">1.532</td>
+<td style="text-align: right;">0.444</td>
+<td style="text-align: right;">1.686</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kurtosis</td>
+<td style="text-align: right;">2.920</td>
+<td style="text-align: right;">6.075</td>
+<td style="text-align: right;">2.842</td>
+<td style="text-align: right;">5.459</td>
+<td style="text-align: right;">2.736</td>
+<td style="text-align: right;">6.075</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="method-selection-guide" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Method Selection Guide</h1>
+<p>Each method has its strengths and appropriate use cases:</p>
+<section id="quantile-matching-1" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="quantile-matching-1"><span class="header-section-number">4.1</span> Quantile Matching</h2>
+<ul>
+<li><strong>Pros</strong>: Preserves rank order, works with any distribution</li>
+<li><strong>Cons</strong>: May not extrapolate well</li>
+<li><strong>Best for</strong>: General-purpose distribution matching</li>
+</ul>
+</section>
+<section id="box-cox-transformation-1" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="box-cox-transformation-1"><span class="header-section-number">4.2</span> Box-Cox Transformation</h2>
+<ul>
+<li><strong>Pros</strong>: Works well for skewed data, preserves relationships</li>
+<li><strong>Cons</strong>: Requires positive data, assumes underlying normality</li>
+<li><strong>Best for</strong>: Right-skewed positive data</li>
+</ul>
+</section>
+<section id="kernel-density-based" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="kernel-density-based"><span class="header-section-number">4.3</span> Kernel Density-Based</h2>
+<ul>
+<li><strong>Pros</strong>: Highly flexible, handles multimodal distributions</li>
+<li><strong>Cons</strong>: Computationally intensive, sensitive to bandwidth selection</li>
+<li><strong>Best for</strong>: Complex, multimodal distributions</li>
+</ul>
+</section>
+<section id="moment-matching-1" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="moment-matching-1"><span class="header-section-number">4.4</span> Moment Matching</h2>
+<ul>
+<li><strong>Pros</strong>: Simple, fast, preserves linear relationships</li>
+<li><strong>Cons</strong>: Only matches first two moments, assumes similar shapes</li>
+<li><strong>Best for</strong>: Nearly normal distributions or quick approximations</li>
+</ul>
+</section>
+</section>
+<section id="performance-comparison" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Performance Comparison</h1>
+<p>Let’s compare the computational performance of these methods:</p>
+<div class="cell" data-hash="index_cache/html/performance_127a6a95bd68cc1ff47ab3193ac9d115">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(microbenchmark)</span>
+<span id="cb9-2"></span>
+<span id="cb9-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Benchmark the methods</span></span>
+<span id="cb9-4">bench <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span>(</span>
+<span id="cb9-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Quantile =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">quantile_match</span>(A, B),</span>
+<span id="cb9-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">BoxCox =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">boxcox_match</span>(A, B),</span>
+<span id="cb9-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Kernel =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">kernel_density_match</span>(A, B),</span>
+<span id="cb9-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Moment =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">moment_match</span>(A, B),</span>
+<span id="cb9-9">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb9-10">)</span>
+<span id="cb9-11"></span>
+<span id="cb9-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot results</span></span>
+<span id="cb9-13"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">autoplot</span>(bench) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Performance Comparison"</span>,</span>
+<span id="cb9-16">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time taken by each method (lower is better)"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://www.jonghoonk.com/blog/posts/distribution_matching/index_files/figure-html/performance-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Conclusion</h1>
+<p>While quantile matching is often the default choice for distribution matching, having multiple approaches in your toolkit allows you to handle various scenarios more effectively. The choice of method should depend on:</p>
+<ol type="1">
+<li>Your data characteristics</li>
+<li>Computational resources</li>
+<li>Preservation requirements</li>
+<li>Desired properties of the transformed distribution</li>
+</ol>
+<p>Always validate your transformations through both visual inspection and numerical summaries to ensure the transformed distribution meets your requirements.</p>
+</section>
+<section id="references" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> References</h1>
+<ul>
+<li>Box, G. E. P., &amp; Cox, D. R. (1964). An analysis of transformations. Journal of the Royal Statistical Society: Series B (Methodological), 26(2), 211-243.</li>
+<li>Silverman, B. W. (1986). Density estimation for statistics and data analysis. CRC press.</li>
+<li>Bolstad, B. M., Irizarry, R. A., Åstrand, M., &amp; Speed, T. P. (2003). A comparison of normalization methods for high density oligonucleotide array data based on variance and bias. Bioinformatics, 19(2), 185-193.</li>
+</ul>
+
+
+</section>
+
+ ]]></description>
+  <guid>https://www.jonghoonk.com/blog/posts/distribution_matching/index.html</guid>
+  <pubDate>Wed, 30 Oct 2024 15:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Bayesian workflow: fake social contact data example</title>
   <dc:creator>Jong-Hoon Kim</dc:creator>
@@ -17384,419 +18378,6 @@ font-style: inherit;"># FullSimplify[Solve[{\[Mu]*(S+Y+R)-(r +\[Mu]) *S + \[Omeg
   <guid>https://www.jonghoonk.com/blog/posts/prevalence_incidence_sirmodel/index.html</guid>
   <pubDate>Mon, 11 Mar 2024 15:00:00 GMT</pubDate>
   <media:content url="https://www.jonghoonk.com/blog/posts/prevalence_incidence_sirmodel/diffeqr_sir.png" medium="image" type="image/png" height="114" width="144"/>
-</item>
-<item>
-  <title>감염병의 대유행 가능성</title>
-  <dc:creator>Jong-Hoon Kim</dc:creator>
-  <link>https://www.jonghoonk.com/blog/posts/Probabily_outbreak/index.html</link>
-  <description><![CDATA[ 
-
-
-
-<p><a href="https://www.yes24.com/Product/Goods/99051113?ReviewYn=Y">감염병 인류</a> 라는 책을 재미있게 읽는 중이다. 136페이지에는 기초감염재생산지수와 대유행의 가능성에 대한 간단한 수식이 나온다. <img src="https://latex.codecogs.com/png.latex?%5Ctext%7B%EB%8C%80%EC%9C%A0%ED%96%89%EC%9D%98%20%EA%B0%80%EB%8A%A5%EC%84%B1%7D%20=%201%20-%20%5Cfrac%7B1%7D%7BR_0%7D"></p>
-<p><img src="https://latex.codecogs.com/png.latex?R_0">는 기초감염재생산지수, 즉 한 사람의 감염자가 다른 모든 사람이 감수성자 (susceptible) 일때 감염시키는 평균 감염자수를 나타낸다. 위 수식은 제한적인 경우에만 적용된다. 감염병 유입 시 대유행의 가능성에 대해 좀 더 일반적으로 적용될 수 있는 방법에 대해 적어보려고 한다. 물론 아래 내용도 상당히 이상적인 상황에 대한 기술일 뿐이고 현실은 그 보다 훨씬 더 복잡할 것이다. 감염병 유입 시 대유행의 가능성에 대한 내용은 Niels G. Becker가 저술한 <a href="https://www.amazon.com/Modeling-Infectious-Disease-Control-Biostatistics/dp/1498731066/ref=sr_1_3?crid=Q6E8KCGFJHES&amp;dib=eyJ2IjoiMSJ9.UCQn7lL_fhp-8cr31i1yvNkFiM8031ZLJrQd3oLch4MLiIGfVd7xSHYK8DxJcl2irN6hOSKXvwIBltRHfSRsMnCEZE09qU6Hj_BrGkMf45Q7EvhtR8q1EEZnjJP4ZrU8ow-Z6gIW1vhne7qQp5LiGeJsnbWorvZjpvfWu0Q-YbgfYopAUnSl95IUf0nlTDbvxm-rYGyOawJEC5BHEBXi3wsYCfLfM-F7eZW2vwT_9n8.DIMrBAhp9UdkHqkC9_69y7tViatvCC44j3phlaCTrA4&amp;dib_tag=se&amp;keywords=niels+becker&amp;qid=1709912228&amp;sprefix=niels+becker%2Caps%2C239&amp;sr=8-3">Modeling to Inform Infectious Disease Control</a>의 제 2장에 자세하게 기술되어 있다.</p>
-<p>동일한 사람들로 이루어진 인구 집단에서 감염병이 퍼져나가는 현상을 생각해 보자. 한 사람이 평균적으로 <img src="https://latex.codecogs.com/png.latex?R_0"> 명을 감염시킨다고 할 때 <img src="https://latex.codecogs.com/png.latex?R_0">은 평균일뿐 후속 감염자수는 어떤 확률 분포를 가진다고 생각해볼 수 있다. 한 명의 감염자가 총 <img src="https://latex.codecogs.com/png.latex?j"> 명의 후속 감염자를 만들어 내는 확률을 <img src="https://latex.codecogs.com/png.latex?P(X=j)%20=%20p_j">라고 할 때 <img src="https://latex.codecogs.com/png.latex?R_0">는 아래와 같이 표현할 수 있다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?R_0%20=%20%5Csum_%7Bk=0%7D%5E%5Cinfty%20j%20p_j."></p>
-<p>대유행의 가능성은 역으로 생각하는 것이 유리하다. 즉 대유행이 아닌 소규모의 감염으로 막을 내리는 확률, <img src="https://latex.codecogs.com/png.latex?%5Ctheta">, 을 구한 후 대유행의 확률은 <img src="https://latex.codecogs.com/png.latex?1-%5Ctheta">로 구하는 것이다. 소규모의 감염이 일어나기 위해서는 유입된 초기 환자 (index patient)가 아무도 감염시키지 않거나 혹은 몇 명을 감염시켰다고 할지라도 후속 감염자들이 추가적으로 일으키는 감염이 소규모일때만 가능할 것이다. 즉 소규모 감염의 확률, <img src="https://latex.codecogs.com/png.latex?%5Ctheta">, 는 아래의 식을 만족한다.</p>
-<p><span id="eq-theta"><img src="https://latex.codecogs.com/png.latex?%0A%5Ctheta%20=%20%20p_0%20+%20p_1%20%5Ctheta%20+%20p_2%20%5Ctheta%5E2%20+%20...%0A%5Ctag%7B1%7D"></span></p>
-<p>위 식을 보면 <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> 는 후속 감염자수가 어떠한 분포를 따르느냐에 따라 달라질 것이라 예상할 수 있다. 가장 흔히 쓰이는 분포 중의 하나인 푸아송 분포 (Poisson distribution)를 생각해보자. 화률 분포 함수는 아래와 같다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BProb%7D(X=j)%20=%20%5Cfrac%7BR%5Ej%20e%5ER%7D%7Bj!%7D%5Ctext%7B%20for%20%7D%20j=0,1,2,..."></p>
-<p>이 경우 Equation&nbsp;1 의 우변은 아래와 같이 나타내어질 수 있다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bj=0%7D%5E%5Cinfty%20p_j%20%5Ctheta%5E%7Bj%7D%20=%20e%5E%7B(1-%5Ctheta)R_0%7D."></p>
-<p>따라서 <img src="https://latex.codecogs.com/png.latex?%5Ctheta">는 아래의 식을 계산하면 된다. 다만 해를 직접 구할 수는 없고 수치해석방법을 이용 해서 답을 구해야 한다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20e%5E%7B(1-%5Ctheta)R_0%7D."></p>
-<p>위에서 언급한 <img src="https://latex.codecogs.com/png.latex?%5Ctext%7B%EB%8C%80%EC%9C%A0%ED%96%89%EC%9D%98%20%EA%B0%80%EB%8A%A5%EC%84%B1%7D%20=%201%20-%20%5Cfrac%7B1%7D%7BR_0%7D">는 후속 감염자수의 분포가 기하분포 (geometric distribution)를 따를때 성립한다. 기하분포는 아래와 같이 표현되 <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BProb%7D(X=j)%20=%20(1-p)%5Ej%20p"></p>
-<p>평균과 성공확률의 관게, <img src="https://latex.codecogs.com/png.latex?R%20=%20%5Cfrac%7B1-p%7D%7Bp%7D">, 이용하여 다시 표현하면 아래와 같다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BProb%7D(X=j)%20=%20(%5Cfrac%7BR_0%7D%7B1+R_0%7D)%5Ej%20%5Cfrac%7B1%7D%7B1+R_0%7D"> 위에서와 동일하게 계산하면 아래와 같다. <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bj=0%7D%5E%5Cinfty%20p_j%20%5Ctheta%5E%7Bj%7D%20=%20%5Cfrac%7B1%7D%7B1%20+%20(1-%5Ctheta)R_0%7D"> 따라서 아래의 식을 풀면 <img src="https://latex.codecogs.com/png.latex?%5Ctheta">를 구할 수 있다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cfrac%7B1%7D%7B1%20+%20(1-%5Ctheta)R_0%7D."></p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cfrac%7B1%7D%7BR_0%7D."></p>
-<p>따라서 <a href="https://www.yes24.com/Product/Goods/99051113?ReviewYn=Y">감염병 인류</a> 책에서 언급된 것처럼 <img src="https://latex.codecogs.com/png.latex?%5Ctext%7B%EB%8C%80%EC%9C%A0%ED%96%89%EC%9D%98%20%EA%B0%80%EB%8A%A5%EC%84%B1%7D%20=%201%20-%20%5Cfrac%7B1%7D%7BR_0%7D."> 마지막으로 후속 감염자수가 이항분포 (negative binomial distribution)을 따른다고 가정해보자. 최근 연구들에서 빈번하게 언급되고 가장 현실에 가까운 가정인 듯 하다.</p>
-<p>다양한 모수를 사용하여 표현할 수 있고 평균 <img src="https://latex.codecogs.com/png.latex?R_0">과 확산(dispersion; <img src="https://latex.codecogs.com/png.latex?k">)를 이용하여 나타내면 아래와 같다. 이항 분포는 <img src="https://latex.codecogs.com/png.latex?k=1">일 때는 기하분포와 동일하고 <img src="https://latex.codecogs.com/png.latex?k=%5Cinfty"> 일때는 푸아송분포와 동일하다. 코로나 19의 경우 <img src="https://latex.codecogs.com/png.latex?k"> 값이 약 <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9349569/">0.55</a>이다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Ctext%7BProb%7D(X=j)%20=%20%5Cfrac%7B%5CGamma(k+j)%7D%7Bj!%5CGamma(k)%7D%5Cleft(%5Cfrac%7Bk%7D%7Bk+R_0%7D%5Cright)%5Ek%5Cleft(%5Cfrac%7BR_0%7D%7Bk+R_0%7D%5Cright)%5Ej%20%5Ctext%7B%20for%20%7D%20k=0,1,2,..."> The probability of a minor outbreak, 위와 동일한 방법으로 계산하면 우변은 아래와 같다.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bj=0%7D%5E%5Cinfty%20p_j%20%5Ctheta%5E%7Bj%7D%20=%20%5Cleft(%5Cfrac%7Bk%7D%7Bk%20+%20(1-%5Ctheta)R_0%7D%5Cright)%5Ek"> 따라서 <img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5Cleft(%5Cfrac%7Bk%7D%7Bk%20+%20(1-%5Ctheta)R_0%7D%5Cright)%5Ek">를 계산하여 소규모감염의 확률을 계산하고 <img src="https://latex.codecogs.com/png.latex?1-%5Ctheta">를 계산하여 대규모유행 확률을 계산하면 된다.</p>
-<p>R 시물레이션을 통해서 세방법이 어떻게 다른 결과를 나타내는지 살펴보자</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">prob_outbreak_pois <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(theta, R0){</span>
-<span id="cb1-2">  theta <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span>R0 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> R0<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>theta) </span>
-<span id="cb1-3">}</span>
-<span id="cb1-4">prob_outbreak_geo <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(R0){</span>
-<span id="cb1-5">  <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>R0 </span>
-<span id="cb1-6">}</span>
-<span id="cb1-7">prob_outbreak_nb <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(theta, R0, k){</span>
-<span id="cb1-8">  theta <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> (k <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> (k <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> R0 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> R0<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>theta))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span>k </span>
-<span id="cb1-9">}</span>
-<span id="cb1-10"></span>
-<span id="cb1-11">Rs <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.1</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">length.out=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>)</span>
-<span id="cb1-12">theta1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sapply</span>(Rs, <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(x) </span>
-<span id="cb1-13">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">min</span>(rootSolve<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">multiroot</span>(prob_outbreak_pois, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">R0=</span>x)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>root))</span>
-<span id="cb1-14">theta2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sapply</span>(Rs, <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(x) <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">prob_outbreak_geo</span>(x))</span>
-<span id="cb1-15">theta3 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sapply</span>(Rs, <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">function</span>(x) </span>
-<span id="cb1-16">   <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">min</span>(rootSolve<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">multiroot</span>(prob_outbreak_nb, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">R0=</span>x, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">k=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.55</span>)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>root))</span>
-<span id="cb1-17">df <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">R0=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(Rs,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>), </span>
-<span id="cb1-18">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">dist=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Pois"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Geom"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"NB(k=0.55)"</span>),<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">each=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>),</span>
-<span id="cb1-19">                 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">prob_outbreak=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span>theta1,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span>theta2,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span>theta3))</span>
-<span id="cb1-20"></span>
-<span id="cb1-21"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb1-22">extrafont<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">loadfonts</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"win"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">quiet=</span><span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb1-23"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_set</span>(hrbrthemes<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_ipsum_rc</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">base_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">subtitle_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, </span>
-<span id="cb1-24">                                     <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis_title_size=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">12</span>))</span>
-<span id="cb1-25"></span>
-<span id="cb1-26"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(df) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-27">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(R0, prob_outbreak, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span>dist))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-28">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggtitle</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">expression</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Probability of a large outbreak vs."</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">italic</span>(R)[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>])) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb1-29">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Probability of a large outbreak"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x=</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">expression</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">italic</span>(R)[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>]), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://www.jonghoonk.com/blog/posts/Probabily_outbreak/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ggsave("outbreak_prob.png", units="in", width=3.4*2, height=2.7*2)  </span></span></code></pre></div>
-</div>
-<p>각 분포에 대한 무한 수열의 합과 <img src="https://latex.codecogs.com/png.latex?%5Ctheta">에 대한 해는 아래 Mathematica 명령어를 사용하여 확인할 수 있다.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">Sum[PDF[PoissonDistribution[R],j]\[Theta]<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span>j, {j, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, Infinity}]</span>
-<span id="cb3-2">FindRoot[\[Theta] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> E<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">R</span> (<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> \[Theta])) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, {\[Theta], <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>}] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>. </span>
-<span id="cb3-3"> R <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">-&gt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span></span>
-<span id="cb3-4">Sum[PDF[GeometricDistribution[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span>R)],j]\[Theta]<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span>j, {j, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, Infinity}]</span>
-<span id="cb3-5">FindRoot[\[Theta] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>(R <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> \[Theta] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> R \[Theta]) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, {\[Theta], </span>
-<span id="cb3-6">   <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>}] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>. R <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">-&gt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span></span>
-<span id="cb3-7"></span>
-<span id="cb3-8">FullSimplify[Sum[PDF[NegativeBinomialDistribution[k,k<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>(R<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span>k)],i]\[Theta]<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span>i, {i, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, Infinity}],{ k<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, R<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span>\[Theta]<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>}ㅑ</span>
-<span id="cb3-9">FindRoot[\[Theta] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> (k<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>(k <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> R <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> R \[Theta]))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span>k <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, {\[Theta], <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>}] </span></code></pre></div>
-</div>
-
-
-
- ]]></description>
-  <category>probability of a large outbreak</category>
-  <category>reproduction number</category>
-  <guid>https://www.jonghoonk.com/blog/posts/Probabily_outbreak/index.html</guid>
-  <pubDate>Sun, 03 Mar 2024 15:00:00 GMT</pubDate>
-  <media:content url="https://www.jonghoonk.com/blog/posts/Probabily_outbreak/outbreak_prob.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 </channel>
 </rss>
