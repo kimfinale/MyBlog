@@ -86,12 +86,12 @@ tf_occ_data:
         - et al
     year: 2024
     preprint: https://www.medrxiv.org/content/10.1101/2023.09.22.23295884v1
-    published_url: https://www.medrxiv.org/content/10.1101/2023.09.22.23295884v1
+    published_url: https://www.nature.com/articles/s41597-024-03912-x#:~:text=Typhoid%20fever%2C%20caused%20by%20Salmonella,water%2C%20sanitation%2C%20and%20hygiene
     venue: Sci Data
     github: https://github.com/kimfinale/typhoid_occurrence
 
 tf_outbk_data:
-    title: "Dynamics of typhoid fever outbreaks during 2000-2022: a systematic review with time-series data"
+    title: "Time series data on typhoid fever incidence during outbreaks from 2000 to 2022"
     authors:
         - DaeHyup Koh
         - Monica Duong
@@ -100,8 +100,9 @@ tf_outbk_data:
         - me
     year: 2024
     preprint: https://osf.io/n9cke/
-    published_url:
-    github:
+    venue: BMC Infect Dis
+    published_url: https://osf.io/n9cke/
+    github: https://osf.io/n9cke/
 
 chol_wash_meta:
     title: "Associations of Water Quality with Cholera in Case-Control Studies: A Systematic Review and Meta-Analysis"
@@ -127,8 +128,9 @@ outbreak_response_modeling:
         - ...
         - Katy Gaythorpe
     year: 2024
-    preprint:
-    published_url:
+    preprint: https://arxiv.org/abs/2410.13923
+    venue: BMC Infect Dis
+    published_url: https://arxiv.org/abs/2410.13923
     github:
 
 social_contact_korea:

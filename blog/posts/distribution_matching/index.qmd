@@ -48,10 +48,9 @@ quantile_match <- function(A, B) {
   probs <- seq(0, 1, length.out = length(A))
   sorted_A <- sort(A)
   
-  B_transformed <- approx(x = probs,
-                         y = sorted_A,
-                         xout = rank(B)/(length(B) + 1),
-                         method = "linear")$y
+  B_transformed <- approx(x = probs, y = sorted_A, 
+                          xout = rank(B)/(length(B) + 1),
+                          method = "linear")$y
   return(B_transformed)
 }
 ```
@@ -134,10 +133,10 @@ kernel_density_match <- function(A, B, bw = "nrd0") {
   A_probs <- cdf_A(A_sorted)
   
   B_transformed <- approx(x = A_probs,
-                         y = A_sorted,
-                         xout = B_probs,
-                         yleft = min(A),
-                         yright = max(A))$y
+                          y = A_sorted,
+                          xout = B_probs,
+                          yleft = min(A),
+                          yright = max(A))$y
   
   return(B_transformed)
 }
