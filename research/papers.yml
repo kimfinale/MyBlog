@@ -100,9 +100,9 @@ tf_outbk_data:
         - me
     year: 2024
     preprint: https://osf.io/n9cke/
-    venue: BMC Infect Dis
-    published_url: https://osf.io/n9cke/
-    github: https://osf.io/n9cke/
+    venue: Sci Data
+    published_url:
+    github:
 
 chol_wash_meta:
     title: "Associations of Water Quality with Cholera in Case-Control Studies: A Systematic Review and Meta-Analysis"
@@ -145,3 +145,4 @@ social_contact_korea:
     preprint:
     published_url:
     github:
+
