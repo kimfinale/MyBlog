@@ -242,7 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="correlation">Correlation</h2>
 <p>Correlation standardizes covariance by dividing it by the product of standard deviations of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. The Pearson correlation coefficient is given by:</p>
 <p><span class="math display">\[
-\rho_{X,Y} = \frac{\text{Cov}(X, Y)}{s_X s_Y}
+\rho_{X,Y} = \frac{1}{n} \sum_{i=1}^{n} \left(\frac{X_i - \bar{X}}{s_X}\right) \left(\frac{Y_i - \bar{Y}}{s_Y}\right) = \frac{\text{Cov}(X, Y)}{s_X s_Y}
 \]</span> where <span class="math inline">\(s_X\)</span> and <span class="math inline">\(s_Y\)</span> are standard deviations of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. The correlation coefficient ranges from -1 to 1: - <strong>+1</strong>: Perfect positive correlation - <strong>-1</strong>: Perfect negative correlation - <strong>0</strong>: No linear relationship</p>
 <section id="r-code-example-1" class="level3">
 <h3 class="anchored" data-anchor-id="r-code-example-1">R Code Example</h3>
@@ -258,9 +258,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 Y = \beta_0 + \beta_1 X + \epsilon
 \]</span></p>
 <p>where: - <span class="math inline">\(\beta_0\)</span> (intercept) and <span class="math inline">\(\beta_1\)</span> (slope) are estimated using:</p>
+<p>The equation for the <span class="math inline">\(\beta_1\)</span> can be derived by minimizing the error sum of squares (SSE) <span class="math display">\[
+SSE = \sum_{i=1}^{n} (Y_i - (\beta_0 + \beta_1 X_i))^2
+\]</span> , which in turn can be solved using the following equation. <span class="math display">\[
+\frac{\partial}{\partial \beta_1} \sum_{i=1}^{n} (Y_i - \beta_0 - \beta_1 X_i)^2 = 0
+\]</span></p>
 <p><span class="math display">\[
 \beta_1 = \frac{\text{Cov}(X, Y)}{\text{Var}(X)}
-\]</span> <span class="math display">\[
+\]</span></p>
+<p>The intuition behind this formula is as follows. Covariance <span class="math inline">\(\text{Cov}(X,Y)\)</span> measures how <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> vary together. Variance <span class="math inline">\(\text{Var}(X)\)</span> measures how spread out <span class="math inline">\(X\)</span> is.<br>
+The ratio <span class="math inline">\(\frac{\text{Cov}(X,Y)}{\text{Var}(X)}\)</span> tells us the change in <span class="math inline">\(Y\)</span> for a one-unit change in <span class="math inline">\(X\)</span>. This makes sense because we are essentially scaling the covariance by the variability of <span class="math inline">\(X\)</span>–ensuring that our slope correctly reflects how much <span class="math inline">\(Y\)</span> changes per unit of <span class="math inline">\(X\)</span>.</p>
+<p><span class="math display">\[
 \beta_0 = \bar{Y} - \beta_1 \bar{X}
 \]</span></p>
 <ul>

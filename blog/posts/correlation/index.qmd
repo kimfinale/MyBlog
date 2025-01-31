@@ -4,7 +4,7 @@ author: "Jong-Hoon Kim"
 date: "2025-01-30"
 format:
   html:
-    code-fold: false
+    code-fold: true
     toc: true
     toc-depth: 3
     number-sections: false
@@ -53,7 +53,7 @@ print(cov_xy)
 Correlation standardizes covariance by dividing it by the product of standard deviations of $X$ and $Y$. The Pearson correlation coefficient is given by:
 
 $$
-\rho_{X,Y} = \frac{\text{Cov}(X, Y)}{s_X s_Y}
+\rho_{X,Y} = \frac{1}{n} \sum_{i=1}^{n} \left(\frac{X_i - \bar{X}}{s_X}\right) \left(\frac{Y_i - \bar{Y}}{s_Y}\right) = \frac{\text{Cov}(X, Y)}{s_X s_Y}
 $$
 where $s_X$ and $s_Y$ are standard deviations of $X$ and $Y$. The correlation coefficient ranges from -1 to 1:
 - **+1**: Perfect positive correlation
@@ -79,9 +79,24 @@ $$
 where:
 - $\beta_0$ (intercept) and $\beta_1$ (slope) are estimated using:
 
+The equation for the $\beta_1$ can be derived by minimizing the error sum of squares (SSE)
+$$
+SSE = \sum_{i=1}^{n} (Y_i - (\beta_0 + \beta_1 X_i))^2
+$$
+, which in turn can be solved using the following equation.
+$$
+\frac{\partial}{\partial \beta_1} \sum_{i=1}^{n} (Y_i - \beta_0 - \beta_1 X_i)^2 = 0
+$$
+
 $$
 \beta_1 = \frac{\text{Cov}(X, Y)}{\text{Var}(X)}
 $$
+
+The intuition behind this formula is as follows. Covariance $\text{Cov}(X,Y)$ measures how $X$ and $Y$ vary together. Variance $\text{Var}(X)$ measures how spread out $X$ is.  
+The ratio $\frac{\text{Cov}(X,Y)}{\text{Var}(X)}$ tells us the change in $Y$ for a one-unit change in 
+$X$. This makes sense because we are essentially scaling the covariance by the variability of $X$--ensuring that our slope correctly reflects how much $Y$ changes per unit of 
+$X$.
+
 $$
 \beta_0 = \bar{Y} - \beta_1 \bar{X}
 $$
@@ -116,6 +131,3 @@ abline(model, col = "red", lwd = 2)
 ## Conclusion
 
 Understanding **covariance, correlation, and regression** allows for deeper insights into data relationships. Covariance provides directionality, correlation offers a unit-free measure of strength, and regression predicts outcomes. By applying these techniques in **R**, we can uncover meaningful patterns in data!
-
-
-
