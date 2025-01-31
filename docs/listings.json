@@ -2,6 +2,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/correlation/index.html",
       "/blog/posts/distribution_matching/index.html",
       "/blog/posts/bayesian_workflow/index.html",
       "/blog/posts/behavior_change/index.html",
